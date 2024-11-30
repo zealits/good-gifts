@@ -3,4 +3,4 @@
 /backend/config/config.env
 
 # Ignore node_modules in the frontend directory
-/frontend1/node_modules
+/frontend/node_modules
