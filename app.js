@@ -13,10 +13,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //Route Imports
 const restaurantAdminRoutes = require("./routes/restaurantAdminRoutes");
+const giftCardRoutes = require("./routes/giftCardRoutes");
 // const product = require("./routes/productRoute");
 
 // app.use("/api/z1",product);
 app.use("/api/v1/admin", restaurantAdminRoutes);
+app.use("/api/v1/admin", giftCardRoutes);
 
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 
