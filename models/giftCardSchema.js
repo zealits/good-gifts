@@ -54,7 +54,7 @@ const giftCardSchema = new mongoose.Schema(
         },
         paymentMethod: {
           type: String,
-          enum: ["PhonePe", "GPay", "PayPal", "CreditCard"], // Payment methods
+          // enum: ["PhonePe", "GPay", "PayPal", "CreditCard"], 
           required: true,
         },
         generatedCode: {

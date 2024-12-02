@@ -1,0 +1,48 @@
+.register-container {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .register-email-step, .register-details-step {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .register-email-input,
+  .register-otp-input,
+  .register-name-input,
+  .register-password-input,
+  .register-phone-input,
+  .register-restaurant-name-input,
+  .register-street-input,
+  .register-city-input,
+  .register-state-input,
+  .register-zip-code-input {
+    margin-bottom: 15px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .register-send-otp-button,
+  .register-submit-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .register-send-otp-button:hover,
+  .register-submit-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .register-details-heading,
+  .register-email-heading {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  

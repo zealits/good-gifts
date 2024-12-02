@@ -69,7 +69,7 @@ const deleteGiftCard = async (req, res) => {
 const addBuyer = async (req, res) => {
   try {
     const { id } = req.params;
-    const { buyerName, buyerPhone, buyerEmail, paymentMethod, qrCode, generatedCode } = req.body;
+    const { buyerName, buyerPhone, buyerEmail, paymentMethod, generatedCode } = req.body;
 
     const giftCard = await GiftCard.findById(id);
     if (!giftCard) {
@@ -81,7 +81,6 @@ const addBuyer = async (req, res) => {
       buyerPhone,
       buyerEmail,
       paymentMethod,
-      qrCode,
       generatedCode,
     });
 
