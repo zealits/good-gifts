@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./Register.css";
 
 function Register() {
-  const [step, setStep] = useState(1); // Step 1: Email, Step 2: Full Details
+  const [step, setStep] = useState(1); // Step 1: Email, Step 2: OTP Verification, Step 3: Registration Form
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [formData, setFormData] = useState({
@@ -19,6 +20,8 @@ function Register() {
     },
   });
 
+  const navigate = useNavigate(); // Initialize the navigation hook
+
   const sendOtp = async () => {
     try {
       await axios.post("/api/v1/admin/send-otp", { email });
@@ -30,11 +33,22 @@ function Register() {
     }
   };
 
+  const verifyOtp = async () => {
+    try {
+      await axios.post("/api/v1/admin/verify-otp", { email, otp });
+      alert("OTP verified successfully.");
+      setStep(3);
+    } catch (err) {
+      alert("Invalid OTP. Please try again.");
+    }
+  };
+
   const registerUser = async () => {
     try {
       const data = { ...formData, email, otp };
       await axios.put("/api/v1/admin/register", data);
       alert("Registration successful!");
+      navigate("/dashboard"); // Redirect to login page
     } catch (err) {
       alert("Error during registration. Check OTP or details.");
     }
@@ -57,9 +71,10 @@ function Register() {
           </button>
         </div>
       )}
+
       {step === 2 && (
-        <div className="register-details-step">
-          <h2 className="register-details-heading">Register</h2>
+        <div className="register-otp-step">
+          <h2 className="register-otp-heading">Verify OTP</h2>
           <input
             className="register-otp-input"
             type="text"
@@ -67,6 +82,15 @@ function Register() {
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
           />
+          <button className="register-verify-otp-button" onClick={verifyOtp}>
+            Verify OTP
+          </button>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div className="register-details-step">
+          <h2 className="register-details-heading">Register</h2>
           <input
             className="register-name-input"
             type="text"
@@ -79,21 +103,27 @@ function Register() {
             type="password"
             placeholder="Password"
             value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
           />
           <input
             className="register-phone-input"
             type="text"
             placeholder="Phone"
             value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, phone: e.target.value })
+            }
           />
           <input
             className="register-restaurant-name-input"
             type="text"
             placeholder="Restaurant Name"
             value={formData.restaurantName}
-            onChange={(e) => setFormData({ ...formData, restaurantName: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, restaurantName: e.target.value })
+            }
           />
           <input
             className="register-street-input"

@@ -18,6 +18,7 @@ router.put("/register", registerRestaurantAdmin);
 // Route to login a restaurant admin
 router.post("/login", loginRestaurantAdmin);
 
+
 // Route to request password reset
 router.post("/password-reset", requestPasswordReset);
 

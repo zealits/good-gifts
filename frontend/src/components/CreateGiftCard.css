@@ -1,0 +1,115 @@
+/* Container styling */
+.create-gift-card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f4ff, #c0d8f0);
+    font-family: 'Arial', sans-serif;
+   
+    
+  }
+  
+  /* Heading styling */
+  .create-gift-card-container h1 {
+    color: #1a73e8;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Form styling */
+  .gift-card-form {
+    background: #ffffff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  /* Label and input styling */
+  .gift-card-form label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .gift-card-form input,
+  .gift-card-form select {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .gift-card-form input:focus,
+  .gift-card-form select:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 5px rgba(26, 115, 232, 0.5);
+    outline: none;
+  }
+  
+  /* Button styling */
+  .submit-gift-card-button {
+    width: 100%;
+    padding: 12px 0;
+    background: #1a73e8;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  
+  .submit-gift-card-button:hover {
+    background: #0f63cf;
+    box-shadow: 0 4px 10px rgba(15, 99, 207, 0.4);
+  }
+  
+  .submit-gift-card-button:active {
+    transform: scale(0.98);
+  }
+
+  .dashboard-button{
+    width: 100%;
+    padding: 12px 0;
+    background: #1a73e8;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s, box-shadow 0.3s;
+    margin-top: 10px;
+  }
+
+  .dashboard-button:hover {
+    background: #0f63cf;
+    box-shadow: 0 4px 10px rgba(15, 99, 207, 0.4);
+  }
+  
+  .dashboard-button:active {
+    transform: scale(0.98);
+  }
+  
+  /* Responsive design */
+  @media (max-width: 600px) {
+    .create-gift-card-container h1 {
+      font-size: 2rem;
+    }
+  
+    .gift-card-form {
+      padding: 15px 20px;
+    }
+  }
+  
