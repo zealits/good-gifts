@@ -1,9 +1,14 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./CreateGiftCard.css";
+import { useDispatch } from "react-redux";
+import { updateGiftCard } from "../Services/Actions/giftCardActions";
 
 function CreateGiftCard({ addGiftCard }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+
   const [form, setForm] = useState({
     giftCardName: "",
     amount: "",
@@ -12,6 +17,12 @@ function CreateGiftCard({ addGiftCard }) {
     expirationDate: "",
   });
 
+  useEffect(() => {
+    if (location.state?.cardToEdit) {
+      setForm(location.state.cardToEdit);
+    }
+  }, [location.state]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -19,22 +30,21 @@ function CreateGiftCard({ addGiftCard }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const cardWithTimestamp = {
+    if (location.state?.cardToEdit) {
+      dispatch(updateGiftCard(location.state.cardToEdit._id, form));
+    } else {
+      const cardWithTimestamp = {
         ...form,
-        createdAt: new Date().toISOString(), // Save as ISO string
+        createdAt: new Date().toISOString(),
       };
       addGiftCard(cardWithTimestamp);
-      navigate("/dashboard");
-  };
-
-  const handleCreateGiftCard = () => {
-    // Navigate to the dashboard after creation
+    }
     navigate("/dashboard");
   };
 
   return (
     <div className="create-gift-card-container">
-      <h1>Create a New Gift Card</h1>
+      <h1>{location.state?.cardToEdit ? "Update Gift Card" : "Create a New Gift Card"}</h1>
       <form className="gift-card-form" onSubmit={handleSubmit}>
         <label>
           Gift Card Name:
@@ -88,9 +98,11 @@ function CreateGiftCard({ addGiftCard }) {
         </label>
 
         <button type="submit" className="submit-gift-card-button">
-          Create Gift Card
+          {location.state?.cardToEdit ? "Update Gift Card" : "Create Gift Card"}
         </button>
-        <button className= "dashboard-button" onClick={handleCreateGiftCard}>Go to Dashboard</button>
+        <button className="dashboard-button" onClick={() => navigate("/dashboard")}>
+          Go to Dashboard
+        </button>
       </form>
     </div>
   );

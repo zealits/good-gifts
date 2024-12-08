@@ -1,28 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchGiftCards, deleteGiftCard } from "../Services/Actions/giftCardActions";
 import "./Dashboard.css";
 
 function Dashboard() {
-  const [giftCards, setGiftCards] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+  // Access gift cards and loading state from Redux store
+  const { giftCards, loading, error } = useSelector((state) => state.giftCard);
+
+  // Fetch gift cards from the server when the component mounts
   useEffect(() => {
-    // Retrieve gift cards from localStorage
-    const storedGiftCards = JSON.parse(localStorage.getItem("giftCards")) || [];
-    setGiftCards(storedGiftCards);
-  }, []);
+    dispatch(fetchGiftCards());
+  }, [dispatch]);
 
   // Function to handle delete operation
-  const handleDelete = (index) => {
-    const updatedGiftCards = giftCards.filter((_, i) => i !== index);
-    setGiftCards(updatedGiftCards);
-    localStorage.setItem("giftCards", JSON.stringify(updatedGiftCards)); // Update localStorage
+  const handleDelete = (id) => {
+    dispatch(deleteGiftCard(id));
   };
 
   // Function to handle edit operation
-  const handleEdit = (index) => {
-    const cardToEdit = giftCards[index];
-    navigate("/create-gift-card", { state: { cardToEdit, index } }); // Navigate to create page with state
+  const handleEdit = (card) => {
+    navigate("/create-gift-card", { state: { cardToEdit: card } }); // Navigate to create page with state
   };
 
   return (
@@ -36,11 +37,15 @@ function Dashboard() {
       </button>
 
       <div className="gift-cards-list">
-        {giftCards.length === 0 ? (
+        {loading ? (
+          <p>Loading gift cards...</p>
+        ) : error ? (
+          <p>Error: {error}</p>
+        ) : giftCards.length === 0 ? (
           <p>No gift cards available. Click "Create Gift Card" to add one.</p>
         ) : (
-          giftCards.map((card, index) => (
-            <div key={index} className="gift-card">
+          giftCards.map((card) => (
+            <div key={card._id} className="gift-card">
               <h3>{card.giftCardName}</h3>
               <p>Amount: {card.amount}</p>
               <p>Currency: {card.currency}</p>
@@ -52,10 +57,10 @@ function Dashboard() {
 
               {/* Action buttons */}
               <div className="gift-card-actions">
-                <button className="edit-button" onClick={() => handleEdit(index)}>
+                <button className="edit-button" onClick={() => handleEdit(card)}>
                   Update
                 </button>
-                <button className="delete-button" onClick={() => handleDelete(index)}>
+                <button className="delete-button" onClick={() => handleDelete(card._id)}>
                   Delete
                 </button>
               </div>
