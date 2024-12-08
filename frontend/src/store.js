@@ -1,11 +1,12 @@
-import { combineReducers, createStore, applyMiddleware } from 'redux';
-import { thunk } from "redux-thunk";
-import { giftCardReducer } from './Services/Reducers/giftCardsReducer';
+import { configureStore } from "@reduxjs/toolkit";
+import giftCardReducer from "./Services/Reducers/giftCardsReducer";
 
-const rootReducer = combineReducers({
-  giftCard: giftCardReducer,
+// Configure the store
+const store = configureStore({
+  reducer: {
+    giftCard: giftCardReducer, // Add reducers here
+    
+  },
 });
-
-const store = createStore(rootReducer, applyMiddleware(thunk));
 
 export default store;
