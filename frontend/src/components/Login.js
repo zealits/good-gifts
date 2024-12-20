@@ -18,7 +18,7 @@ function Login() {
       console.log(res.data);
       navigate("/dashboard"); // Redirect to the Dashboard page
     } catch (err) {
-      alert("Login failed. Check email or password.");
+      alert("Login failed email or password.");
     }
   };
 
