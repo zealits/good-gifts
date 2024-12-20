@@ -5,7 +5,6 @@ import giftCardReducer from "./Services/Reducers/giftCardsReducer";
 const store = configureStore({
   reducer: {
     giftCard: giftCardReducer, // Add reducers here
-    
   },
 });
 

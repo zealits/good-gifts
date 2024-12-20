@@ -5,7 +5,6 @@ const giftCardSchema = new mongoose.Schema(
     giftCardName: {
       type: String,
       required: true,
-      unique: true, // Ensures the card number is unique
     },
     amount: {
       type: Number,
@@ -54,7 +53,7 @@ const giftCardSchema = new mongoose.Schema(
         },
         paymentMethod: {
           type: String,
-          // enum: ["PhonePe", "GPay", "PayPal", "CreditCard"], 
+          // enum: ["PhonePe", "GPay", "PayPal", "CreditCard"],
           required: true,
         },
         generatedCode: {
