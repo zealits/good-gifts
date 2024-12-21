@@ -1,44 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../../services/Actions/authActions";
 import "./Login.css"; // Import the same CSS
 import Modal from "../Notification/Modal"; // Import the Modal component
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [showModal, setShowModal] = useState(false);  // State for modal visibility
+
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
+
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (error) {
+      // If there is an error, show the modal
+      setShowModal(true);
+    }
+  }, [error]);  // Whenever error changes, show modal
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.post("/api/v1/admin/login", {
-        email,
-        password,
-      });
-      console.log("Login Successful:", res.data);
-      // Redirect or handle success here
-    } catch (err) {
-      console.error("Login Failed:", err.response.data);
-      setError(err.response.data.message || "Failed to login");
-      setShowModal(true);  // Show the modal on error
-    }
+    dispatch(loginUser(email, password)); // Dispatch the login action
   };
 
   const handleCloseModal = () => {
-    setShowModal(false);  // Close the modal
+    setShowModal(false); // Close the modal
   };
 
   return (
     <div className="background">
       <div className="login-container">
-      
         <div className="login-card">
           <h1>Welcome Back</h1>
           <p className="subtitle">Please sign in to continue</p>
 
           {/* Modal for error */}
-    
 
           <form onSubmit={handleSubmit}>
             <div className="input-group">
