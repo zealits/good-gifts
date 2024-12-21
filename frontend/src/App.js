@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./components/Login";
+import Login from "./components/Auth/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
 import CreateGiftCard from "./components/CreateGiftCard";
