@@ -1,4 +1,11 @@
-import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE } from "../Constants/authConstants.js";
+import {
+  LOGIN_REQUEST,
+  LOGIN_SUCCESS,
+  LOGIN_FAILURE,
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAIL,
+} from "../Constants/authConstants.js";
 
 const initialState = {
   loading: false,
@@ -9,6 +16,7 @@ const initialState = {
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_REQUEST:
+    case LOAD_USER_REQUEST:
       return {
         ...state,
         loading: true,
@@ -16,6 +24,7 @@ const authReducer = (state = initialState, action) => {
       };
 
     case LOGIN_SUCCESS:
+    case LOAD_USER_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -24,6 +33,7 @@ const authReducer = (state = initialState, action) => {
       };
 
     case LOGIN_FAILURE:
+    case LOAD_USER_FAIL:
       return {
         ...state,
         loading: false,

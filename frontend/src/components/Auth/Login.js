@@ -4,11 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../services/Actions/authActions";
 import "./Login.css"; // Import the same CSS
 import Modal from "../Notification/Modal"; // Import the Modal component
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false); // State for modal visibility
 
   const dispatch = useDispatch();
@@ -19,11 +20,12 @@ const Login = () => {
       // If there is an error, show the modal
       setShowModal(true);
     }
-  }, [error]);  // Whenever error changes, show modal
+  }, [error]); // Whenever error changes, show modal
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(loginUser(email, password)); // Dispatch the login action
+    navigate("/dashboard");
   };
 
   const handleCloseModal = () => {

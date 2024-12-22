@@ -1,9 +1,9 @@
 const RestaurantAdmin = require("../models/restaurantAdminSchema");
 const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const sendEmail = require("../utils/sendEmail"); // Utility for sending emails
 const catchAsyncErrors = require("../middleware/catchAsyncErrors"); // Middleware for handling async errors
+const sendToken = require("../utils/jwtToken");
 
 // Send OTP for email verification
 exports.sendOtp = catchAsyncErrors(async (req, res, next) => {
@@ -100,12 +100,7 @@ exports.registerRestaurantAdmin = catchAsyncErrors(async (req, res, next) => {
   // Generate JWT token
   const token = admin.getJWTToken();
 
-  res.status(201).json({
-    success: true,
-    message: "Restaurant admin registered successfully",
-    token,
-    admin,
-  });
+  sendToken(admin, 200, res);
 });
 
 // Login Restaurant Admin
@@ -128,12 +123,7 @@ exports.loginRestaurantAdmin = async (req, res) => {
     // Generate a JWT token
     const token = admin.getJWTToken();
 
-    res.status(200).json({
-      success: true,
-      message: "Login successful",
-      token,
-      admin,
-    });
+    sendToken(admin, 200, res);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -201,3 +191,14 @@ exports.verifyOTP = async (req, res) => {
     });
   }
 };
+
+exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
+  console.log("triggered");
+  console.log(req.cookies);
+  const user = await RestaurantAdmin.findById(req.user.id);
+  console.log("adfd df : ", user);
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
