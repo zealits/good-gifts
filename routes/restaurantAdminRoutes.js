@@ -5,7 +5,9 @@ const {
   loginRestaurantAdmin,
   requestPasswordReset,
   verifyOTP,
+  getUserDetails,
 } = require("../controllers/restaurantAdminController");
+const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -18,7 +20,7 @@ router.put("/register", registerRestaurantAdmin);
 // Route to login a restaurant admin
 router.post("/login", loginRestaurantAdmin);
 
-
+router.get("/me", isAuthenticatedUser, getUserDetails);
 // Route to request password reset
 router.post("/password-reset", requestPasswordReset);
 
