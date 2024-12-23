@@ -6,6 +6,7 @@ import Login from "./components/Auth/Login";
 import Register from "./components/Register";
 import AdminDashboard from "./pages/admin/AdminDashboard.js";
 import UserLanding from "./pages/user/UserLanding.js";
+import Sidebar from "./pages/admin/Sidebar.js";
 
 function App() {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ function App() {
 
   return (
     <Router>
+    <Sidebar/>
       <Routes>
         {/* Public routes */}
         <Route
