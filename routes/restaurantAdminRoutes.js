@@ -6,6 +6,7 @@ const {
   requestPasswordReset,
   verifyOTP,
   getUserDetails,
+  logout
 } = require("../controllers/restaurantAdminController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 
@@ -26,5 +27,8 @@ router.post("/password-reset", requestPasswordReset);
 
 // Route to verify OTP
 router.post("/verify-otp", verifyOTP);
+
+
+router.get("/logout", logout);
 
 module.exports = router;
