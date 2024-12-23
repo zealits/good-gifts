@@ -31,7 +31,7 @@
   backdrop-filter: blur(10px);
   /* -webkit-backdrop-filter: blur(10px); */
   width: 100%;
-  max-width: 300px;
+  max-width: 400px;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.25);
   color: #fff;
@@ -79,7 +79,7 @@
 }
 
 .input-group input {
-  width: 90%;
+  width: 100%;
   padding: 1rem;
   border: none;
   border-radius: 8px;
