@@ -1,0 +1,44 @@
+.app {
+    display: flex;
+ 
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 78px;
+    padding: 6px 14px;
+    z-index: 99;
+    transition: all 0.5s ease;
+  }
+  
+  .sidebar.open {
+    width: 250px;
+  }
+  
+  .content {
+    background-color: #D1F8D2;
+    flex-grow: 1; /* Take remaining space */
+    margin-left: 78px; /* Default width of the sidebar */
+    transition: all 0.5s ease;
+    height: 100vh; 
+  }
+  
+  /* Adjust margin-left when sidebar is open */
+  .sidebar.open ~ .content {
+    margin-left: 250px;
+  }
+  
+ 
+
+  
+
+  
+
+  .heading{
+    text-align: center;
+    padding: 20px;
+    color: #2C6B2F;
+}

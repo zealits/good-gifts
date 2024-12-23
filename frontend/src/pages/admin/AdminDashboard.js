@@ -1,17 +1,19 @@
 import React from "react";
-import { logout } from "../../services/Actions/authActions";
 import { useDispatch } from "react-redux";
+import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
-  const dispatch = useDispatch();
-  const handleLogout = () => {
-    dispatch(logout());
-  };
-
   return (
     <div>
-  Admin Dashboard
-      <button type="button" onClick={handleLogout} >logout</button>
+      <h1 className="heading">Dashboard</h1>
+      <div>
+      <p>Purpose: Provide an overview of the restaurant's gift card system.</p>
+        <h3>Total gift cards created</h3>
+        <h3>Total gift cards sold</h3>
+        <h3>Total revenue from gift cards</h3>
+        <h3>Active promotions</h3>
+        <h3>Graphs and statistics (e.g., daily/weekly/monthly sales trends)</h3>
+      </div>
     </div>
   );
 };

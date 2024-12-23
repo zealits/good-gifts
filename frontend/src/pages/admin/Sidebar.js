@@ -50,7 +50,7 @@ const Sidebar = () => {
       </div>
       <ul className="nav-list">
         <li>
-          <Link to="/" className={`linke ${isActive("/") ? "active" : ""}`}>
+          <Link to="/dashboard" className={`linke ${isActive("/") ? "active" : ""}`}>
             <i className="bx bx-grid-alt">
               <FaTachometerAlt className="icon " />
             </i>
