@@ -22,7 +22,6 @@ import {
   FaShoppingCart,
   FaUsers,
   FaChartLine,
-
 } from "react-icons/fa";
 
 const Sidebar = () => {
@@ -60,7 +59,7 @@ const Sidebar = () => {
           <span className="tooltip">Dashboard</span>
         </li>
         <li>
-          <Link to="/my-gigs" className={`linke ${isActive("/my-gigs") ? "active" : ""}`}>
+          <Link to="/giftcards" className={`linke ${isActive("/my-gigs") ? "active" : ""}`}>
             <i className="bx bx-user">
               <FaGift className="icon " />
             </i>
@@ -69,7 +68,7 @@ const Sidebar = () => {
           <span className="tooltip">GiftCards</span>
         </li>
         <li>
-          <Link to="/available-projects" className={`linke ${isActive("/available-projects") ? "active" : ""}`}>
+          <Link to="/orders" className={`linke ${isActive("/available-projects") ? "active" : ""}`}>
             <i className="bx bx-chat">
               <FaShoppingCart className="icon " />
             </i>
@@ -78,7 +77,7 @@ const Sidebar = () => {
           <span className="tooltip">Orders</span>
         </li>
         <li>
-          <Link to="/available-jobs" className={`linke ${isActive("/available-jobs") ? "active" : ""}`}>
+          <Link to="/customers" className={`linke ${isActive("/available-jobs") ? "active" : ""}`}>
             <i className="bx bx-chat">
               <FaUsers className="icon" />
             </i>
@@ -88,7 +87,7 @@ const Sidebar = () => {
         </li>
 
         <li>
-          <Link to="/profile" className={`linke ${isActive("/profile") ? "active" : ""}`}>
+          <Link to="/reports" className={`linke ${isActive("/profile") ? "active" : ""}`}>
             <i className="bx bx-pie-chart-alt-2">
               <FaChartLine className="icon " />
             </i>
@@ -97,7 +96,7 @@ const Sidebar = () => {
           <span className="tooltip">Reports</span>
         </li>
         <li>
-          <Link to="/earnings" className={`linke ${isActive("/earnings") ? "active" : ""}`}>
+          <Link to="/settings" className={`linke ${isActive("/earnings") ? "active" : ""}`}>
             <i className="bx bx-folder">
               <FaCog className="icon " />
             </i>

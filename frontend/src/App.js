@@ -7,9 +7,15 @@ import Register from "./components/Register";
 import AdminDashboard from "./pages/admin/AdminDashboard.js";
 import UserLanding from "./pages/user/UserLanding.js";
 import Sidebar from "./pages/admin/Sidebar.js";
+import GiftCards from "./pages/admin/GiftCards.js"; // GiftCards page
+import Orders from "./pages/admin/Orders.js"; // GiftCards page
+import Customers from "./pages/admin/Customers.js"; // GiftCards page
+import Reports from "./pages/admin/Reports.js"; // GiftCards page
+import Settings from "./pages/admin/Settings.js"; // GiftCards page
 
 function App() {
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(loadUser()); // Load user data on app load
   }, [dispatch]);
@@ -17,17 +23,16 @@ function App() {
   const { loading, user } = useSelector((state) => state.auth);
   const userDetails = user?.user; // Safely access user.user
 
-
   // Loading state handling
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  // Authenticated Route Wrapper
-
   return (
     <Router>
-    <Sidebar/>
+      {/* Conditionally render Sidebar only if the user is an admin */}
+      {userDetails?.role === "Admin" && <Sidebar />}
+
       <Routes>
         {/* Public routes */}
         <Route
@@ -36,14 +41,19 @@ function App() {
         />
         <Route path="/register" element={<Register />} />
 
-        {/* Protected routes */}
-        <Route
-          path="/dashboard"
-          element={
-            user ? userDetails?.role === "Admin" ? <AdminDashboard /> : <Navigate to="/" /> : <Navigate to="/login" />
-          }
-        />
+        {/* Conditional Admin Routes */}
+        {userDetails?.role === "Admin" && (
+          <>
+            <Route path="/dashboard" element={<AdminDashboard />} />
+            <Route path="/giftcards" element={<GiftCards />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/customers" element={<Customers />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/settings" element={<Settings />} />
+          </>
+        )}
 
+        {/* User landing page */}
         <Route path="/" element={<UserLanding />} />
 
         {/* Fallback route */}
