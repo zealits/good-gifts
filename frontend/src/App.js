@@ -12,6 +12,7 @@ import Orders from "./pages/admin/Orders.js"; // GiftCards page
 import Customers from "./pages/admin/Customers.js"; // GiftCards page
 import Reports from "./pages/admin/Reports.js"; // GiftCards page
 import Settings from "./pages/admin/Settings.js"; // GiftCards page
+import "./App.css";
 
 function App() {
   const dispatch = useDispatch();
@@ -29,37 +30,41 @@ function App() {
   }
 
   return (
-    <Router>
-      {/* Conditionally render Sidebar only if the user is an admin */}
-      {userDetails?.role === "Admin" && <Sidebar />}
+    <div className="app">
+      <Router>
+        {/* Conditionally render Sidebar only if the user is an admin */}
+        {userDetails?.role === "Admin" && <Sidebar />}
 
-      <Routes>
-        {/* Public routes */}
-        <Route
-          path="/login"
-          element={user ? <Navigate to={userDetails?.role === "Admin" ? "/dashboard" : "/"} /> : <Login />}
-        />
-        <Route path="/register" element={<Register />} />
+        <Routes>
+          {/* Public routes */}
+          <Route
+            path="/login"
+            element={user ? <Navigate to={userDetails?.role === "Admin" ? "/dashboard" : "/"} /> : <Login />}
+          />
+          <Route path="/register" element={<Register />} />
 
-        {/* Conditional Admin Routes */}
-        {userDetails?.role === "Admin" && (
-          <>
-            <Route path="/dashboard" element={<AdminDashboard />} />
-            <Route path="/giftcards" element={<GiftCards />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/customers" element={<Customers />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/settings" element={<Settings />} />
-          </>
-        )}
+          {/* Conditional Admin Routes */}
 
-        {/* User landing page */}
-        <Route path="/" element={<UserLanding />} />
 
-        {/* Fallback route */}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </Router>
+          {userDetails?.role === "Admin" && (
+            <>
+              <Route path="/dashboard" element={<div className="content"><AdminDashboard /></div>} />
+              <Route path="/giftcards" element={<div className="content"><GiftCards /></div>} />
+              <Route path="/orders" element={<div className="content"><Orders /></div>} />
+              <Route path="/customers" element={<div className="content"><Customers /></div>} />
+              <Route path="/reports" element={<div className="content"><Reports /></div>} />
+              <Route path="/settings" element={<div className="content"><Settings /></div>} />
+            </>
+          )}
+
+          {/* User landing page */}
+          <Route path="/" element={<UserLanding />} />
+
+          {/* Fallback route */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Router>
+    </div>
   );
 }
 
