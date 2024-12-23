@@ -9,41 +9,43 @@ import UserLanding from "./pages/user/UserLanding.js";
 
 function App() {
   const dispatch = useDispatch();
-  const { loading, user } = useSelector((state) => state.auth);
-
   useEffect(() => {
     dispatch(loadUser()); // Load user data on app load
   }, [dispatch]);
 
-  // Loading state handling (optional)
+  const { loading, user } = useSelector((state) => state.auth);
+  const userDetails = user?.user; // Safely access user.user
+
+
+  // Loading state handling
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  // console.log(user.role);
+  // Authenticated Route Wrapper
 
   return (
     <Router>
       <Routes>
-        {/* Redirect logged-in users away from login */}
+        {/* Public routes */}
         <Route
           path="/login"
-          element={user ? <Navigate to={user.role === "Admin" ? "/dashboard" : "/"} /> : <Login />}
+          element={user ? <Navigate to={userDetails?.role === "Admin" ? "/dashboard" : "/"} /> : <Login />}
         />
         <Route path="/register" element={<Register />} />
-        {/* Admin Dashboard: Only accessible by admin */}
+
+        {/* Protected routes */}
         <Route
           path="/dashboard"
           element={
-            user?.role === "Admin" ? (
-              <AdminDashboard />
-            ) : (
-              <Navigate to="/" /> // Redirect if not admin
-            )
+            user ? userDetails?.role === "Admin" ? <AdminDashboard /> : <Navigate to="/" /> : <Navigate to="/login" />
           }
         />
-        {/* Default landing page for all users */}
-        <Route path="*" element={<UserLanding />} />
+
+        <Route path="/" element={<UserLanding />} />
+
+        {/* Fallback route */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
   );

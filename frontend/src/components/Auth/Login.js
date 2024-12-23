@@ -24,8 +24,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser(email, password)); // Dispatch the login action
-    navigate("/dashboard");
+    dispatch(loginUser(email, password, navigate));
   };
 
   const handleCloseModal = () => {

@@ -5,6 +5,8 @@ import {
   LOAD_USER_REQUEST,
   LOAD_USER_SUCCESS,
   LOAD_USER_FAIL,
+  LOGOUT_SUCCESS,
+  LOGOUT_FAIL,
 } from "../Constants/authConstants.js";
 
 const initialState = {
@@ -39,7 +41,18 @@ const authReducer = (state = initialState, action) => {
         loading: false,
         error: action.payload,
       };
-
+    case LOGOUT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        user: null,
+      };
+    case LOGOUT_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
     default:
       return state;
   }

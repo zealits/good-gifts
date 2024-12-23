@@ -1,9 +1,19 @@
-import React from 'react'
+import React from "react";
+import { logout } from "../../services/Actions/authActions";
+import { useDispatch } from "react-redux";
 
 const AdminDashboard = () => {
-  return (
-    <div>AdminDashboard</div>
-  )
-}
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    dispatch(logout());
+  };
 
-export default AdminDashboard
+  return (
+    <div>
+  Admin Dashboard
+      <button type="button" onClick={handleLogout} >logout</button>
+    </div>
+  );
+};
+
+export default AdminDashboard;
