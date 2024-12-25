@@ -69,3 +69,113 @@ function App() {
 }
 
 export default App;
+
+
+
+/* 
+# Occasion-Based Tags
+Birthday Special
+Anniversary Delight
+Festive Cheers (e.g., Christmas, Diwali, Eid, New Year)
+Thank You
+Congratulations
+Get Well Soon
+Housewarming Gift
+# Experience-Based Tags
+Fine Dining
+Romantic Dinner
+Weekend Brunch
+Family Feast
+Chef's Special
+All-You-Can-Eat Buffet
+Relaxing Staycation
+Spa & Dine Combo
+# Theme-Based Tags
+Luxury Escape
+Gourmet Experience
+Wine & Dine
+Beachside Bliss
+Mountain Retreat
+City Lights Dining
+Exotic Flavors
+# Purpose-Based Tags
+Employee Appreciation
+Loyalty Rewards
+Client Gifting
+Corporate Thank You
+Just Because
+Date Night
+# Seasonal Tags
+Summer Treats
+Winter Warmth
+Spring Refresh
+Autumn Flavors
+# Recipient-Oriented Tags
+For Food Lovers
+For Him
+For Her
+For the Family
+For the Team
+For You
+
+
+ <h3>Create Gift Card: Form to create a new gift card (fields like amount, expiration date, discount, etc.).</h3>
+        <h3>Manage Gift Cards: View, edit, or delete existing gift cards.</h3>
+        <h3></h3>
+*/
+
+/* Card titles
+### **Occasion-Based Titles**
+- **Birthday Bliss Gift Card**
+- **Anniversary Celebration Card**
+- **Festive Feast Gift Card**
+- **Cheers to You! Gift Card**
+- **Special Day Delight**
+
+### **Experience-Based Titles**
+- **Fine Dining Experience**
+- **Romantic Rendezvous Card**
+- **Sunday Brunch Gift Card**
+- **Family Feast Card**
+- **Luxury Staycation Voucher**
+- **Gastronomic Adventure Gift Card**
+- **Pamper & Dine Combo**
+
+### **Theme-Based Titles**
+- **Taste of Elegance**
+- **Flavors of the World**
+- **A Night to Remember**
+- **Beachside Escape Gift Card**
+- **City Lights Dinner Card**
+- **Mountain Retreat Experience**
+
+### **Purpose-Based Titles**
+- **Employee Appreciation Card**
+- **Loyalty Rewards Voucher**
+- **Corporate Thank You Card**
+- **Just Because Treat**
+- **Date Night Gift Card**
+
+### **Seasonal Titles**
+- **Winter Warmers Gift Card**
+- **Summer Sizzlers Card**
+- **Spring Flavors Voucher**
+- **Autumn Harvest Gift Card**
+- **Holiday Cheers Gift Card**
+
+### **Fun and Creative Titles**
+- **Eat, Drink, and Be Merry Card**
+- **Table for Two Gift Card**
+- **Feast on Us!**
+- **Dine Your Heart Out**
+- **Savor the Moment**
+- **Bon Appétit Card**
+- **Ultimate Indulgence Card**
+
+### **Recipient-Oriented Titles**
+- **Gourmet Gift for Foodies**
+- **For Him: The Perfect Treat**
+- **For Her: A Special Delight**
+- **Family Dining Gift Card**
+- **A Gift for You**
+ */

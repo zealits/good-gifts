@@ -6,13 +6,19 @@ const giftCardSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    giftCardTag: {
+      type: String,
+    },
+    description: {
+      type: String,
+    },
     amount: {
-      type: Number,
-      required: true,
+      type: String,
+    
     },
     currency: {
       type: String,
-      required: true,
+  
     },
     status: {
       type: String,
@@ -21,7 +27,6 @@ const giftCardSchema = new mongoose.Schema(
     },
     expirationDate: {
       type: Date,
-      required: true,
     },
     // createdBy: {
     //   type: mongoose.Schema.Types.ObjectId,
