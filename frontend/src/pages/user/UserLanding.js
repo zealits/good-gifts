@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-// Import the external CSS file
 import "./UserLanding.css";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { setLocation } from "../../services/Reducers/locationSlice";
-import { useDispatch } from "react-redux";
+import { listGiftCards } from "../../services/Actions/giftCardActions";
+import { useDispatch, useSelector } from "react-redux";
 
 const UserLanding = () => {
   const [modalDetails, setModalDetails] = useState(null);
@@ -13,11 +13,58 @@ const UserLanding = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Update the location in Redux whenever the path changes
+    dispatch(listGiftCards());
+  }, [dispatch]);
+
+  const { giftCards, loading, error } = useSelector((state) => state.giftCardList);
+
+  // console.log(giftCards);
+
+  useEffect(() => {
     dispatch(setLocation(location.pathname));
   }, [location.pathname, dispatch]);
 
-  console.log(location);
+  // const giftCards = [
+  //   {
+  //     id: 1,
+  //     title: "Fine Dining Gift Card",
+  //     description: "Treat yourself or a loved one to an unforgettable culinary journey.",
+  //     price: "₹1000",
+  //     discount: "20% Off",
+  //     terms: "Valid for 6 months",
+  //     expiry: "2024-12-31",
+  //     restaurants: "Elite Restaurant, Gourmet Hub",
+  //     image: "https://th.bing.com/th?id=ORMS.3bd55cbac2414360e1c25019ffdd6a47&pid=Wdp&w=612&h=304&qlt=90&c=1&rs=1&dpr=1.375&p=0",
+  //     tag: "Fine Dining",
+  //     icon: "fas fa-utensils",
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Casual Dining Gift Card",
+  //     description: "Perfect for a casual outing with family and friends.",
+  //     price: "₹500",
+  //     discount: "10% Off",
+  //     terms: "Valid for 3 months",
+  //     expiry: "2024-09-30",
+  //     restaurants: "Family Diner, Food Fiesta",
+  //     image: "https://files.JPG?itok=FEqxtkYy",
+  //     tag: "Casual Dining",
+  //     icon: "fas fa-hamburger",
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "Gourmet Experience Gift Card",
+  //     description: "An exclusive treat for the gourmet food lover.",
+  //     price: "₹2000",
+  //     discount: "15% Off",
+  //     terms: "Valid for 1 year",
+  //     expiry: "2025-12-31",
+  //     restaurants: "Luxury Gourmet, Chef's Special",
+  //     image: "https://img.freepik.com/premium-1189127-2849.jpg?w=360",
+  //     tag: "Gourmet Experience",
+  //     icon: "fas fa-wine-glass",
+  //   },
+  // ];
 
   const handleBuyNowClick = (details) => {
     setModalDetails(details);
@@ -53,104 +100,42 @@ const UserLanding = () => {
       </div>
 
       <div className="container">
-        <div className="card">
-          <div className="card-image">
-            <img
-              src="https://d3gzwr12tvi9b5.cloudfront.net/wp-content/uploads/2022/09/Open-Air-Romantic-Dinner-At-5-Star-Hotel-In-Bangalore-001.jpg"
-              alt="Gift Card Image"
-            />
-            <div className="card-tag">
-              <i className="fas fa-utensils"></i> Fine Dining
+        {giftCards.map((card) => (
+          <div className="card" key={card.id}>
+            <div className="card-image">
+              <img
+                src={`data:image/jpeg;base64,${card.giftCardImg}`}
+                alt="Gift Card"
+           
+              />
+              {/* <img src={card.giftCardImg} alt="Gift Card Image" /> */}
+              <div className="card-tag">
+                <i className={card.icon}></i> {card.giftCardTag}
+              </div>
+            </div>
+            <div className="card-content">
+              <h2 className="card-title">{card.giftCardName}</h2>
+              <p className="card-description">{card.description}</p>
+              <div className="card-info">
+                <span className="card-price">{card.amount}</span>
+                <span className="card-discount">{card.discount}</span>
+              </div>
+              <button
+                className="card-button"
+                onClick={() =>
+                  handleBuyNowClick({
+                    title: card.title,
+                    terms: card.terms,
+                    expiry: card.expiry,
+                    restaurants: card.restaurants,
+                  })
+                }
+              >
+                Buy Now
+              </button>
             </div>
           </div>
-          <div className="card-content">
-            <h2 className="card-title">Fine Dining Gift Card</h2>
-            <p className="card-description">Treat yourself or a loved one to an unforgettable culinary journey.</p>
-            <div className="card-info">
-              <span className="card-price">₹1000</span>
-              <span className="card-discount">20% Off</span>
-            </div>
-            <button
-              className="card-button"
-              onClick={() =>
-                handleBuyNowClick({
-                  title: "Fine Dining Gift Card",
-                  terms: "Valid for 6 months",
-                  expiry: "2024-12-31",
-                  restaurants: "Elite Restaurant, Gourmet Hub",
-                })
-              }
-            >
-              Buy Now
-            </button>
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="card-image">
-            <img
-              src="https://files.tvo.org/files/s3fs-public/styles/full_width_1280/public/article-thumbnails/shared%20meal.JPG?itok=FEqxtkYy"
-              alt="Gift Card Image"
-            />
-            <div className="card-tag">
-              <i className="fas fa-hamburger"></i> Casual Dining
-            </div>
-          </div>
-          <div className="card-content">
-            <h2 className="card-title">Casual Dining Gift Card</h2>
-            <p className="card-description">Perfect for a casual outing with family and friends.</p>
-            <div className="card-info">
-              <span className="card-price">₹500</span>
-              <span className="card-discount">10% Off</span>
-            </div>
-            <button
-              className="card-button"
-              onClick={() =>
-                handleBuyNowClick({
-                  title: "Casual Dining Gift Card",
-                  terms: "Valid for 3 months",
-                  expiry: "2024-09-30",
-                  restaurants: "Family Diner, Food Fiesta",
-                })
-              }
-            >
-              Buy Now
-            </button>
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="card-image">
-            <img
-              src="https://img.freepik.com/premium-photo/chef-garnishing-gourmet-dish-with-fresh-herbs-fine-dining-restaurant_1189127-2849.jpg?w=360"
-              alt="Gift Card Image"
-            />
-            <div className="card-tag">
-              <i className="fas fa-wine-glass"></i> Gourmet Experience
-            </div>
-          </div>
-          <div className="card-content">
-            <h2 className="card-title">Gourmet Experience Gift Card</h2>
-            <p className="card-description">An exclusive treat for the gourmet food lover.</p>
-            <div className="card-info">
-              <span className="card-price">₹2000</span>
-              <span className="card-discount">15% Off</span>
-            </div>
-            <button
-              className="card-button"
-              onClick={() =>
-                handleBuyNowClick({
-                  title: "Gourmet Experience Gift Card",
-                  terms: "Valid for 1 year",
-                  expiry: "2025-12-31",
-                  restaurants: "Luxury Gourmet, Chef's Special",
-                })
-              }
-            >
-              Buy Now
-            </button>
-          </div>
-        </div>
+        ))}
       </div>
 
       {modalVisible && modalDetails && (

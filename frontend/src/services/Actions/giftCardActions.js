@@ -22,9 +22,10 @@ export const createGiftCard = (giftCardData) => async (dispatch) => {
     // Make a POST request to your backend
     const { data } = await axios.post("/api/v1/admin/create-giftcard", giftCardData, {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
+    console.log(data);
 
     dispatch({
       type: CREATE_GIFTCARD_SUCCESS,
