@@ -14,11 +14,12 @@ const giftCardSchema = new mongoose.Schema(
     },
     amount: {
       type: String,
-    
+    },
+    discount: {
+      type: String,
     },
     currency: {
       type: String,
-  
     },
     status: {
       type: String,

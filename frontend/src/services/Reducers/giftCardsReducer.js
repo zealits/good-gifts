@@ -1,78 +1,22 @@
-import { createSlice } from "@reduxjs/toolkit";
+// reducers/giftCardReducer.js
+import {
+  CREATE_GIFTCARD_REQUEST,
+  CREATE_GIFTCARD_SUCCESS,
+  CREATE_GIFTCARD_FAIL,
+  CREATE_GIFTCARD_RESET,
+} from "../Constants/giftCardConstants";
 
-const initialState = {
-  loading: false,
-  giftCards: [],
-  error: null,
+export const giftCardCreateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case CREATE_GIFTCARD_REQUEST:
+      return { loading: true };
+    case CREATE_GIFTCARD_SUCCESS:
+      return { loading: false, success: true, giftCard: action.payload };
+    case CREATE_GIFTCARD_FAIL:
+      return { loading: false, error: action.payload };
+    case CREATE_GIFTCARD_RESET:
+      return {};
+    default:
+      return state;
+  }
 };
-
-const giftCardSlice = createSlice({
-  name: "giftCard",
-  initialState,
-  reducers: {
-    // Fetch gift cards
-    listGiftCardsRequest(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    listGiftCardsSuccess(state, action) {
-      state.loading = false;
-      state.giftCards = action.payload;
-      state.error = null;
-    },
-    listGiftCardsFailure(state, action) {
-      state.loading = false;
-      state.giftCards = [];
-      state.error = action.payload;
-    },
-
-    // Create gift card
-    createGiftCardRequest(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    createGiftCardSuccess(state, action) {
-      state.loading = false;
-      state.giftCards.push(action.payload); // Add new gift card to the list
-      state.error = null;
-    },
-    createGiftCardFailure(state, action) {
-      state.loading = false;
-      state.error = action.payload;
-    },
-
-    // Update gift card
-    updateGiftCardRequest(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    updateGiftCardSuccess(state, action) {
-      state.loading = false;
-      const { id, updatedData } = action.payload; // Extract ID and updated data
-      state.giftCards = state.giftCards.map((card) =>
-        card.id === id ? { ...card, ...updatedData } : card
-      );
-      state.error = null;
-    },
-    updateGiftCardFailure(state, action) {
-      state.loading = false;
-      state.error = action.payload;
-    },
-  },
-});
-
-// Export actions
-export const {
-  listGiftCardsRequest,
-  listGiftCardsSuccess,
-  listGiftCardsFailure,
-  createGiftCardRequest,
-  createGiftCardSuccess,
-  createGiftCardFailure,
-  updateGiftCardRequest,
-  updateGiftCardSuccess,
-  updateGiftCardFailure,
-} = giftCardSlice.actions;
-
-// Export reducer
-export default giftCardSlice.reducer;

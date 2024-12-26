@@ -1,10 +1,23 @@
-import React, { useState, useEffect } from 'react';
- // Import the external CSS file
- import './UserLanding.css'
+import React, { useState, useEffect } from "react";
+// Import the external CSS file
+import "./UserLanding.css";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { setLocation } from "../../services/Reducers/locationSlice";
+import { useDispatch } from "react-redux";
 
 const UserLanding = () => {
   const [modalDetails, setModalDetails] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const location = useLocation();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Update the location in Redux whenever the path changes
+    dispatch(setLocation(location.pathname));
+  }, [location.pathname, dispatch]);
+
+  console.log(location);
 
   const handleBuyNowClick = (details) => {
     setModalDetails(details);
@@ -16,14 +29,14 @@ const UserLanding = () => {
   };
 
   const handleSavePersonalization = () => {
-    const name = document.getElementById('recipient-name').value;
-    const message = document.getElementById('personal-message').value;
-    const occasion = document.getElementById('occasion').value;
+    const name = document.getElementById("recipient-name").value;
+    const message = document.getElementById("personal-message").value;
+    const occasion = document.getElementById("occasion").value;
     alert(`Personalization Saved:\nRecipient: ${name}\nMessage: ${message}\nOccasion: ${occasion}`);
   };
 
   return (
-    <div className='body'>
+    <div className="body">
       <div className="header">
         <h1>🍽️ Restaurant Gift Cards</h1>
         <p>Choose a gift card to share unforgettable dining experiences!</p>
@@ -46,7 +59,9 @@ const UserLanding = () => {
               src="https://d3gzwr12tvi9b5.cloudfront.net/wp-content/uploads/2022/09/Open-Air-Romantic-Dinner-At-5-Star-Hotel-In-Bangalore-001.jpg"
               alt="Gift Card Image"
             />
-            <div className="card-tag"><i className="fas fa-utensils"></i> Fine Dining</div>
+            <div className="card-tag">
+              <i className="fas fa-utensils"></i> Fine Dining
+            </div>
           </div>
           <div className="card-content">
             <h2 className="card-title">Fine Dining Gift Card</h2>
@@ -59,10 +74,10 @@ const UserLanding = () => {
               className="card-button"
               onClick={() =>
                 handleBuyNowClick({
-                  title: 'Fine Dining Gift Card',
-                  terms: 'Valid for 6 months',
-                  expiry: '2024-12-31',
-                  restaurants: 'Elite Restaurant, Gourmet Hub',
+                  title: "Fine Dining Gift Card",
+                  terms: "Valid for 6 months",
+                  expiry: "2024-12-31",
+                  restaurants: "Elite Restaurant, Gourmet Hub",
                 })
               }
             >
@@ -77,7 +92,9 @@ const UserLanding = () => {
               src="https://files.tvo.org/files/s3fs-public/styles/full_width_1280/public/article-thumbnails/shared%20meal.JPG?itok=FEqxtkYy"
               alt="Gift Card Image"
             />
-            <div className="card-tag"><i className="fas fa-hamburger"></i> Casual Dining</div>
+            <div className="card-tag">
+              <i className="fas fa-hamburger"></i> Casual Dining
+            </div>
           </div>
           <div className="card-content">
             <h2 className="card-title">Casual Dining Gift Card</h2>
@@ -90,10 +107,10 @@ const UserLanding = () => {
               className="card-button"
               onClick={() =>
                 handleBuyNowClick({
-                  title: 'Casual Dining Gift Card',
-                  terms: 'Valid for 3 months',
-                  expiry: '2024-09-30',
-                  restaurants: 'Family Diner, Food Fiesta',
+                  title: "Casual Dining Gift Card",
+                  terms: "Valid for 3 months",
+                  expiry: "2024-09-30",
+                  restaurants: "Family Diner, Food Fiesta",
                 })
               }
             >
@@ -108,7 +125,9 @@ const UserLanding = () => {
               src="https://img.freepik.com/premium-photo/chef-garnishing-gourmet-dish-with-fresh-herbs-fine-dining-restaurant_1189127-2849.jpg?w=360"
               alt="Gift Card Image"
             />
-            <div className="card-tag"><i className="fas fa-wine-glass"></i> Gourmet Experience</div>
+            <div className="card-tag">
+              <i className="fas fa-wine-glass"></i> Gourmet Experience
+            </div>
           </div>
           <div className="card-content">
             <h2 className="card-title">Gourmet Experience Gift Card</h2>
@@ -121,10 +140,10 @@ const UserLanding = () => {
               className="card-button"
               onClick={() =>
                 handleBuyNowClick({
-                  title: 'Gourmet Experience Gift Card',
-                  terms: 'Valid for 1 year',
-                  expiry: '2025-12-31',
-                  restaurants: 'Luxury Gourmet, Chef\'s Special',
+                  title: "Gourmet Experience Gift Card",
+                  terms: "Valid for 1 year",
+                  expiry: "2025-12-31",
+                  restaurants: "Luxury Gourmet, Chef's Special",
                 })
               }
             >
@@ -137,12 +156,20 @@ const UserLanding = () => {
       {modalVisible && modalDetails && (
         <div id="modal" className="modal">
           <div className="modal-content">
-            <span className="close" onClick={handleCloseModal}>&times;</span>
+            <span className="close" onClick={handleCloseModal}>
+              &times;
+            </span>
             <h2 id="modal-title">{modalDetails.title}</h2>
             <ul id="modal-details">
-              <li><strong>Terms:</strong> <span id="modal-terms">{modalDetails.terms}</span></li>
-              <li><strong>Expiry Date:</strong> <span id="modal-expiry">{modalDetails.expiry}</span></li>
-              <li><strong>Applicable Restaurants:</strong> <span id="modal-restaurants">{modalDetails.restaurants}</span></li>
+              <li>
+                <strong>Terms:</strong> <span id="modal-terms">{modalDetails.terms}</span>
+              </li>
+              <li>
+                <strong>Expiry Date:</strong> <span id="modal-expiry">{modalDetails.expiry}</span>
+              </li>
+              <li>
+                <strong>Applicable Restaurants:</strong> <span id="modal-restaurants">{modalDetails.restaurants}</span>
+              </li>
             </ul>
             <div className="personalization">
               <h3>Personalize Your Gift Card</h3>
