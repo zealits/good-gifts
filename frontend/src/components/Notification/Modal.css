@@ -30,7 +30,7 @@
   }
   
   .modal-content button {
-    background-color: #1ABC9C;
+    background-color: green;
     color: white;
     padding: 0.6rem 1.2rem;
     border: none;
@@ -40,6 +40,6 @@
   }
   
   .modal-content button:hover {
-    background-color: #16A085;
+    background-color: darkgreen;
   }
   

@@ -8,7 +8,9 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #1ABC9C, #3498DB);
+  background: linear-gradient(135deg, #28A745, #5DD85C, #FFFFFF);
+
+
   z-index: -1;
   backdrop-filter: blur(160px);
 }
@@ -121,7 +123,7 @@
   padding: 1rem;
   border: none;
   border-radius: 8px;
-  background-color: #1ABC9C;
+  background-color: #28A745;
   color: white;
   font-size: 1rem;
   cursor: pointer;
@@ -129,7 +131,7 @@
 }
 
 .btn:hover {
-  background-color: #16A085;
+  background-color: #5DD85C;
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(26, 188, 156, 0.5);
 }
@@ -141,7 +143,7 @@
 }
 
 .register-link a {
-  color: #E74C3C;
+  color: #fa0404;
   font-weight: 500;
   text-decoration: none;
 }
