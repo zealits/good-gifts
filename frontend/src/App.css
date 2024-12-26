@@ -23,7 +23,7 @@
     flex-grow: 1; /* Take remaining space */
     margin-left: 78px; /* Default width of the sidebar */
     transition: all 0.5s ease;
-    height: 100vh; 
+    min-height: 100vh; 
   }
   
   /* Adjust margin-left when sidebar is open */
