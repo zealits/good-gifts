@@ -1,4 +1,8 @@
- 
+ // Constants for listing gift cards
+export const LIST_GIFTCARDS_REQUEST = 'LIST_GIFTCARDS_REQUEST';
+export const LIST_GIFTCARDS_SUCCESS = 'LIST_GIFTCARDS_SUCCESS';
+export const LIST_GIFTCARDS_FAIL = 'LIST_GIFTCARDS_FAIL';
+
 // constants/giftCardConstants.js
 export const CREATE_GIFTCARD_REQUEST = "CREATE_GIFTCARD_REQUEST";
 export const CREATE_GIFTCARD_SUCCESS = "CREATE_GIFTCARD_SUCCESS";
