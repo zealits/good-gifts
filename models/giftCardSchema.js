@@ -42,7 +42,9 @@ const giftCardSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-
+    giftCardImg: {
+      type: String,
+    },
     buyers: [
       {
         buyerName: {

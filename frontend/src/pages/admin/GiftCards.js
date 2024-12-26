@@ -13,16 +13,18 @@ const GiftCards = () => {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+  
+    dispatch(listGiftCards());
+  }, [dispatch]);
+
   // Accessing state from the Redux store
   const giftCardCreate = useSelector((state) => state.giftCardCreate);
   const giftCardUpdate = useSelector((state) => state.giftCardUpdate);
   const giftCardDelete = useSelector((state) => state.giftCardDelete);
   const { giftCards, loading, error } = useSelector((state) => state.giftCardList);
 
-  useEffect(() => {
-    // Fetch all gift cards when the component mounts
-    dispatch(listGiftCards());
-  }, [dispatch]);
+
 
   useEffect(() => {
     if (giftCardCreate.success || giftCardUpdate.success) {
@@ -116,6 +118,16 @@ const GiftCards = () => {
     setModalMessage("");
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData({ ...formData, image: file });
+  };
+
+  const viewImage = (buffer) => {
+    // Ensure buffer.data is an array of bytes
+    console.log(buffer);
+  };
+
   return (
     <div>
       <h1 className="heading">GiftCards</h1>
@@ -158,7 +170,14 @@ const GiftCards = () => {
 
                     <td>{new Date(card.expirationDate).toLocaleDateString("en-GB")}</td>
                     <td>
-                      <button className="cbtn view">View Image</button>
+                      <button className="cbtn view">
+                        {/* when click on this button image should be view it is in card.giftCardImg type:"Buffer" and data */}
+                        <img
+                          src={`data:image/jpeg;base64,${card.giftCardImg}`}
+                          alt="Gift Card"
+                          style={{ width: "100px", height: "auto" }}
+                        />
+                      </button>
                     </td>
                     <td>
                       <button className="cbtn edit" onClick={() => handleEdit(card)}>
@@ -260,6 +279,11 @@ const GiftCards = () => {
                   onChange={handleChange}
                   required
                 />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="image">Upload Image</label>
+                <input type="file" id="image" name="image" accept="image/*" onChange={handleFileChange} required />
               </div>
               <button type="submit" className="submit-btn">
                 {isEditing ? "Update" : "Submit"}

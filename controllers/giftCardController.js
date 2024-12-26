@@ -1,12 +1,28 @@
 const GiftCard = require("../models/giftCardSchema");
+const multer = require("multer");
+const path = require("path");
 
 // Create a new gift card
 const createGiftCard = async (req, res) => {
-  console.log(req.admin);
-  console.log("dfd : ",req.body);
+  console.log("dfdf :", req.body);
   try {
+    const { giftCardName, giftCardTag, description, amount, discount, expirationDate } = req.body;
+
     console.log(req.body);
-    const giftCard = new GiftCard(req.body);
+    const giftCardImg = req.file ? req.file.buffer.toString("base64") : null;
+    // Create new GiftCard object
+    const giftCard = new GiftCard({
+      giftCardName,
+      giftCardTag,
+      description,
+      amount,
+      discount,
+      expirationDate,
+      giftCardImg, // Store image as Buffer
+    });
+
+    console.log(giftCard);
+
     const savedGiftCard = await giftCard.save();
     res.status(201).json(savedGiftCard);
   } catch (error) {
