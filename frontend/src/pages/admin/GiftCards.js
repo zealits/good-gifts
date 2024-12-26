@@ -1,27 +1,51 @@
 import React, { useState, useEffect } from "react";
 import "./GiftCards.css";
 import { useDispatch, useSelector } from "react-redux";
-import { createGiftCard } from "../../services/Actions/giftCardActions";
+import { createGiftCard, listGiftCards, updateGiftCard, deleteGiftCard } from "../../services/Actions/giftCardActions";
 import Modal from "../../components/Notification/Modal";
 
 const GiftCards = () => {
   const [isMessageModalOpen, setMessageModalOpen] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingCardId, setEditingCardId] = useState(null);
 
   const dispatch = useDispatch();
 
-  const giftCardCreate = useSelector((state) => state.giftCard);
+  // Accessing state from the Redux store
+  const giftCardCreate = useSelector((state) => state.giftCardCreate);
+  const giftCardUpdate = useSelector((state) => state.giftCardUpdate);
+  const giftCardDelete = useSelector((state) => state.giftCardDelete);
+  const { giftCards, loading, error } = useSelector((state) => state.giftCardList);
 
   useEffect(() => {
-    if (giftCardCreate.success) {
-      setModalMessage("Gift card created successfully!");
+    // Fetch all gift cards when the component mounts
+    dispatch(listGiftCards());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (giftCardCreate.success || giftCardUpdate.success) {
+      setModalMessage(giftCardCreate.success ? "Gift card created successfully!" : "Gift card updated successfully!");
       setMessageModalOpen(true);
-    } else if (giftCardCreate.error) {
-      setModalMessage(`Error: ${giftCardCreate.error}`);
+      setModalOpen(false); // Close modal after successful action
+      dispatch(listGiftCards()); // Refresh the list
+    } else if (giftCardCreate.error || giftCardUpdate.error) {
+      setModalMessage(`Error: ${giftCardCreate.error || giftCardUpdate.error}`);
       setMessageModalOpen(true);
     }
-  }, [giftCardCreate]);
+  }, [giftCardCreate, giftCardUpdate, dispatch]);
+
+  useEffect(() => {
+    if (giftCardDelete.success) {
+      setModalMessage("Gift card deleted successfully!");
+      setMessageModalOpen(true);
+      dispatch(listGiftCards()); // Refresh the list
+    } else if (giftCardDelete.error) {
+      setModalMessage(`Error: ${giftCardDelete.error}`);
+      setMessageModalOpen(true);
+    }
+  }, [giftCardDelete, dispatch]);
 
   const [formData, setFormData] = useState({
     giftCardName: "",
@@ -42,14 +66,45 @@ const GiftCards = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createGiftCard(formData));
-
-    console.log("Form Data Submitted:", formData);
-    // Add logic to process or send the formData to an API
+    if (isEditing) {
+      dispatch(updateGiftCard(editingCardId, formData));
+    } else {
+      dispatch(createGiftCard(formData));
+    }
   };
 
   const handleOpenModal = () => {
+    setFormData({
+      giftCardName: "",
+      giftCardTag: "birthday",
+      description: "",
+      amount: "",
+      discount: "",
+      expirationDate: "",
+    });
+    setIsEditing(false);
+    setEditingCardId(null);
     setModalOpen(true);
+  };
+
+  const handleEdit = (card) => {
+    setFormData({
+      giftCardName: card.giftCardName,
+      giftCardTag: card.giftCardTag,
+      description: card.description,
+      amount: card.amount,
+      discount: card.discount,
+      expirationDate: card.expirationDate.split("T")[0],
+    });
+    setIsEditing(true);
+    setEditingCardId(card._id);
+    setModalOpen(true);
+  };
+
+  const handleDelete = (cardId) => {
+    if (window.confirm("Are you sure you want to delete this gift card?")) {
+      dispatch(deleteGiftCard(cardId));
+    }
   };
 
   const handleCloseModal = () => {
@@ -75,57 +130,63 @@ const GiftCards = () => {
           <table className="giftcards-table">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Name</th>
-                <th>Value</th>
+                <th>Price</th>
                 <th>Discount</th>
+                <th>Sale Price</th>
                 <th>Deadline</th>
                 <th>Image</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>Amazon Gift Card</td>
-                <td>$50</td>
-                <td>10%</td>
-                <td>2024-12-31</td>
-                <td>
-                  <button className="cbtn view">View Image</button>
-                </td>
-                <td>
-                  <button className="cbtn edit">Edit</button>
-                  <button className="cbtn delete">Delete</button>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Flipkart Gift Card</td>
-                <td>₹1000</td>
-                <td>15%</td>
-                <td>2025-01-15</td>
-                <td>
-                  <button className="cbtn view">View Image</button>
-                </td>
-                <td>
-                  <button className="cbtn edit">Edit</button>
-                  <button className="cbtn delete">Delete</button>
-                </td>
-              </tr>
+              {loading ? (
+                <tr>
+                  <td colSpan="7">Loading...</td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan="7">Error: {error}</td>
+                </tr>
+              ) : giftCards && giftCards.length > 0 ? (
+                giftCards.map((card) => (
+                  <tr key={card._id}>
+                    <td>{card.giftCardName}</td>
+                    <td>$ {card.amount}</td>
+                    <td>{card.discount}%</td>
+                    <td>$ {card.amount - (card.amount * card.discount) / 100}</td>
+
+                    <td>{new Date(card.expirationDate).toLocaleDateString("en-GB")}</td>
+                    <td>
+                      <button className="cbtn view">View Image</button>
+                    </td>
+                    <td>
+                      <button className="cbtn edit" onClick={() => handleEdit(card)}>
+                        Edit
+                      </button>
+                      <button className="cbtn delete" onClick={() => handleDelete(card._id)}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7">No gift cards found</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
 
-      {/* Modal */}
       {isModalOpen && (
         <div className="modal">
           <div className="creategiftcard-modal-content">
             <button className="close-btn" onClick={handleCloseModal}>
               &times;
             </button>
-            <h2>Create a Gift Card</h2>
+            <h2>{isEditing ? "Edit Gift Card" : "Create a Gift Card"}</h2>
             <form className="giftcard-form" onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="giftCardName">Gift Card Name</label>
@@ -201,7 +262,7 @@ const GiftCards = () => {
                 />
               </div>
               <button type="submit" className="submit-btn">
-                Submit
+                {isEditing ? "Update" : "Submit"}
               </button>
             </form>
           </div>

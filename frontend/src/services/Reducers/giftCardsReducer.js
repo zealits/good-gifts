@@ -1,4 +1,3 @@
-// reducers/giftCardReducer.js
 import {
   CREATE_GIFTCARD_REQUEST,
   CREATE_GIFTCARD_SUCCESS,
@@ -7,9 +6,15 @@ import {
   LIST_GIFTCARDS_REQUEST,
   LIST_GIFTCARDS_SUCCESS,
   LIST_GIFTCARDS_FAIL,
+  UPDATE_GIFTCARD_REQUEST,
+  UPDATE_GIFTCARD_SUCCESS,
+  UPDATE_GIFTCARD_FAIL,
+  DELETE_GIFTCARD_REQUEST,
+  DELETE_GIFTCARD_SUCCESS,
+  DELETE_GIFTCARD_FAIL,
 } from "../Constants/giftCardConstants";
 
-
+// Reducer for creating a gift card
 export const giftCardCreateReducer = (state = {}, action) => {
   switch (action.type) {
     case CREATE_GIFTCARD_REQUEST:
@@ -25,6 +30,7 @@ export const giftCardCreateReducer = (state = {}, action) => {
   }
 };
 
+// Initial state for listing, updating, and deleting gift cards
 const initialState = {
   loading: false,
   giftCards: [],
@@ -54,6 +60,34 @@ export const giftCardListReducer = (state = initialState, action) => {
         error: action.payload,
       };
 
+    default:
+      return state;
+  }
+};
+
+// Reducer for updating a gift card
+export const giftCardUpdateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case UPDATE_GIFTCARD_REQUEST:
+      return { loading: true };
+    case UPDATE_GIFTCARD_SUCCESS:
+      return { loading: false, success: true, updatedGiftCard: action.payload };
+    case UPDATE_GIFTCARD_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+// Reducer for deleting a gift card
+export const giftCardDeleteReducer = (state = {}, action) => {
+  switch (action.type) {
+    case DELETE_GIFTCARD_REQUEST:
+      return { loading: true };
+    case DELETE_GIFTCARD_SUCCESS:
+      return { loading: false, success: true };
+    case DELETE_GIFTCARD_FAIL:
+      return { loading: false, error: action.payload };
     default:
       return state;
   }
