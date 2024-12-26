@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { loadUser } from "./services/Actions/authActions.js";
 import Login from "./components/Auth/Login";
 import Register from "./components/Register";
@@ -21,6 +21,10 @@ function App() {
     dispatch(loadUser()); // Load user data on app load
   }, [dispatch]);
 
+  const { pathname } = useSelector((state) => state.location);
+
+  // const location = useLocation();
+
   const { loading, user } = useSelector((state) => state.auth);
   const userDetails = user?.user; // Safely access user.user
 
@@ -33,7 +37,7 @@ function App() {
     <div className="app">
       <Router>
         {/* Conditionally render Sidebar only if the user is an admin */}
-        {userDetails?.role === "Admin" && <Sidebar />}
+        {userDetails?.role === "Admin" && pathname !== "/" && <Sidebar />}
 
         <Routes>
           {/* Public routes */}
@@ -45,15 +49,56 @@ function App() {
 
           {/* Conditional Admin Routes */}
 
-
           {userDetails?.role === "Admin" && (
             <>
-              <Route path="/dashboard" element={<div className="content"><AdminDashboard /></div>} />
-              <Route path="/giftcards" element={<div className="content"><GiftCards /></div>} />
-              <Route path="/orders" element={<div className="content"><Orders /></div>} />
-              <Route path="/customers" element={<div className="content"><Customers /></div>} />
-              <Route path="/reports" element={<div className="content"><Reports /></div>} />
-              <Route path="/settings" element={<div className="content"><Settings /></div>} />
+              <Route
+                path="/dashboard"
+                element={
+                  <div className="content">
+                    <AdminDashboard />
+                  </div>
+                }
+              />
+              <Route
+                path="/giftcards"
+                element={
+                  <div className="content">
+                    <GiftCards />
+                  </div>
+                }
+              />
+              <Route
+                path="/orders"
+                element={
+                  <div className="content">
+                    <Orders />
+                  </div>
+                }
+              />
+              <Route
+                path="/customers"
+                element={
+                  <div className="content">
+                    <Customers />
+                  </div>
+                }
+              />
+              <Route
+                path="/reports"
+                element={
+                  <div className="content">
+                    <Reports />
+                  </div>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <div className="content">
+                    <Settings />
+                  </div>
+                }
+              />
             </>
           )}
 
@@ -69,8 +114,6 @@ function App() {
 }
 
 export default App;
-
-
 
 /* 
 # Occasion-Based Tags

@@ -3,6 +3,7 @@ const GiftCard = require("../models/giftCardSchema");
 // Create a new gift card
 const createGiftCard = async (req, res) => {
   console.log(req.admin);
+  console.log("dfd : ",req.body);
   try {
     console.log(req.body);
     const giftCard = new GiftCard(req.body);

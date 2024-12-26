@@ -1,8 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./GiftCards.css";
+import { useDispatch, useSelector } from "react-redux";
+import { createGiftCard } from "../../services/Actions/giftCardActions";
+import Modal from "../../components/Notification/Modal";
 
 const GiftCards = () => {
+  const [isMessageModalOpen, setMessageModalOpen] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
+  const dispatch = useDispatch();
+
+  const giftCardCreate = useSelector((state) => state.giftCard);
+
+  useEffect(() => {
+    if (giftCardCreate.success) {
+      setModalMessage("Gift card created successfully!");
+      setMessageModalOpen(true);
+    } else if (giftCardCreate.error) {
+      setModalMessage(`Error: ${giftCardCreate.error}`);
+      setMessageModalOpen(true);
+    }
+  }, [giftCardCreate]);
+
+  const [formData, setFormData] = useState({
+    giftCardName: "",
+    giftCardTag: "birthday", // Default value matches the first option
+    description: "",
+    amount: "",
+    discount: "",
+    expirationDate: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(createGiftCard(formData));
+
+    console.log("Form Data Submitted:", formData);
+    // Add logic to process or send the formData to an API
+  };
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -10,6 +54,11 @@ const GiftCards = () => {
 
   const handleCloseModal = () => {
     setModalOpen(false);
+  };
+
+  const closeModal = () => {
+    setMessageModalOpen(false);
+    setModalMessage("");
   };
 
   return (
@@ -77,14 +126,27 @@ const GiftCards = () => {
               &times;
             </button>
             <h2>Create a Gift Card</h2>
-            <form className="giftcard-form">
+            <form className="giftcard-form" onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="giftCardName">Gift Card Name</label>
-                <input type="text" id="giftCardName" name="giftCardName" required />
+                <input
+                  type="text"
+                  id="giftCardName"
+                  name="giftCardName"
+                  value={formData.giftCardName}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="giftCardTag">Gift Card Tag</label>
-                <select id="giftCardTag" name="giftCardTag" required>
+                <select
+                  id="giftCardTag"
+                  name="giftCardTag"
+                  value={formData.giftCardTag}
+                  onChange={handleChange}
+                  required
+                >
                   <option value="birthday">Birthday Bliss Gift Card</option>
                   <option value="anniversary">Anniversary Celebration Card</option>
                   <option value="festive">Festive Feast Gift Card</option>
@@ -94,19 +156,49 @@ const GiftCards = () => {
               </div>
               <div className="form-group">
                 <label htmlFor="description">Description</label>
-                <textarea id="description" name="description" rows="4" required></textarea>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows="4"
+                  value={formData.description}
+                  onChange={handleChange}
+                  required
+                ></textarea>
               </div>
               <div className="form-group">
                 <label htmlFor="amount">Amount</label>
-                <input type="number" id="amount" name="amount" required />
+                <input
+                  type="number"
+                  id="amount"
+                  name="amount"
+                  value={formData.amount}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="discount">Discount (%)</label>
-                <input type="number" id="discount" name="discount" min="0" max="100" required />
+                <input
+                  type="number"
+                  id="discount"
+                  name="discount"
+                  min="0"
+                  max="100"
+                  value={formData.discount}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="expirationDate">Expiration Date</label>
-                <input type="date" id="expirationDate" name="expirationDate" required />
+                <input
+                  type="date"
+                  id="expirationDate"
+                  name="expirationDate"
+                  value={formData.expirationDate}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <button type="submit" className="submit-btn">
                 Submit
@@ -115,6 +207,8 @@ const GiftCards = () => {
           </div>
         </div>
       )}
+
+      {isMessageModalOpen && <Modal message={modalMessage} onClose={closeModal} />}
     </div>
   );
 };
