@@ -1,4 +1,5 @@
 const GiftCard = require("../models/giftCardSchema");
+const ApiFeatures = require("../utils/apifeatures");
 const multer = require("multer");
 const path = require("path");
 
@@ -8,7 +9,7 @@ const createGiftCard = async (req, res) => {
   try {
     const { giftCardName, giftCardTag, description, amount, discount, expirationDate } = req.body;
 
-    console.log(req.body);
+    // console.log(req.body);
     const giftCardImg = req.file ? req.file.buffer.toString("base64") : null;
     // Create new GiftCard object
     const giftCard = new GiftCard({
@@ -21,11 +22,16 @@ const createGiftCard = async (req, res) => {
       giftCardImg, // Store image as Buffer
     });
 
-    console.log(giftCard);
+    // console.log(giftCard);
 
     const savedGiftCard = await giftCard.save();
+
+    // console.log(savedGiftCard);
+    console.log("there");
     res.status(201).json(savedGiftCard);
+    console.log("here");
   } catch (error) {
+    console.log("error : ", error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -44,11 +50,41 @@ const getGiftCardById = async (req, res) => {
   }
 };
 
+// exports.getAllVenues = catchAsyncErrors(async (req, res, next) => {
+//   const venuesCount = await Venue.countDocuments();
+//   const resultPerPage = 30;
+
+//   const apiFeatures = new ApiFeatures(Venue.find(), req.query).search().pagination(resultPerPage);
+//   // const venues = await Venue.find();
+//   const venues = await apiFeatures.query;
+
+//   res.status(200).json({
+//     success: true,
+//     venues,
+//     venuesCount,
+//     // resultPerPage,
+//   });
+// });
+
 // Get all gift cards
 const getAllGiftCards = async (req, res) => {
   try {
-    const giftCards = await GiftCard.find();
-    res.status(200).json(giftCards);
+    const giftCardCount = await GiftCard.countDocuments();
+    const resultPerPage = 30;
+
+    const apiFeatures = new ApiFeatures(GiftCard.find(), req.query).search().pagination(resultPerPage);
+
+    const giftCards = await apiFeatures.query;
+
+    res.status(200).json({
+      success: true,
+      giftCards,
+      giftCardCount,
+      // resultPerPage,
+    });
+
+    // const giftCards = await GiftCard.find();
+    // res.status(200).json(giftCards);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

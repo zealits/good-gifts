@@ -7,17 +7,23 @@ class ApiFeatures {
   search() {
     const keyword = this.queryStr.keyword
       ? {
-          $or: [           
+          $or: [
             {
-              name: {
+              giftCardName: {
                 $regex: this.queryStr.keyword,
-                $options: 'i',
+                $options: "i",
               },
             },
             {
               description: {
                 $regex: this.queryStr.keyword,
-                $options: 'i',
+                $options: "i",
+              },
+            },
+            {
+              giftCardTag: {
+                $regex: this.queryStr.keyword,
+                $options: "i",
               },
             },
           ],

@@ -49,25 +49,19 @@ const giftCardSchema = new mongoose.Schema(
       {
         buyerName: {
           type: String,
-          required: true,
         },
         buyerPhone: {
           type: String,
-          required: true,
         },
         buyerEmail: {
           type: String,
-          required: true,
         },
         paymentMethod: {
           type: String,
           // enum: ["PhonePe", "GPay", "PayPal", "CreditCard"],
-          required: true,
         },
         generatedCode: {
           type: String,
-          unique: true, // Code generated after payment
-          required: true,
         },
         purchaseDate: {
           type: Date,
