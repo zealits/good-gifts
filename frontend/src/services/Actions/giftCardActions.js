@@ -40,24 +40,49 @@ export const createGiftCard = (giftCardData) => async (dispatch) => {
 };
 
 // Action to fetch all gift cards
-export const listGiftCards = () => async (dispatch) => {
-  try {
-    dispatch({ type: LIST_GIFTCARDS_REQUEST }); // Dispatch request action
+export const listGiftCards =
+  (keyword = "", page = 1) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: LIST_GIFTCARDS_REQUEST }); // Dispatch request action
 
-    // Fetch gift cards from the backend
-    const { data } = await axios.get("/api/v1/admin/list"); // Adjust endpoint as needed
+      // Construct the URL with query parameters
+      const url = `/api/v1/admin/list?keyword=${keyword}&page=${page}`;
 
-    dispatch({
-      type: LIST_GIFTCARDS_SUCCESS,
-      payload: data, // Send the fetched gift cards as payload
-    });
-  } catch (error) {
-    dispatch({
-      type: LIST_GIFTCARDS_FAIL,
-      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
-    });
-  }
-};
+      // Fetch gift cards from the backend
+      const { data } = await axios.get(url);
+
+      console.log(data);
+      dispatch({
+        type: LIST_GIFTCARDS_SUCCESS,
+        payload: data.giftCards, // Send the fetched gift cards as payload
+      });
+    } catch (error) {
+      dispatch({
+        type: LIST_GIFTCARDS_FAIL,
+        payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+      });
+    }
+  };
+
+// export const listGiftCards = () => async (dispatch) => {
+//   try {
+//     dispatch({ type: LIST_GIFTCARDS_REQUEST }); // Dispatch request action
+
+//     // Fetch gift cards from the backend
+//     const { data } = await axios.get("/api/v1/admin/list"); // Adjust endpoint as needed
+
+//     dispatch({
+//       type: LIST_GIFTCARDS_SUCCESS,
+//       payload: data, // Send the fetched gift cards as payload
+//     });
+//   } catch (error) {
+//     dispatch({
+//       type: LIST_GIFTCARDS_FAIL,
+//       payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+//     });
+//   }
+// };
 
 // Update Gift Card Action
 export const updateGiftCard = (id, updatedData) => async (dispatch) => {
