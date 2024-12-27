@@ -69,6 +69,7 @@ const getGiftCardById = async (req, res) => {
 // Get all gift cards
 const getAllGiftCards = async (req, res) => {
   try {
+    console.log("trigger");
     const giftCardCount = await GiftCard.countDocuments();
     const resultPerPage = 30;
 
@@ -76,11 +77,9 @@ const getAllGiftCards = async (req, res) => {
 
     const giftCards = await apiFeatures.query;
 
+    console.log(giftCards);
     res.status(200).json({
-      success: true,
       giftCards,
-      giftCardCount,
-      // resultPerPage,
     });
 
     // const giftCards = await GiftCard.find();

@@ -8,13 +8,20 @@ import { useDispatch, useSelector } from "react-redux";
 const UserLanding = () => {
   const [modalDetails, setModalDetails] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const location = useLocation();
   const dispatch = useDispatch();
 
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value); // Update the state
+    console.log(value); // Log the user's input
+  };
+
   useEffect(() => {
-    dispatch(listGiftCards());
-  }, [dispatch]);
+    dispatch(listGiftCards(searchTerm)); // Pass searchTerm to the action
+  }, [dispatch, searchTerm]); // Add searchTerm as a dependency
 
   const { giftCards, loading, error } = useSelector((state) => state.giftCardList);
 
@@ -23,7 +30,6 @@ const UserLanding = () => {
   useEffect(() => {
     dispatch(setLocation(location.pathname));
   }, [location.pathname, dispatch]);
-
 
   const handleBuyNowClick = (details) => {
     setModalDetails(details);
@@ -49,7 +55,13 @@ const UserLanding = () => {
       </div>
 
       <div className="filters">
-        <input type="text" placeholder="Search Gift Cards..." className="search-bar" />
+        <input
+          type="text"
+          placeholder="Search Gift Cards..."
+          className="search-bar"
+          value={searchTerm}
+          onChange={handleInputChange} // Attach the onChange handler
+        />
         <select className="filter-dropdown">
           <option value="">Filter by Category</option>
           <option value="Fine Dining">Fine Dining</option>
@@ -59,7 +71,7 @@ const UserLanding = () => {
       </div>
 
       <div className="container">
-        {giftCards.map((card) => (
+        {giftCards?.map?.((card) => (
           <div className="card" key={card.id}>
             <div className="card-image">
               <img src={`data:image/jpeg;base64,${card.giftCardImg}`} alt="Gift Card" />
@@ -90,7 +102,7 @@ const UserLanding = () => {
               </button>
             </div>
           </div>
-        ))}
+        )) || <p>No gift cards available</p>}
       </div>
 
       {modalVisible && modalDetails && (
@@ -130,46 +142,44 @@ const UserLanding = () => {
 
 export default UserLanding;
 
-
-
-  // const giftCards = [
-  //   {
-  //     id: 1,
-  //     title: "Fine Dining Gift Card",
-  //     description: "Treat yourself or a loved one to an unforgettable culinary journey.",
-  //     price: "₹1000",
-  //     discount: "20% Off",
-  //     terms: "Valid for 6 months",
-  //     expiry: "2024-12-31",
-  //     restaurants: "Elite Restaurant, Gourmet Hub",
-  //     image: "https://th.bing.com/th?id=ORMS.3bd55cbac2414360e1c25019ffdd6a47&pid=Wdp&w=612&h=304&qlt=90&c=1&rs=1&dpr=1.375&p=0",
-  //     tag: "Fine Dining",
-  //     icon: "fas fa-utensils",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Casual Dining Gift Card",
-  //     description: "Perfect for a casual outing with family and friends.",
-  //     price: "₹500",
-  //     discount: "10% Off",
-  //     terms: "Valid for 3 months",
-  //     expiry: "2024-09-30",
-  //     restaurants: "Family Diner, Food Fiesta",
-  //     image: "https://files.JPG?itok=FEqxtkYy",
-  //     tag: "Casual Dining",
-  //     icon: "fas fa-hamburger",
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "Gourmet Experience Gift Card",
-  //     description: "An exclusive treat for the gourmet food lover.",
-  //     price: "₹2000",
-  //     discount: "15% Off",
-  //     terms: "Valid for 1 year",
-  //     expiry: "2025-12-31",
-  //     restaurants: "Luxury Gourmet, Chef's Special",
-  //     image: "https://img.freepik.com/premium-1189127-2849.jpg?w=360",
-  //     tag: "Gourmet Experience",
-  //     icon: "fas fa-wine-glass",
-  //   },
-  // ];
+// const giftCards = [
+//   {
+//     id: 1,
+//     title: "Fine Dining Gift Card",
+//     description: "Treat yourself or a loved one to an unforgettable culinary journey.",
+//     price: "₹1000",
+//     discount: "20% Off",
+//     terms: "Valid for 6 months",
+//     expiry: "2024-12-31",
+//     restaurants: "Elite Restaurant, Gourmet Hub",
+//     image: "https://th.bing.com/th?id=ORMS.3bd55cbac2414360e1c25019ffdd6a47&pid=Wdp&w=612&h=304&qlt=90&c=1&rs=1&dpr=1.375&p=0",
+//     tag: "Fine Dining",
+//     icon: "fas fa-utensils",
+//   },
+//   {
+//     id: 2,
+//     title: "Casual Dining Gift Card",
+//     description: "Perfect for a casual outing with family and friends.",
+//     price: "₹500",
+//     discount: "10% Off",
+//     terms: "Valid for 3 months",
+//     expiry: "2024-09-30",
+//     restaurants: "Family Diner, Food Fiesta",
+//     image: "https://files.JPG?itok=FEqxtkYy",
+//     tag: "Casual Dining",
+//     icon: "fas fa-hamburger",
+//   },
+//   {
+//     id: 3,
+//     title: "Gourmet Experience Gift Card",
+//     description: "An exclusive treat for the gourmet food lover.",
+//     price: "₹2000",
+//     discount: "15% Off",
+//     terms: "Valid for 1 year",
+//     expiry: "2025-12-31",
+//     restaurants: "Luxury Gourmet, Chef's Special",
+//     image: "https://img.freepik.com/premium-1189127-2849.jpg?w=360",
+//     tag: "Gourmet Experience",
+//     icon: "fas fa-wine-glass",
+//   },
+// ];

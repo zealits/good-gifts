@@ -10,21 +10,19 @@ const GiftCards = () => {
   const [modalMessage, setModalMessage] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editingCardId, setEditingCardId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-  
-    dispatch(listGiftCards());
-  }, [dispatch]);
+    dispatch(listGiftCards(searchTerm)); // Pass searchTerm to the action
+  }, [dispatch, searchTerm]); // Add searchTerm as a dependency
 
   // Accessing state from the Redux store
   const giftCardCreate = useSelector((state) => state.giftCardCreate);
   const giftCardUpdate = useSelector((state) => state.giftCardUpdate);
   const giftCardDelete = useSelector((state) => state.giftCardDelete);
   const { giftCards, loading, error } = useSelector((state) => state.giftCardList);
-
-
 
   useEffect(() => {
     if (giftCardCreate.success || giftCardUpdate.success) {
@@ -128,6 +126,12 @@ const GiftCards = () => {
     console.log(buffer);
   };
 
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value); // Update the state
+    console.log(value); // Log the user's input
+  };
+
   return (
     <div>
       <h1 className="heading">GiftCards</h1>
@@ -137,7 +141,14 @@ const GiftCards = () => {
             <button className="create-giftcard cbtn green" onClick={handleOpenModal}>
               Create Giftcard
             </button>
-            <input type="text" id="search-giftcards" className="search-box" placeholder="Search Giftcards" />
+            <input
+              type="text"
+              id="search-giftcards"
+              className="search-box"
+              placeholder="Search Giftcards"
+              value={searchTerm}
+              onChange={handleInputChange}
+            />
           </div>
           <table className="giftcards-table">
             <thead>
@@ -280,7 +291,7 @@ const GiftCards = () => {
                   required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label htmlFor="image">Upload Image</label>
                 <input type="file" id="image" name="image" accept="image/*" onChange={handleFileChange} required />
