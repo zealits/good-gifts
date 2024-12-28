@@ -4,10 +4,13 @@ import { useLocation } from "react-router-dom";
 import { setLocation } from "../../services/Reducers/locationSlice";
 import { listGiftCards } from "../../services/Actions/giftCardActions";
 import { useDispatch, useSelector } from "react-redux";
+import GiftCardForm from "./GiftCardForm";
 
 const UserLanding = () => {
   const [modalDetails, setModalDetails] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [showGiftCardForm, setShowGiftCardForm] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   const location = useLocation();
@@ -36,10 +39,19 @@ const UserLanding = () => {
     setModalVisible(true);
   };
 
-  const handleCloseModal = () => {
-    setModalVisible(false);
+  const handleClick = (giftCardName, amount, discount) => {
+    setSelectedCard({ giftCardName, amount, discount });
+    setShowGiftCardForm(true);
   };
 
+  const handleCloseModal = () => {
+    setShowGiftCardForm(false);
+  };
+
+  const closePopup = () => {
+    setShowGiftCardForm(false);
+  };
+  
   const handleSavePersonalization = () => {
     const name = document.getElementById("recipient-name").value;
     const message = document.getElementById("personal-message").value;
@@ -62,12 +74,12 @@ const UserLanding = () => {
           value={searchTerm}
           onChange={handleInputChange} // Attach the onChange handler
         />
-        <select className="filter-dropdown">
+        {/* <select className="filter-dropdown">
           <option value="">Filter by Category</option>
           <option value="Fine Dining">Fine Dining</option>
           <option value="Casual Dining">Casual Dining</option>
           <option value="Gourmet">Gourmet</option>
-        </select>
+        </select> */}
       </div>
 
       <div className="container">
@@ -89,14 +101,7 @@ const UserLanding = () => {
               </div>
               <button
                 className="card-button"
-                onClick={() =>
-                  handleBuyNowClick({
-                    title: card.giftCardName,
-                    terms: card.terms,
-                    expiry: card.expirationDate,
-                    restaurants: card.restaurants,
-                  })
-                }
+                onClick={() => handleClick(card.giftCardName, card.amount, card.discount)}
               >
                 Buy Now
               </button>
@@ -104,6 +109,10 @@ const UserLanding = () => {
           </div>
         )) || <p>No gift cards available</p>}
       </div>
+
+      {showGiftCardForm && ( <GiftCardForm {...selectedCard} onClose={closePopup}  />
+       
+      )}
 
       {modalVisible && modalDetails && (
         <div id="modal" className="modal">
