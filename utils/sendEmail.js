@@ -1,11 +1,8 @@
-const nodeMailer = require("nodemailer");
-
-
-//SMTP is simple mail transfer protocol jeczaonjrnquodrg owhkaiirlpagvpfo jifmtmhfmfnsvpgr  lfvicuglworgwugn 
+const nodemailer = require("nodemailer");
 
 const sendEmail = async (options) => {
-  const transporter = nodeMailer.createTransport({
-
+  // Create transporter
+  const transporter = nodemailer.createTransport({
     host: process.env.SMPT_HOST,
     port: process.env.SMPT_PORT,
     service: process.env.SMPT_SERVICE,
@@ -13,17 +10,26 @@ const sendEmail = async (options) => {
       user: process.env.SMPT_MAIL,
       pass: process.env.SMPT_PASSWORD,
     },
+    tls: {
+      rejectUnauthorized: false // Only for development
+    }
   });
 
+  // Create email content with embedded image using cid
   const mailOptions = {
     from: process.env.SMPT_MAIL,
     to: options.email,
     subject: options.subject,
-    text: options.message,
     html: options.html,
+    attachments: options.attachments // For QR code attachment
   };
 
-  await transporter.sendMail(mailOptions);
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw error;
+  }
 };
 
 module.exports = sendEmail;

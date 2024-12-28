@@ -49,7 +49,7 @@ const UserLanding = () => {
   const closePopup = () => {
     setShowGiftCardForm(false);
   };
-  
+
   const handleSavePersonalization = () => {
     const name = document.getElementById("recipient-name").value;
     const message = document.getElementById("personal-message").value;
@@ -108,9 +108,7 @@ const UserLanding = () => {
         )) || <p>No gift cards available</p>}
       </div>
 
-      {showGiftCardForm && ( <GiftCardForm {...selectedCard} onClose={closePopup}  />
-       
-      )}
+      {showGiftCardForm && <GiftCardForm {...selectedCard} onClose={closePopup} />}
 
       {modalVisible && modalDetails && (
         <div id="modal" className="modal">
