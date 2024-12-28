@@ -37,8 +37,8 @@ const UserLanding = () => {
     setModalVisible(true);
   };
 
-  const handleClick = (giftCardName, amount, discount) => {
-    setSelectedCard({ giftCardName, amount, discount });
+  const handleClick = (giftCardName, amount, discount, id) => {
+    setSelectedCard({ giftCardName, amount, discount, id });
     setShowGiftCardForm(true);
   };
 
@@ -99,7 +99,7 @@ const UserLanding = () => {
               </div>
               <button
                 className="card-button"
-                onClick={() => handleClick(card.giftCardName, card.amount, card.discount)}
+                onClick={() => handleClick(card.giftCardName, card.amount, card.discount, card._id)}
               >
                 Buy Now
               </button>

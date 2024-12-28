@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import "./GiftCardForm.css"; // Import CSS for styling
+import { purchaseGiftCard } from "../../services/Actions/giftCardActions";
+import { useDispatch } from "react-redux";
 
-const GiftCardForm = ({ giftCardName, amount, discount, onClose }) => {
+const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [purchaseType, setPurchaseType] = useState(null);
 
+  const dispatch = useDispatch();
+
+  console.log(id);
+
   const [formData, setFormData] = useState({
-    
+    id: id,
     purchaseType: "", // 'self' or 'gift'
     selfInfo: {
       name: "",
@@ -138,12 +144,10 @@ const GiftCardForm = ({ giftCardName, amount, discount, onClose }) => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(giftCardName,amount,discount);
-    console.log(formData);
-    if (validateStep(currentStep)) {
-      alert("Thank you for your purchase! Your gift card will be sent via email shortly.");
-    }
+    e.preventDefault(); // Prevent the default form submission behavior
+
+    // Dispatch the purchaseGiftCard action with formData
+    dispatch(purchaseGiftCard(formData));
   };
 
   React.useEffect(() => {

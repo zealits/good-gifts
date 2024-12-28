@@ -13,6 +13,9 @@ import {
   DELETE_GIFTCARD_REQUEST,
   DELETE_GIFTCARD_SUCCESS,
   DELETE_GIFTCARD_FAIL,
+  PURCHASE_GIFTCARD_REQUEST,
+  PURCHASE_GIFTCARD_SUCCESS,
+  PURCHASE_GIFTCARD_FAIL,
 } from "../Constants/giftCardConstants";
 
 export const createGiftCard = (giftCardData) => async (dispatch) => {
@@ -124,6 +127,25 @@ export const deleteGiftCard = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: DELETE_GIFTCARD_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
+
+export const purchaseGiftCard = (buyerData) => async (dispatch) => {
+  try {
+    dispatch({ type: PURCHASE_GIFTCARD_REQUEST }); // Dispatch request action
+
+    // Make a POST request to purchase the gift card
+    const { data } = await axios.put("/api/v1/admin/purchase", buyerData);
+
+    dispatch({
+      type: PURCHASE_GIFTCARD_SUCCESS,
+      payload: data, // Send the response data as payload
+    });
+  } catch (error) {
+    dispatch({
+      type: PURCHASE_GIFTCARD_FAIL,
       payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     });
   }
