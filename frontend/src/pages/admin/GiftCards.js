@@ -12,6 +12,11 @@ const GiftCards = () => {
   const [editingCardId, setEditingCardId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  //Add state to manage the delete confirmation modal.
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+const [cardToDelete, setCardToDelete] = useState(null);
+
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -101,11 +106,28 @@ const GiftCards = () => {
     setModalOpen(true);
   };
 
+/*
   const handleDelete = (cardId) => {
     if (window.confirm("Are you sure you want to delete this gift card?")) {
       dispatch(deleteGiftCard(cardId));
     }
   };
+*/
+
+const handleDelete = (cardId) => {
+  setCardToDelete(cardId); // Store the card ID for deletion
+  setDeleteModalOpen(true); // Open the delete confirmation modal
+};
+
+
+const confirmDelete = () => {
+  if (cardToDelete) {
+    dispatch(deleteGiftCard(cardToDelete));
+    setDeleteModalOpen(false); // Close the modal after confirming
+    setCardToDelete(null); // Clear the stored card ID
+  }
+};
+
 
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -303,6 +325,18 @@ const GiftCards = () => {
           </div>
         </div>
       )}
+
+{isDeleteModalOpen && (
+  <Modal
+    message="Are you sure you want to delete this gift card?"
+    onClose={() => setDeleteModalOpen(false)}
+    showCloseButton={false} // Do not show the Close button
+  >
+    <button onClick={confirmDelete}>Yes</button>
+    <button onClick={() => setDeleteModalOpen(false)}>No</button>
+  </Modal>
+)}
+
 
       {isMessageModalOpen && <Modal message={modalMessage} onClose={closeModal} />}
     </div>
