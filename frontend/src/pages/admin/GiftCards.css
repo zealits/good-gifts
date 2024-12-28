@@ -291,3 +291,215 @@
 .submit-btn:hover {
     background-color: darkgreen;
 }
+
+/* Icon Styling */
+.react-icons {
+    font-size: 1.3em; /* Adjust the icon size */
+    margin-right: 10px; /* Space between icon and text */
+}
+
+/* Stunning Green-Themed Scrollbar Styling */
+.giftcard-form select::-webkit-scrollbar {
+    width: 10px;
+   
+   /* Wider scrollbar for a bold look */
+}
+
+.giftcard-form select::-webkit-scrollbar-track {
+    background: linear-gradient(180deg, #004d00, #007d00, #094b09); /* Rich green gradient for track */
+    border-radius: 10px; /* Smooth edges */
+    box-shadow: inset 0 0 6px rgba(0, 128, 0, 0.5); /* Inner green glow for depth */
+    border: 2px solid #007d00;
+    /* Dark green border */
+}
+
+.giftcard-form select::-webkit-scrollbar-thumb {
+   background-color: #3aab3a;
+    border-radius: 20px; /* Smooth, rounded thumb edges */
+    /* border: 2px solid #004d00; Dark green border */
+    /* box-shadow: 0 4px 12px rgba(0, 255, 0, 0.6); Radiant green glow */
+    animation: thumb-glow 4s infinite ease-in-out; /* Subtle glowing animation */
+}
+
+.giftcard-form select::-webkit-scrollbar-thumb:hover {
+   /* Earthy and bold forest greens */
+
+    /* Bright green gradient on hover */
+    box-shadow: 0 5px 15px rgba(0, 255, 0, 0.8); /* Enhanced glow effect on hover */
+    transform: scale(1.1); /* Slight enlargement for interactivity */
+}
+
+.giftcard-form select::-webkit-scrollbar-corner {
+    background: #006600; /* Deep green corner for consistency */
+}
+
+/* Smooth pulsing glow for the scrollbar thumb */
+@keyframes thumb-glow {
+    0%, 100% {
+        box-shadow: 0 4px 12px rgba(0, 255, 0, 0.6);
+    }
+    50% {
+        box-shadow: 0 4px 18px rgba(0, 255, 0, 1);
+    }
+}
+
+/* General styling for broader compatibility */
+.giftcard-form select {
+    scrollbar-color: #33cc33 #004d00; /* Green shades for thumb and track */
+    scrollbar-width: thin; /* Sleek, thin scrollbar */
+}
+
+
+/* Icon colors for each option */
+.option-birthday i {
+    color: #ff6347;
+}
+
+.option-anniversary i {
+    color: #ff1493;
+}
+
+.option-festive i {
+    color: #32cd32;
+}
+
+.option-thank-you i {
+    color: #f0e68c;
+}
+
+.option-congratulations i {
+    color: #f39c12;
+}
+
+.option-get-well-soon i {
+    color: #ffb6c1;
+}
+
+.option-housewarming i {
+    color: #8b4513;
+}
+
+.option-fine-dining i {
+    color: #d2691e;
+}
+
+.option-romantic-dinner i {
+    color: #e91e63;
+}
+
+.option-weekend-brunch i {
+    color: #ff9800;
+}
+
+.option-family-feast i {
+    color: #ff5722;
+}
+
+.option-chefs-special i {
+    color: #4caf50;
+}
+
+.option-buffet i {
+    color: #9c27b0;
+}
+
+.option-staycation i {
+    color: #00bcd4;
+}
+
+.option-spa-combo i {
+    color: #f44336;
+}
+
+.option-luxury-escape i {
+    color: #3f51b5;
+}
+
+.option-gourmet-experience i {
+    color: #673ab7;
+}
+
+.option-wine-dine i {
+    color: #9c27b0;
+}
+
+.option-beachside-bliss i {
+    color: #ffeb3b;
+}
+
+.option-mountain-retreat i {
+    color: #607d8b;
+}
+
+.option-city-lights i {
+    color: #9e9e9e;
+}
+
+.option-exotic-flavors i {
+    color: #8bc34a;
+}
+
+.option-employee-appreciation i {
+    color: #2196f3;
+}
+
+.option-loyalty-rewards i {
+    color: #f44336;
+}
+
+.option-client-gifting i {
+    color: #00bcd4;
+}
+
+.option-corporate-thank-you i {
+    color: #9c27b0;
+}
+
+.option-just-because i {
+    color: #e91e63;
+}
+
+.option-date-night i {
+    color: #ff5722;
+}
+
+.option-summer-treats i {
+    color: #ff9800;
+}
+
+.option-winter-warmth i {
+    color: #03a9f4;
+}
+
+.option-spring-refresh i {
+    color: #4caf50;
+}
+
+.option-autumn-flavors i {
+    color: #ff5722;
+}
+
+.option-for-food-lovers i {
+    color: #795548;
+}
+
+.option-for-him i {
+    color: #2196f3;
+}
+
+.option-for-her i {
+    color: #f06292;
+}
+
+.option-for-family i {
+    color: #8bc34a;
+}
+
+.option-for-team i {
+    color: #03a9f4;
+}
+
+.option-for-you i {
+    color: #f44336;
+}
+

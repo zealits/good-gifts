@@ -13,6 +13,8 @@ import Customers from "./pages/admin/Customers.js"; // GiftCards page
 import Reports from "./pages/admin/Reports.js"; // GiftCards page
 import Settings from "./pages/admin/Settings.js"; // GiftCards page
 import "./App.css";
+// import 'font-awesome/css/font-awesome.min.css';
+
 
 function App() {
   const dispatch = useDispatch();

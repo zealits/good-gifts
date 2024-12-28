@@ -25,8 +25,6 @@ const UserLanding = () => {
 
   const { giftCards, loading, error } = useSelector((state) => state.giftCardList);
 
-  // console.log(giftCards);
-
   useEffect(() => {
     dispatch(setLocation(location.pathname));
   }, [location.pathname, dispatch]);
@@ -75,7 +73,7 @@ const UserLanding = () => {
           <div className="card" key={card.id}>
             <div className="card-image">
               <img src={`data:image/jpeg;base64,${card.giftCardImg}`} alt="Gift Card" />
-              {/* <img src={card.giftCardImg} alt="Gift Card Image" /> */}
+              {/* Display the gift card tag and icon */}
               <div className="card-tag">
                 <i className={card.icon}></i> {card.giftCardTag}
               </div>
@@ -141,45 +139,3 @@ const UserLanding = () => {
 };
 
 export default UserLanding;
-
-// const giftCards = [
-//   {
-//     id: 1,
-//     title: "Fine Dining Gift Card",
-//     description: "Treat yourself or a loved one to an unforgettable culinary journey.",
-//     price: "₹1000",
-//     discount: "20% Off",
-//     terms: "Valid for 6 months",
-//     expiry: "2024-12-31",
-//     restaurants: "Elite Restaurant, Gourmet Hub",
-//     image: "https://th.bing.com/th?id=ORMS.3bd55cbac2414360e1c25019ffdd6a47&pid=Wdp&w=612&h=304&qlt=90&c=1&rs=1&dpr=1.375&p=0",
-//     tag: "Fine Dining",
-//     icon: "fas fa-utensils",
-//   },
-//   {
-//     id: 2,
-//     title: "Casual Dining Gift Card",
-//     description: "Perfect for a casual outing with family and friends.",
-//     price: "₹500",
-//     discount: "10% Off",
-//     terms: "Valid for 3 months",
-//     expiry: "2024-09-30",
-//     restaurants: "Family Diner, Food Fiesta",
-//     image: "https://files.JPG?itok=FEqxtkYy",
-//     tag: "Casual Dining",
-//     icon: "fas fa-hamburger",
-//   },
-//   {
-//     id: 3,
-//     title: "Gourmet Experience Gift Card",
-//     description: "An exclusive treat for the gourmet food lover.",
-//     price: "₹2000",
-//     discount: "15% Off",
-//     terms: "Valid for 1 year",
-//     expiry: "2025-12-31",
-//     restaurants: "Luxury Gourmet, Chef's Special",
-//     image: "https://img.freepik.com/premium-1189127-2849.jpg?w=360",
-//     tag: "Gourmet Experience",
-//     icon: "fas fa-wine-glass",
-//   },
-// ];
