@@ -13,11 +13,8 @@ const {
 
 const router = express.Router();
 
-const storage = multer.memoryStorage();  // Store image in memory
+const storage = multer.memoryStorage(); // Store image in memory
 const upload = multer({ storage: storage });
-
-
-
 
 // Routes to manage and interact with gift cards
 router.post("/create-giftcard", upload.single("image"), createGiftCard); // Handle file uploads
