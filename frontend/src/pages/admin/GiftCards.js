@@ -7,9 +7,11 @@ import Modal from "../../components/Notification/Modal";
 const GiftCards = () => {
   const [isMessageModalOpen, setMessageModalOpen] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isImageModalOpen, setImageModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editingCardId, setEditingCardId] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   //Add state to manage the delete confirmation modal.
@@ -143,10 +145,20 @@ const confirmDelete = () => {
     setFormData({ ...formData, image: file });
   };
 
-  const viewImage = (buffer) => {
-    // Ensure buffer.data is an array of bytes
-    console.log(buffer);
+  const viewImage = (imageData) => {
+    if (!imageData) {
+      alert("No image data found.");
+      return;
+    }
+    setSelectedImage(`data:image/jpeg;base64,${imageData}`);
+    setImageModalOpen(true);
   };
+  
+  const closeImageModal = () => {
+    setImageModalOpen(false);
+    setSelectedImage(null);
+  };
+  
 
   const handleInputChange = (event) => {
     const value = event.target.value;
@@ -203,15 +215,13 @@ const confirmDelete = () => {
 
                     <td>{new Date(card.expirationDate).toLocaleDateString("en-GB")}</td>
                     <td>
-                      <button className="cbtn view">
-                        {/* when click on this button image should be view it is in card.giftCardImg type:"Buffer" and data */}
-                        <img
-                          src={`data:image/jpeg;base64,${card.giftCardImg}`}
-                          alt="Gift Card"
-                          style={{ width: "100px", height: "auto" }}
-                        />
-                      </button>
-                    </td>
+                    <button
+                      className="cbtn view"
+                      onClick={() => viewImage(card.giftCardImg)}
+                    >
+                      View Image
+                    </button>
+                  </td>
                     <td>
                       <button className="cbtn edit" onClick={() => handleEdit(card)}>
                         Edit
@@ -325,6 +335,23 @@ const confirmDelete = () => {
           </div>
         </div>
       )}
+      {isImageModalOpen && (
+  <div className="image-modal-overlay">
+    <div className="image-modal">
+      <button className="image-modal-close" onClick={closeImageModal}>
+        &times;
+      </button>
+      <img
+        src={selectedImage}
+        alt="Gift Card"
+        className="image-modal-content"
+      />
+    </div>
+  </div>
+)}
+
+
+      
 
 {isDeleteModalOpen && (
   <Modal
@@ -339,7 +366,11 @@ const confirmDelete = () => {
 
 
       {isMessageModalOpen && <Modal message={modalMessage} onClose={closeModal} />}
+
+      
     </div>
+
+    
   );
 };
 
