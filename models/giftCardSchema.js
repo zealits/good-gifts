@@ -23,17 +23,12 @@ const giftCardSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["active", "redeemed", "expired"], // Enum to control valid statuses
+      enum: ["active", "redeemed", "expired"],
       default: "active",
     },
     expirationDate: {
       type: Date,
     },
-    // createdBy: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "restaurantAdminSchema", // Links to the admin who created the gift card
-    //   required: true,
-    // },
     createdAt: {
       type: Date,
       default: Date.now,
@@ -99,11 +94,28 @@ const giftCardSchema = new mongoose.Schema(
           type: Date,
           default: Date.now,
         },
+        // New fields for QR code
+        qrCode: {
+          uniqueCode: {
+            type: String,
+          },
+          dataUrl: {
+            type: String,
+          },
+          createdAt: {
+            type: Date,
+            default: Date.now,
+          },
+          isUsed: {
+            type: Boolean,
+            default: false,
+          },
+        },
       },
     ],
   },
   {
-    timestamps: true, // Adds createdAt and updatedAt fields automatically
+    timestamps: true,
   }
 );
 
