@@ -154,7 +154,7 @@ const redeemGiftCard = async (req, res) => {
     }
 
     const buyer = giftCard.buyers.find((buyer) => buyer.qrCode === qrCode);
-    if (!buyer || buyer.status === "redeemed") {
+    if (!buyer || buyer.status === "+") {
       return res.status(400).json({ message: "QR code already redeemed or invalid" });
     }
 

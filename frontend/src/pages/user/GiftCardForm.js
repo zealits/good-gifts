@@ -4,10 +4,58 @@ import "./GiftCardForm.css"; // Import CSS for styling
 const GiftCardForm = ({ giftCardName, amount, discount, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [purchaseType, setPurchaseType] = useState(null);
+
+  const [formData, setFormData] = useState({
+    
+    purchaseType: "", // 'self' or 'gift'
+    selfInfo: {
+      name: "",
+      email: "",
+      phone: "",
+    },
+    giftInfo: {
+      recipientName: "",
+      recipientEmail: "",
+      message: "",
+      senderName: "",
+      senderEmail: "",
+      senderPhone: "",
+    },
+    paymentDetails: {
+      cardNumber: "",
+      expiryDate: "",
+      cvv: "",
+    },
+  });
+
   const totalSteps = 3;
 
   const handlePurchaseTypeSelect = (type) => {
     setPurchaseType(type);
+    setFormData((prev) => ({
+      ...prev,
+      purchaseType: type,
+    }));
+  };
+
+  const handleInputChange = (section, field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value,
+      },
+    }));
+  };
+
+  const handlePaymentChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      paymentDetails: {
+        ...prev.paymentDetails,
+        [field]: value,
+      },
+    }));
   };
 
   const validateStep = (step) => {
@@ -91,6 +139,8 @@ const GiftCardForm = ({ giftCardName, amount, discount, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(giftCardName,amount,discount);
+    console.log(formData);
     if (validateStep(currentStep)) {
       alert("Thank you for your purchase! Your gift card will be sent via email shortly.");
     }
@@ -102,10 +152,9 @@ const GiftCardForm = ({ giftCardName, amount, discount, onClose }) => {
 
   return (
     <div className="giftCardContainer">
-      
       <span className="close" onClick={onClose}>
-              &times;
-    </span>
+        &times;
+      </span>
       <h1>{giftCardName}</h1>
 
       <div className="progress-bar">
@@ -154,50 +203,106 @@ const GiftCardForm = ({ giftCardName, amount, discount, onClose }) => {
                 <h2>Your Information</h2>
                 <div className="form-group">
                   <label htmlFor="self-name">Your Name</label>
-                  <input type="text" id="self-name" required />
+                  {/* <input type="text" id="self-name" required /> */}
+                  <input
+                    type="text"
+                    id="self-name"
+                    required
+                    value={formData.selfInfo.name}
+                    onChange={(e) => handleInputChange("selfInfo", "name", e.target.value)}
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="self-email">Your Email</label>
-                  <input type="email" id="self-email" required />
+                  {/* <input type="email" id="self-email" required /> */}
+                  <input
+                    type="email"
+                    id="self-email"
+                    required
+                    value={formData.selfInfo.email}
+                    onChange={(e) => handleInputChange("selfInfo", "email", e.target.value)}
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="self-phone">Your Phone Number</label>
-                  <input type="tel" id="self-phone" required />
+                  <input
+                    type="tel"
+                    id="self-phone"
+                    required
+                    value={formData.selfInfo.phone}
+                    onChange={(e) => handleInputChange("selfInfo", "phone", e.target.value)}
+                  />
                 </div>
               </div>
             )}
 
             {purchaseType === "gift" && (
               <div id="gift-purchase-form">
-              <div> 
-                <h2>Recipient Information</h2>
-                <div className="form-group">
-                  <label htmlFor="recipient-name">Recipient's Name</label>
-                  <input type="text" id="recipient-name" required />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="recipient-email">Recipient's Email</label>
-                  <input type="email" id="recipient-email" required />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="message">Personal Message</label>
-                  <textarea id="message" rows="4" placeholder="Add a personal message for the recipient"></textarea>
-                </div>
+                <div>
+                  <h2>Recipient Information</h2>
+                  <div className="form-group">
+                    <label htmlFor="recipient-name">Recipient's Name</label>
+                    <input
+                      type="text"
+                      id="recipient-name"
+                      required
+                      value={formData.giftInfo.recipientName}
+                      onChange={(e) => handleInputChange("giftInfo", "recipientName", e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="recipient-email">Recipient's Email</label>
+                    <input
+                      type="email"
+                      id="recipient-email"
+                      required
+                      value={formData.giftInfo.recipientEmail}
+                      onChange={(e) => handleInputChange("giftInfo", "recipientEmail", e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="message">Personal Message</label>
+                    <textarea
+                      id="message"
+                      rows="4"
+                      placeholder="Add a personal message for the recipient"
+                      value={formData.giftInfo.message}
+                      onChange={(e) => handleInputChange("giftInfo", "message", e.target.value)}
+                    />
+                  </div>
                 </div>
                 <div>
-                <h2>Your Information</h2>
-                <div className="form-group">
-                  <label htmlFor="sender-name">Your Name</label>
-                  <input type="text" id="sender-name" required />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="sender-email">Your Email</label>
-                  <input type="email" id="sender-email" required />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="sender-phone">Your Phone Number</label>
-                  <input type="tel" id="sender-phone" required />
-                </div>
+                  <h2>Your Information</h2>
+                  <div className="form-group">
+                    <label htmlFor="sender-name">Your Name</label>
+                    <input
+                      type="text"
+                      id="sender-name"
+                      value={formData.giftInfo.senderName}
+                      onChange={(e) => handleInputChange("giftInfo", "senderName", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="sender-email">Your Email</label>
+                    <input
+                      type="email"
+                      id="sender-email"
+                      value={formData.giftInfo.senderEmail}
+                      onChange={(e) => handleInputChange("giftInfo", "senderEmail", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="sender-phone">Your Phone Number</label>
+                    <input
+                      type="tel"
+                      id="sender-phone"
+                      value={formData.giftInfo.senderPhone}
+                      onChange={(e) => handleInputChange("giftInfo", "senderPhone", e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -224,15 +329,32 @@ const GiftCardForm = ({ giftCardName, amount, discount, onClose }) => {
             <div className="payment-details">
               <div className="form-group">
                 <label htmlFor="card-number">Card Number</label>
-                <input type="text" id="card-number" placeholder="1234 5678 9012 3456" />
+                <input
+                  type="text"
+                  id="card-number"
+                  placeholder="1234 5678 9012 3456"
+                  value={formData.paymentDetails.cardNumber}
+                  onChange={(e) => handlePaymentChange("cardNumber", e.target.value)}
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="expiry-date">Expiry Date</label>
-                <input type="month" id="expiry-date" />
+                <input
+                  type="month"
+                  id="expiry-date"
+                  value={formData.paymentDetails.expiryDate}
+                  onChange={(e) => handlePaymentChange("expiryDate", e.target.value)}
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="cvv">CVV</label>
-                <input type="text" id="cvv" placeholder="123" />
+                <input
+                  type="text"
+                  id="cvv"
+                  placeholder="123"
+                  value={formData.paymentDetails.cvv}
+                  onChange={(e) => handlePaymentChange("cvv", e.target.value)}
+                />
               </div>
             </div>
           </div>
