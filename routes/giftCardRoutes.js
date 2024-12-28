@@ -24,7 +24,7 @@ router.put("/update/:id", updateGiftCard);
 router.delete("/remove/:id", deleteGiftCard);
 
 // Buyer Routes
-router.post("/:id/buyers", addBuyer);
+router.put("/purchase", addBuyer);
 router.post("/redeem", redeemGiftCard);
 
 module.exports = router;

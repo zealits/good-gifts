@@ -12,6 +12,9 @@ import {
   DELETE_GIFTCARD_REQUEST,
   DELETE_GIFTCARD_SUCCESS,
   DELETE_GIFTCARD_FAIL,
+  PURCHASE_GIFTCARD_REQUEST,
+  PURCHASE_GIFTCARD_SUCCESS,
+  PURCHASE_GIFTCARD_FAIL,
 } from "../Constants/giftCardConstants";
 
 // Reducer for creating a gift card
@@ -90,5 +93,21 @@ export const giftCardDeleteReducer = (state = {}, action) => {
       return { loading: false, error: action.payload };
     default:
       return state;
+  }
+};
+
+export const purchaseGiftCardReducer = (state = {}, action) => {
+  switch (action.type) {
+    case PURCHASE_GIFTCARD_REQUEST:
+      return { loading: true }; // Set loading state
+
+    case PURCHASE_GIFTCARD_SUCCESS:
+      return { loading: false, success: true, giftCard: action.payload }; // Success state with gift card data
+
+    case PURCHASE_GIFTCARD_FAIL:
+      return { loading: false, error: action.payload }; // Failure state with error message
+
+    default:
+      return state; // Return unchanged state for other actions
   }
 };

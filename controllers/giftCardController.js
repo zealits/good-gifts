@@ -69,7 +69,6 @@ const getGiftCardById = async (req, res) => {
 // Get all gift cards
 const getAllGiftCards = async (req, res) => {
   try {
-    console.log("trigger");
     const giftCardCount = await GiftCard.countDocuments();
     const resultPerPage = 30;
 
@@ -77,7 +76,6 @@ const getAllGiftCards = async (req, res) => {
 
     const giftCards = await apiFeatures.query;
 
-    console.log(giftCards);
     res.status(200).json({
       giftCards,
     });
@@ -118,30 +116,55 @@ const deleteGiftCard = async (req, res) => {
 };
 
 // Add a buyer to a gift card
+
 const addBuyer = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { buyerName, buyerPhone, buyerEmail, paymentMethod, generatedCode } = req.body;
+    const { id, purchaseType, selfInfo, giftInfo, paymentDetails } = req.body;
 
-    const giftCard = await GiftCard.findById(id);
-    if (!giftCard) {
-      return res.status(404).json({ message: "Gift card not found" });
+    // Validate required fields based on purchase type
+    if (!id || !purchaseType || !paymentDetails) {
+      return res.status(400).json({ error: "Missing required fields" });
     }
 
-    giftCard.buyers.push({
-      buyerName,
-      buyerPhone,
-      buyerEmail,
-      paymentMethod,
-      generatedCode,
+    if (purchaseType === "self" && (!selfInfo?.name || !selfInfo?.email || !selfInfo?.phone)) {
+      return res.status(400).json({ error: "Missing required fields for self purchase" });
+    }
+
+    if (
+      purchaseType === "gift" &&
+      (!giftInfo?.recipientName || !giftInfo?.recipientEmail || !giftInfo?.senderName || !giftInfo?.senderEmail)
+    ) {
+      return res.status(400).json({ error: "Missing required fields for gift purchase" });
+    }
+
+    // Find the gift card document
+    const giftCardDetails = await GiftCard.findById(id);
+
+    if (!giftCardDetails) {
+      return res.status(404).json({ error: "Gift card not found" });
+    }
+
+    // Add the buyer details to the buyers array
+    giftCardDetails.buyers.push({
+      purchaseType,
+      selfInfo: purchaseType === "self" ? selfInfo : undefined,
+      giftInfo: purchaseType === "gift" ? giftInfo : undefined,
+      paymentDetails,
+      purchaseDate: new Date(), // Automatically set purchase date
     });
 
-    const updatedGiftCard = await giftCard.save();
-    res.status(201).json(updatedGiftCard);
+    // Save the updated gift card document
+    await giftCardDetails.save();
+    console.log("dfd")
+
+    res.status(200).json({ message: "Buyer added successfully", giftCard: giftCardDetails });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while adding the buyer" });
   }
 };
+
+module.exports = { addBuyer };
 
 // Redeem a gift card using QR code
 const redeemGiftCard = async (req, res) => {

@@ -47,33 +47,57 @@ const giftCardSchema = new mongoose.Schema(
     },
     buyers: [
       {
-        buyerName: {
+        purchaseType: {
           type: String,
         },
-        buyerPhone: {
-          type: String,
+        selfInfo: {
+          name: {
+            type: String,
+          },
+          email: {
+            type: String,
+          },
+          phone: {
+            type: String,
+          },
         },
-        buyerEmail: {
-          type: String,
+        giftInfo: {
+          recipientName: {
+            type: String,
+          },
+          recipientEmail: {
+            type: String,
+          },
+          message: {
+            type: String,
+          },
+          senderName: {
+            type: String,
+          },
+          senderEmail: {
+            type: String,
+          },
+          senderPhone: {
+            type: String,
+          },
         },
-        paymentMethod: {
-          type: String,
-          // enum: ["PhonePe", "GPay", "PayPal", "CreditCard"],
-        },
-        generatedCode: {
-          type: String,
+        paymentDetails: {
+          cardNumber: {
+            type: String,
+            required: true,
+          },
+          expiryDate: {
+            type: String,
+            required: true,
+          },
+          cvv: {
+            type: String,
+            required: true,
+          },
         },
         purchaseDate: {
           type: Date,
           default: Date.now,
-        },
-        status: {
-          type: String,
-          enum: ["active", "redeemed", "expired"], // Buyer's card status
-          default: "active",
-        },
-        usedDate: {
-          type: Date, // Populated when redeemed
         },
       },
     ],
