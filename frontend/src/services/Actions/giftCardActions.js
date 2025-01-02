@@ -1,4 +1,3 @@
-// actions/giftCardActions.js
 import axios from "axios";
 import {
   CREATE_GIFTCARD_REQUEST,
@@ -16,8 +15,10 @@ import {
   PURCHASE_GIFTCARD_REQUEST,
   PURCHASE_GIFTCARD_SUCCESS,
   PURCHASE_GIFTCARD_FAIL,
+
 } from "../Constants/giftCardConstants";
 
+// Create Gift Card Action
 export const createGiftCard = (giftCardData) => async (dispatch) => {
   try {
     dispatch({ type: CREATE_GIFTCARD_REQUEST });
@@ -43,49 +44,28 @@ export const createGiftCard = (giftCardData) => async (dispatch) => {
 };
 
 // Action to fetch all gift cards
-export const listGiftCards =
-  (keyword = "", page = 1) =>
-  async (dispatch) => {
-    try {
-      dispatch({ type: LIST_GIFTCARDS_REQUEST }); // Dispatch request action
+export const listGiftCards = (keyword = "", page = 1) => async (dispatch) => {
+  try {
+    dispatch({ type: LIST_GIFTCARDS_REQUEST }); // Dispatch request action
 
-      // Construct the URL with query parameters
-      const url = `/api/v1/admin/list?keyword=${keyword}&page=${page}`;
+    // Construct the URL with query parameters
+    const url = `/api/v1/admin/list?keyword=${keyword}&page=${page}`;
 
-      // Fetch gift cards from the backend
-      const { data } = await axios.get(url);
+    // Fetch gift cards from the backend
+    const { data } = await axios.get(url);
 
-      console.log(data);
-      dispatch({
-        type: LIST_GIFTCARDS_SUCCESS,
-        payload: data.giftCards, // Send the fetched gift cards as payload
-      });
-    } catch (error) {
-      dispatch({
-        type: LIST_GIFTCARDS_FAIL,
-        payload: error.response && error.response.data.message ? error.response.data.message : error.message,
-      });
-    }
-  };
-
-// export const listGiftCards = () => async (dispatch) => {
-//   try {
-//     dispatch({ type: LIST_GIFTCARDS_REQUEST }); // Dispatch request action
-
-//     // Fetch gift cards from the backend
-//     const { data } = await axios.get("/api/v1/admin/list"); // Adjust endpoint as needed
-
-//     dispatch({
-//       type: LIST_GIFTCARDS_SUCCESS,
-//       payload: data, // Send the fetched gift cards as payload
-//     });
-//   } catch (error) {
-//     dispatch({
-//       type: LIST_GIFTCARDS_FAIL,
-//       payload: error.response && error.response.data.message ? error.response.data.message : error.message,
-//     });
-//   }
-// };
+    console.log(data);
+    dispatch({
+      type: LIST_GIFTCARDS_SUCCESS,
+      payload: data.giftCards, // Send the fetched gift cards as payload
+    });
+  } catch (error) {
+    dispatch({
+      type: LIST_GIFTCARDS_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
 
 // Update Gift Card Action
 export const updateGiftCard = (id, updatedData) => async (dispatch) => {
@@ -132,6 +112,7 @@ export const deleteGiftCard = (id) => async (dispatch) => {
   }
 };
 
+// Purchase Gift Card Action
 export const purchaseGiftCard = (buyerData) => async (dispatch) => {
   try {
     dispatch({ type: PURCHASE_GIFTCARD_REQUEST }); // Dispatch request action
@@ -150,3 +131,5 @@ export const purchaseGiftCard = (buyerData) => async (dispatch) => {
     });
   }
 };
+
+

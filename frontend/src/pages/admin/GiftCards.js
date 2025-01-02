@@ -574,6 +574,7 @@ const confirmDelete = () => {
               src={selectedImage}
               alt="Gift Card"
               className="image-modal-content"
+              loading="lazy"
             />
           </div>
         </div>

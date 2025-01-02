@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const giftCardSchema = new mongoose.Schema(
   {
@@ -13,7 +13,7 @@ const giftCardSchema = new mongoose.Schema(
       type: String,
     },
     amount: {
-      type: String,
+      type: Number, // Changed to Number for proper revenue calculation
     },
     discount: {
       type: String,
@@ -23,8 +23,8 @@ const giftCardSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["active", "redeemed", "expired"],
-      default: "active",
+      enum: ['active', 'redeemed', 'expired', 'sold'], // Added 'sold' status
+      default: 'active',
     },
     expirationDate: {
       type: Date,
@@ -94,7 +94,6 @@ const giftCardSchema = new mongoose.Schema(
           type: Date,
           default: Date.now,
         },
-        // New fields for QR code
         qrCode: {
           uniqueCode: {
             type: String,
@@ -119,4 +118,4 @@ const giftCardSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("GiftCard", giftCardSchema);
+module.exports = mongoose.model('GiftCard', giftCardSchema);

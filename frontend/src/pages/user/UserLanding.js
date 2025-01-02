@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./UserLanding.css";
 import { useLocation } from "react-router-dom";
+
 import { setLocation } from "../../services/Reducers/locationSlice";
 import { listGiftCards } from "../../services/Actions/giftCardActions";
 import { useDispatch, useSelector } from "react-redux";
 import GiftCardForm from "./GiftCardForm";
+
 
 const UserLanding = () => {
   const [modalDetails, setModalDetails] = useState(null);
@@ -84,7 +86,7 @@ const UserLanding = () => {
         {giftCards?.map?.((card) => (
           <div className="card" key={card.id}>
             <div className="card-image">
-              <img src={`data:image/jpeg;base64,${card.giftCardImg}`} alt="Gift Card" />
+              <img src={`data:image/jpeg;base64,${card.giftCardImg}`} alt="Gift Card" loading="lazy"/>
               {/* Display the gift card tag and icon */}
               <div className="card-tag">
                 <i className={card.icon}></i> {card.giftCardTag}

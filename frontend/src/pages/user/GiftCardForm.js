@@ -6,6 +6,9 @@ import { useDispatch } from "react-redux";
 const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [purchaseType, setPurchaseType] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const[showForm,setShowForm] = useState(true);
+ // Initially set modal to closed
 
   const dispatch = useDispatch();
 
@@ -139,6 +142,9 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
     }
   };
 
+
+  
+
   const handlePrev = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
@@ -148,6 +154,9 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
 
     // Dispatch the purchaseGiftCard action with formData
     dispatch(purchaseGiftCard(formData));
+    setShowModal(true);
+    setShowForm(false);
+   
   };
 
   React.useEffect(() => {
@@ -382,6 +391,17 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
           )}
         </div>
       </form>
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Purchase Completed Successfully!</h2>
+            <p>Thank you for your purchase. A confirmation email has been sent to your inbox.</p>
+            <button className="modal-close-btn" onClick={() => setShowModal(false)}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
