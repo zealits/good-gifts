@@ -8,15 +8,17 @@ import {
 import authReducer from "./services/Reducers/authReducer.js";
 import locationReducer from "./services/Reducers/locationSlice";
 
+
 // Configure the store
 const store = configureStore({
   reducer: {
-    giftCardCreate: giftCardCreateReducer, // Rename to indicate its purpose more clearly
-    giftCardList: giftCardListReducer, // Added giftCardListReducer here
+    giftCardCreate: giftCardCreateReducer,
+    giftCardList: giftCardListReducer,
     giftCardUpdate: giftCardUpdateReducer,
     giftCardDelete: giftCardDeleteReducer,
     auth: authReducer,
     location: locationReducer,
+    
   },
 });
 

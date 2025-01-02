@@ -1,3 +1,5 @@
+// giftCardReducers.js
+
 import {
   CREATE_GIFTCARD_REQUEST,
   CREATE_GIFTCARD_SUCCESS,
@@ -15,7 +17,15 @@ import {
   PURCHASE_GIFTCARD_REQUEST,
   PURCHASE_GIFTCARD_SUCCESS,
   PURCHASE_GIFTCARD_FAIL,
+ 
 } from "../Constants/giftCardConstants";
+
+// Initial state for listing, updating, and deleting gift cards
+const initialState = {
+  loading: false,
+  giftCards: [],
+  error: null,
+};
 
 // Reducer for creating a gift card
 export const giftCardCreateReducer = (state = {}, action) => {
@@ -31,13 +41,6 @@ export const giftCardCreateReducer = (state = {}, action) => {
     default:
       return state;
   }
-};
-
-// Initial state for listing, updating, and deleting gift cards
-const initialState = {
-  loading: false,
-  giftCards: [],
-  error: null,
 };
 
 // Reducer for listing gift cards
@@ -68,6 +71,9 @@ export const giftCardListReducer = (state = initialState, action) => {
   }
 };
 
+
+
+
 // Reducer for updating a gift card
 export const giftCardUpdateReducer = (state = {}, action) => {
   switch (action.type) {
@@ -96,18 +102,16 @@ export const giftCardDeleteReducer = (state = {}, action) => {
   }
 };
 
+// Reducer for purchasing a gift card
 export const purchaseGiftCardReducer = (state = {}, action) => {
   switch (action.type) {
     case PURCHASE_GIFTCARD_REQUEST:
-      return { loading: true }; // Set loading state
-
+      return { loading: true };
     case PURCHASE_GIFTCARD_SUCCESS:
-      return { loading: false, success: true, giftCard: action.payload }; // Success state with gift card data
-
+      return { loading: false, success: true, giftCard: action.payload };
     case PURCHASE_GIFTCARD_FAIL:
-      return { loading: false, error: action.payload }; // Failure state with error message
-
+      return { loading: false, error: action.payload };
     default:
-      return state; // Return unchanged state for other actions
+      return state;
   }
 };

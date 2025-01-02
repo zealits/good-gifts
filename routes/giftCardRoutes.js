@@ -7,6 +7,10 @@ const {
   getAllGiftCards,
   updateGiftCard,
   deleteGiftCard,
+  getTotalGiftCardsSold,
+  getTotalRevenue,
+  getSalesTrends,
+  getSalesData,
   addBuyer,
   redeemGiftCard,
 } = require("../controllers/giftCardController.js");
@@ -22,6 +26,11 @@ router.get("/details/:id", getGiftCardById);
 router.get("/list", getAllGiftCards);
 router.put("/update/:id", updateGiftCard);
 router.delete("/remove/:id", deleteGiftCard);
+router.get("/total-sold", getTotalGiftCardsSold);
+router.get("/total-revenue", getTotalRevenue);
+router.get("/sales-trends", getSalesTrends);
+router.get("/sales-data", getSalesData);
+
 
 // Buyer Routes
 router.put("/purchase", addBuyer);
