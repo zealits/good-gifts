@@ -74,12 +74,12 @@ const UserLanding = () => {
           value={searchTerm}
           onChange={handleInputChange} // Attach the onChange handler
         />
-        {/* <select className="filter-dropdown">
+        <select className="filter-dropdown">
           <option value="">Filter by Category</option>
           <option value="Fine Dining">Fine Dining</option>
           <option value="Casual Dining">Casual Dining</option>
           <option value="Gourmet">Gourmet</option>
-        </select> */}
+        </select>
       </div>
 
       <div className="container">
