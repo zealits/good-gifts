@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from "chart.js";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
 import "./AdminDashboard.css";
 
 // Register chart components
@@ -22,16 +32,16 @@ const AdminDashboard = () => {
           axios.get("/api/v1/admin/list"),
           axios.get("/api/v1/admin/total-sold"),
           axios.get("/api/v1/admin/total-revenue"),
-          axios.get("/api/v1/admin/sales-data")
+          axios.get("/api/v1/admin/sales-data"),
         ]);
 
         setTotalGiftCards(giftCardResponse.data.giftCardCount);
         setTotalSold(soldResponse.data.totalSold);
         setTotalRevenue(revenueResponse.data.totalRevenue);
-        setSalesData(salesResponse.data.salesdata)
+        setSalesData(salesResponse.data.salesdata);
 
-        const labels = salesResponse.data.map(item => item.date);
-        const sales = salesResponse.data.map(item => item.sales);
+        const labels = salesResponse.data.map((item) => item.date);
+        const sales = salesResponse.data.map((item) => item.sales);
         setSalesData({ labels, data: sales });
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -160,11 +170,7 @@ const AdminDashboard = () => {
 
       <div className="graphs-section">
         <h3>Gift Card Sales (Last 30 Days)</h3>
-        {loading ? (
-          <div className="skeleton-graph" />
-        ) : (
-          <Line data={chartData} options={chartOptions} />
-        )}
+        {loading ? <div className="skeleton-graph" /> : <Line data={chartData} options={chartOptions} />}
       </div>
     </div>
   );

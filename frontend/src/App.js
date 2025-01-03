@@ -15,7 +15,6 @@ import Settings from "./pages/admin/Settings.js"; // GiftCards page
 import "./App.css";
 // import 'font-awesome/css/font-awesome.min.css';
 
-
 function App() {
   const dispatch = useDispatch();
 
@@ -162,6 +161,8 @@ For Her
 For the Family
 For the Team
 For You
+
+
 
 
  <h3>Create Gift Card: Form to create a new gift card (fields like amount, expiration date, discount, etc.).</h3>

@@ -86,7 +86,8 @@ const UserLanding = () => {
         {giftCards?.map?.((card) => (
           <div className="card" key={card.id}>
             <div className="card-image">
-              <img src={`data:image/jpeg;base64,${card.giftCardImg}`} alt="Gift Card" loading="lazy"/>
+              {/* <img src={`data:image/jpeg;base64,${card.giftCardImg}`} alt="Gift Card" loading="lazy"/> */}
+              <img src={card.giftCardImg} alt="Gift Card" loading="lazy"/>
               {/* Display the gift card tag and icon */}
               <div className="card-tag">
                 <i className={card.icon}></i> {card.giftCardTag}
