@@ -4,16 +4,32 @@ const multer = require("multer");
 const path = require("path");
 const sendEmail = require("../utils/sendEmail"); // Assuming sendEmail is in the same directory
 const QRCode = require("qrcode"); // For generating QR codes
+const cloudinary = require("cloudinary");
 
 // Create a new gift card
+// const cloudinary = require("cloudinary").v2;
+
 const createGiftCard = async (req, res) => {
-  console.log("dfdf :", req.body);
   try {
     const { giftCardName, giftCardTag, description, amount, discount, expirationDate } = req.body;
+    let giftCardImgUrl = null;
 
-    // console.log(req.body);
-    const giftCardImg = req.file ? req.file.buffer.toString("base64") : null;
-    // Create new GiftCard object
+    if (req.file) {
+      // Generate a unique filename
+      const uniqueFilename = `${Date.now()}-${req.file.originalname}`;
+
+      // Upload the image to Cloudinary with explicit public_id including folder
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        public_id: `gift_cards/${uniqueFilename}`, // Explicitly specify folder in public_id
+        resource_type: "auto",
+      });
+
+      // Log the result to verify upload location
+      console.log("Upload result:", result);
+
+      giftCardImgUrl = result.secure_url;
+    }
+
     const giftCard = new GiftCard({
       giftCardName,
       giftCardTag,
@@ -21,19 +37,14 @@ const createGiftCard = async (req, res) => {
       amount,
       discount,
       expirationDate,
-      giftCardImg, // Store image as Buffer
+      giftCardImg: giftCardImgUrl,
     });
 
-    // console.log(giftCard);
-
+    console.log(giftCard);
     const savedGiftCard = await giftCard.save();
-
-    // console.log(savedGiftCard);
-    console.log("there");
     res.status(201).json(savedGiftCard);
-    console.log("here");
   } catch (error) {
-    console.log("error : ", error);
+    console.error("Error:", error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -113,14 +124,14 @@ const getTotalRevenue = async (req, res) => {
         return sum;
       }
 
-      const cardRevenue = (card.amount - (card.amount * (card.discount / 100))) * (card.buyers?.length || 0);
+      const cardRevenue = (card.amount - card.amount * (card.discount / 100)) * (card.buyers?.length || 0);
 
       return sum + cardRevenue;
     }, 0);
 
     res.json({ totalRevenue });
   } catch (error) {
-    res.status(500).json({ message: 'Error calculating total revenue', error });
+    res.status(500).json({ message: "Error calculating total revenue", error });
   }
 };
 
@@ -133,31 +144,31 @@ const getSalesTrends = async (req, res) => {
     let startDate;
 
     // Set startDate based on the selected period
-    if (period === 'daily') {
+    if (period === "daily") {
       startDate = new Date(dateNow.setHours(0, 0, 0, 0)); // Start of today
-    } else if (period === 'weekly') {
+    } else if (period === "weekly") {
       const dayOfWeek = dateNow.getDay();
       const diff = dateNow.getDate() - dayOfWeek; // Get the start of the week
       startDate = new Date(dateNow.setDate(diff));
-    } else if (period === 'monthly') {
+    } else if (period === "monthly") {
       startDate = new Date(dateNow.getFullYear(), dateNow.getMonth(), 1); // Start of the month
     } else {
       return res.status(400).json({ error: "Invalid period parameter" });
     }
 
-    console.log('Period:', period); // Log the period
-    console.log('Start Date:', startDate); // Log the start date for the given period
+    console.log("Period:", period); // Log the period
+    console.log("Start Date:", startDate); // Log the start date for the given period
 
     // Fetch gift cards with buyers who have purchased after the start date
     const allGiftCards = await GiftCard.find({
-      'buyers.purchaseDate': { $gte: startDate },
+      "buyers.purchaseDate": { $gte: startDate },
     });
 
-    console.log('Fetched Gift Cards:', allGiftCards.length); // Log the number of gift cards found
+    console.log("Fetched Gift Cards:", allGiftCards.length); // Log the number of gift cards found
 
     // Aggregate sales based on the selected period
     const salesData = allGiftCards.reduce((acc, card) => {
-      card.buyers.forEach(buyer => {
+      card.buyers.forEach((buyer) => {
         if (buyer.purchaseDate >= startDate) {
           const saleDate = new Date(buyer.purchaseDate);
           const dateKey = `${saleDate.getFullYear()}-${saleDate.getMonth() + 1}-${saleDate.getDate()}`; // 'YYYY-MM-DD'
@@ -171,7 +182,7 @@ const getSalesTrends = async (req, res) => {
       return acc;
     }, {});
 
-    console.log('Aggregated Sales Data:', salesData); // Log aggregated sales data
+    console.log("Aggregated Sales Data:", salesData); // Log aggregated sales data
 
     res.status(200).json({ salesData });
   } catch (error) {
@@ -220,7 +231,7 @@ const getSalesData = async (req, res) => {
     }
 
     // Format the data to match the expected structure for the frontend
-    const formattedData = salesData.map(item => ({
+    const formattedData = salesData.map((item) => ({
       date: item._id,
       sales: item.sales,
     }));
@@ -232,8 +243,6 @@ const getSalesData = async (req, res) => {
     return res.status(500).json({ message: "Error fetching sales data" });
   }
 };
-
-
 
 // Update a gift card
 const updateGiftCard = async (req, res) => {
