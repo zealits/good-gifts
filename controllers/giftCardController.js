@@ -5,6 +5,7 @@ const path = require("path");
 const sendEmail = require("../utils/sendEmail"); // Assuming sendEmail is in the same directory
 const QRCode = require("qrcode"); // For generating QR codes
 const cloudinary = require("cloudinary");
+const fs = require("fs");
 
 // Create a new gift card
 // const cloudinary = require("cloudinary").v2;
@@ -28,6 +29,15 @@ const createGiftCard = async (req, res) => {
       console.log("Upload result:", result);
 
       giftCardImgUrl = result.secure_url;
+
+      // Remove the file from the uploads folder
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.error("Error deleting file from uploads folder:", err);
+        } else {
+          console.log("Temporary file deleted successfully.");
+        }
+      });
     }
 
     const giftCard = new GiftCard({
