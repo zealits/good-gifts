@@ -46,10 +46,13 @@ export const createGiftCard = (giftCardData) => async (dispatch) => {
 // Action to fetch all gift cards
 export const listGiftCards = (keyword = "", page = 1) => async (dispatch) => {
   try {
+    console.log("amit")
     dispatch({ type: LIST_GIFTCARDS_REQUEST }); // Dispatch request action
 
     // Construct the URL with query parameters
     const url = `/api/v1/admin/list?keyword=${keyword}&page=${page}`;
+    //const url = `/api/v1/admin/list?keyword=${keyword}&page=${page}`;
+    ///api/v1/admin/list?keyword=${keyword}${refreshAll ? "" : `&page=${page}}
 
     // Fetch gift cards from the backend
     const { data } = await axios.get(url);

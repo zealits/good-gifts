@@ -13,6 +13,9 @@ const {
   getSalesData,
   addBuyer,
   redeemGiftCard,
+  fetchGiftCardById,
+  
+  
 } = require("../controllers/giftCardController.js");
 
 const router = express.Router();
@@ -30,6 +33,7 @@ router.get("/total-sold", getTotalGiftCardsSold);
 router.get("/total-revenue", getTotalRevenue);
 router.get("/sales-trends", getSalesTrends);
 router.get("/sales-data", getSalesData);
+router.get('/scan-giftcard/:id', fetchGiftCardById);
 
 // Buyer Routes
 router.put("/purchase", addBuyer);

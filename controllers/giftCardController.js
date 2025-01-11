@@ -63,6 +63,28 @@ const getGiftCardById = async (req, res) => {
   }
 };
 
+/**
+ * Fetch Gift Card by ID QR unique id (id and qr id are different imp)
+ */
+const fetchGiftCardById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log('Fetching Gift Card for ID:', id); // Debug logging
+
+    const giftCard = await GiftCard.findOne({ 'buyers.qrCode.uniqueCode': id });
+
+    if (!giftCard) {
+      console.log('Gift card not found for ID:', id);
+      return res.status(404).json({ message: 'Gift card not found' });
+    }
+
+    res.status(200).json(giftCard);
+  } catch (error) {
+    console.error('Error fetching gift card:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 // exports.getAllVenues = catchAsyncErrors(async (req, res, next) => {
 //   const venuesCount = await Venue.countDocuments();
 //   const resultPerPage = 30;
@@ -82,6 +104,7 @@ const getGiftCardById = async (req, res) => {
 // Get all gift cards
 const getAllGiftCards = async (req, res) => {
   try {
+    console.log("shesh");
     const giftCardCount = await GiftCard.countDocuments();
     console.log("GiftCard Count:", giftCardCount); // Debugging
     const resultPerPage = 30;
@@ -653,6 +676,7 @@ const redeemGiftCard = async (req, res) => {
 module.exports = {
   createGiftCard,
   getGiftCardById,
+  fetchGiftCardById,
   getAllGiftCards,
   getTotalGiftCardsSold,
   getTotalRevenue,
