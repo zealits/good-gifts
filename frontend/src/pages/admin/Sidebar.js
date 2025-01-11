@@ -104,6 +104,16 @@ const Sidebar = () => {
           </Link>
           <span className="tooltip">Settings</span>
         </li>
+        <li>
+  <Link to="/redeem" className={`linke ${isActive("/redeem") ? "active" : ""}`}>
+    <i className="bx bx-gift">
+      <FaGift className="icon" />
+    </i>
+    <span className="links_name">Redeem</span>
+  </Link>
+  <span className="tooltip">Redeem</span>
+</li>
+
         {/* <li>
           <Link to="/preferences" className="linke">
             <i className="bx bx-cart-alt">

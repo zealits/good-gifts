@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./GiftCards.css";
 import { useDispatch, useSelector } from "react-redux";
-import { createGiftCard, listGiftCards, updateGiftCard, deleteGiftCard } from "../../services/Actions/giftCardActions";
+import { createGiftCard,listGiftCards ,updateGiftCard ,deleteGiftCard } from "../../services/Actions/giftCardActions";
 import Modal from "../../components/Notification/Modal";
 
 const GiftCards = () => {
