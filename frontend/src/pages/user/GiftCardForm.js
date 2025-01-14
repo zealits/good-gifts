@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./GiftCardForm.css"; // Import CSS for styling
 import { purchaseGiftCard } from "../../services/Actions/giftCardActions";
 import { useDispatch } from "react-redux";
+import SquarePaymentForm from "./SquarePaymentForm.js"
 
 const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -325,21 +326,10 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
         {currentStep === 3 && (
           <div className="form-section">
             <h2>Payment Method</h2>
-            <div className="payment-methods">
-              <div className="payment-method active" data-method="credit-card">
-                <img src="/api/placeholder/150/40" alt="Credit Card" />
-                <h3>Credit Card</h3>
-              </div>
-              <div className="payment-method " data-method="credit-card">
-                <img src="/api/placeholder/150/40" alt="Credit Card" />
-                <h3>Credit Card</h3>
-              </div>
-              <div className="payment-method " data-method="credit-card">
-                <img src="/api/placeholder/150/40" alt="Credit Card" />
-                <h3>Credit Card</h3>
-              </div>
-            </div>
-            <div className="payment-details">
+            <SquarePaymentForm />
+
+            
+            {/* <div className="payment-details">
               <div className="form-group">
                 <label htmlFor="card-number">Card Number</label>
                 <input
@@ -369,7 +359,7 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
                   onChange={(e) => handlePaymentChange("cvv", e.target.value)}
                 />
               </div>
-            </div>
+            </div> */}
           </div>
         )}
 
