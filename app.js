@@ -4,6 +4,7 @@ const path = require("path");
 const errorMiddleware = require("./middleware/error");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 // Import the routes for the API
 const restaurantAdminRoutes = require("./routes/restaurantAdminRoutes");
@@ -23,6 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/api/v1/admin", restaurantAdminRoutes);  // Your restaurant admin API routes
 app.use("/api/v1/admin", giftCardRoutes);         // Your gift card API routes
+app.use("/api/payments", paymentRoutes);
       
 
 // Serve React app (if you're serving a frontend from the backend)
