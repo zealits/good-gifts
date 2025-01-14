@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import jsQR from 'jsqr';
+import './QRScanner.css'; // Import the CSS file
 
 const QRScanner = ({ onScan }) => {
   const videoRef = useRef(null);
@@ -11,8 +12,15 @@ const QRScanner = ({ onScan }) => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         if (videoRef.current) {
+          // Set the video source object only once
           videoRef.current.srcObject = stream;
-          videoRef.current.play();
+
+          // Wait until the video metadata is loaded before playing
+          videoRef.current.onloadedmetadata = () => {
+            videoRef.current.play().catch((error) => {
+              console.error('Error playing video:', error);
+            });
+          };
         }
       } catch (error) {
         console.error('Error accessing webcam:', error);
@@ -22,7 +30,6 @@ const QRScanner = ({ onScan }) => {
     startWebcam();
 
     return () => {
-      // Stop webcam on component unmount
       if (videoRef.current && videoRef.current.srcObject) {
         const tracks = videoRef.current.srcObject.getTracks();
         tracks.forEach((track) => track.stop());
@@ -38,7 +45,6 @@ const QRScanner = ({ onScan }) => {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
 
-      // Draw video frame onto the canvas
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -46,10 +52,9 @@ const QRScanner = ({ onScan }) => {
 
       if (code) {
         console.log('QR Code detected:', code.data);
-        onScan(code.data); // Pass scanned QR code data to the parent component
+        onScan(code.data);
         setIsScanning(false);
       } else {
-        // If no QR code is detected, keep scanning
         requestAnimationFrame(scanFrame);
       }
     }
@@ -61,11 +66,13 @@ const QRScanner = ({ onScan }) => {
   };
 
   return (
-    <div>
-      <video ref={videoRef} style={{ width: '100%', height: 'auto' }} />
-      <canvas ref={canvasRef} style={{ display: 'none' }} />
-      {!isScanning && <button onClick={startScan}>Start Scanning</button>}
-      {isScanning && <p>Scanning for QR code...</p>}
+    <div className="main-container">
+      <div className="scanner-container">
+        <video ref={videoRef} autoPlay playsInline muted></video>
+        <canvas ref={canvasRef} style={{ display: 'none' }} />
+        {!isScanning && <button onClick={startScan}>Start Scanning</button>}
+        {isScanning && <p>Scanning for QR code...</p>}
+      </div>
     </div>
   );
 };

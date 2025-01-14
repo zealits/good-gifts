@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const giftCardSchema = new mongoose.Schema(
   {
@@ -23,8 +23,8 @@ const giftCardSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'redeemed', 'expired', 'sold'], // Added 'sold' status
-      default: 'active',
+      enum: ["active", "redeemed", "expired", "sold"], // Added 'sold' status
+      default: "active",
     },
     expirationDate: {
       type: Date,
@@ -110,6 +110,30 @@ const giftCardSchema = new mongoose.Schema(
             default: false,
           },
         },
+        otp: {
+          code: String,
+          expiresAt: Date, // OTP field
+        },
+      },
+    ],
+    redemptionHistory: [
+      {
+        redeemedAmount: {
+          type: Number,
+          required: true,
+        },
+        redemptionDate: {
+          type: Date,
+          default: Date.now,
+        },
+        originalAmount: {
+          type: Number,
+          required: true,
+        },
+        remainingAmount: {
+          type: Number, // New field for tracking remaining balance
+          
+        },
       },
     ],
   },
@@ -118,4 +142,4 @@ const giftCardSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('GiftCard', giftCardSchema);
+module.exports = mongoose.model("GiftCard", giftCardSchema);
