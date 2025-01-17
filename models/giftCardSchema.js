@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const giftCardSchema = new mongoose.Schema(
   {
@@ -23,8 +23,8 @@ const giftCardSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'redeemed', 'expired', 'sold'], // Added 'sold' status
-      default: 'active',
+      enum: ["active", "redeemed", "expired", "sold"], // Added 'sold' status
+      default: "active",
     },
     expirationDate: {
       type: Date,
@@ -77,17 +77,30 @@ const giftCardSchema = new mongoose.Schema(
           },
         },
         paymentDetails: {
-          cardNumber: {
+          // add here payment details
+          transactionId: {
             type: String,
-            required: true,
           },
-          expiryDate: {
+          paymentMethod: {
             type: String,
-            required: true,
           },
-          cvv: {
+          paymentamount: {
+            type: Number,
+          },
+          currency: {
             type: String,
-            required: true,
+          },
+          status: {
+            type: String,
+          },
+          receiptNumber: {
+            type: String,
+          },
+          receiptUrl: {
+            type: String,
+          },
+          paymentdAt: {
+            type: Date,
           },
         },
         purchaseDate: {
@@ -98,9 +111,9 @@ const giftCardSchema = new mongoose.Schema(
           uniqueCode: {
             type: String,
           },
-          dataUrl: {
-            type: String,
-          },
+          // dataUrl: {
+          //   type: String,
+          // },
           createdAt: {
             type: Date,
             default: Date.now,
@@ -118,4 +131,4 @@ const giftCardSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('GiftCard', giftCardSchema);
+module.exports = mongoose.model("GiftCard", giftCardSchema);
