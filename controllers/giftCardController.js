@@ -289,6 +289,8 @@ const addBuyer = async (req, res) => {
   try {
     const { id, purchaseType, selfInfo, giftInfo, paymentDetails } = req.body;
 
+ 
+    console.log(paymentDetails);
     // Validate required fields
     if (!id || !purchaseType || !paymentDetails) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -335,13 +337,14 @@ const addBuyer = async (req, res) => {
       purchaseDate: new Date(),
       qrCode: {
         uniqueCode,
-        dataUrl: `data:image/png;base64,${qrCodeBase64}`,
+        // dataUrl: `data:image/png;base64,${qrCodeBase64}`,
         createdAt: new Date(),
         isUsed: false,
       },
     };
 
     // Add buyer to gift card
+    console.log(buyerDetails);
     giftCardDetails.buyers.push(buyerDetails);
     await giftCardDetails.save();
 

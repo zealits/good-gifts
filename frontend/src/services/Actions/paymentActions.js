@@ -22,6 +22,8 @@ export const createPayment = (sourceId, amount) => async (dispatch) => {
       config
     );
 
+    console.log(data);
+
     dispatch({
       type: CREATE_PAYMENT_SUCCESS,
       payload: data,
