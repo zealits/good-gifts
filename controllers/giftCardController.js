@@ -654,67 +654,16 @@ const addBuyer = async (req, res) => {
 // Redeem a gift card using QR code
 
 
-const transporter = nodemailer.createTransport({
-  service: "Gmail",
-  auth: {
-    user: 'aniketkhillare17@gmail.com', // Your email
-    pass: 'cqzvrykqoqarjqzb', // Your email password or app password
-  },
-});
-
-// Generate OTP
-const generateOtp = () => {
-  const otp = crypto.randomInt(100000, 999999).toString();
-  const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // Expires in 10 minutes
-  return { otp, expiresAt };
-};
-
-// // Send OTP
-// const sendOtp = async (req, res) => {
-//   const { email } = req.body;
-
-//   try {
-//     if (!email) {
-//       return res.status(400).json({ message: "Email is required" });
-//     }
-
-//     const giftCard = await GiftCard.findOne({ "buyers.selfInfo.email": email });
-//     if (!giftCard) {
-//       return res.status(404).json({ message: "Gift card not found" });
-//     }
-
-//     const { otp, expiresAt } = generateOtp();
-
-//     // Save OTP to the gift card
-//     giftCard.otp = { code: otp, expiresAt };
-//     await giftCard.save();
-
-//     // Send OTP via email
-//     const mailOptions = {
-//       from: 'aniketkhillare17@gmail.com',
-//       to: email,
-//       subject: "Your OTP for Gift Card Redemption",
-//       text: `Your OTP is ${otp}. It is valid for 10 minutes.`,
-//     };
-
-//     await transporter.sendMail(mailOptions);
-
-//     res.status(200).json({ message: "OTP sent successfully" });
-//   } catch (error) {
-//     console.error("Error sending OTP:", error);
-//     res.status(500).json({ message: "Failed to send OTP" });
-//   }
-// };
-
-
 const sendOtp = async (req, res) => {
   const { email, redeemAmount } = req.body;
+  console.log("sendOtp function triggered with request body:", req.body);
 
   try {
     if (!email) {
+      console.log("Email is missing in the request body.");
       return res.status(400).json({ message: "Email is required" });
     }
-
+    console.log("Checking if email exists:", email);
     // Find the gift card by matching the email with either the buyer's or recipient's email
     const giftCard = await GiftCard.findOne({
       $or: [
@@ -724,14 +673,18 @@ const sendOtp = async (req, res) => {
     });
 
     if (!giftCard) {
+      console.log("Gift card not found for email:", email);
       return res.status(404).json({ message: "Gift card not found" });
     }
+    console.log("Gift card found:", giftCard);
 
     const { otp, expiresAt } = generateOtp();
 
     // Save OTP to the gift card
     giftCard.otp = { code: otp, expiresAt };
     await giftCard.save();
+
+    console.log("OTP generated and saved:", otp);
 
     // Determine whether to send OTP to the buyer or recipient email
     const emailToSendOtp = giftCard.buyers.some(
@@ -741,19 +694,26 @@ const sendOtp = async (req, res) => {
       : giftCard.buyers[0]?.giftInfo?.recipientEmail; // Otherwise, send to recipient's email
 
     if (!emailToSendOtp) {
+      console.log("Recipient email not found for gift card.");
       return res.status(400).json({ message: "Recipient email not found" });
     }
+    console.log("Email to send OTP:", emailToSendOtp);
 
     // Send OTP via email, including redeem amount
     const mailOptions = {
-      from: 'aniketkhillare17@gmail.com',
-      to: emailToSendOtp, // Send OTP to correct email
+      from: process.env.SMPT_MAIL,
+      to: emailToSendOtp,
       subject: "Your OTP for Gift Card Redemption",
-      text: `Your OTP is ${otp}. It is valid for 10 minutes.\n\nAmount to Redeem: ${redeemAmount}`,
+      // Keep the content in plain text
+      text: `Your OTP is ${otp}. It is valid for 10 minutes.\n\nAmount to Redeem: ₹${redeemAmount}`,
+      encoding: "utf-8", // Ensuring proper encoding
     };
-
+    
+    
+    console.log("Mail Options:", mailOptions);
+    
     await transporter.sendMail(mailOptions);
-
+    
     res.status(200).json({ message: "OTP sent successfully along with redeem amount" });
   } catch (error) {
     console.error("Error sending OTP:", error);
@@ -805,6 +765,64 @@ const verifyOtp = async (req, res) => {
 };
 
 
+
+// const redeemGiftCard = async (req, res) => {
+//   try {
+//     const { qrCode, amount } = req.body;
+
+//     if (!amount || amount <= 0) {
+//       return res.status(400).json({ message: "Invalid redeem amount." });
+//     }
+
+//     // Find the gift card based on the unique QR code
+//     const giftCard = await GiftCard.findOne({ "buyers.qrCode.uniqueCode": qrCode });
+
+//     if (!giftCard) {
+//       return res.status(404).json({ message: "Invalid QR code" });
+//     }
+
+//     // Find the buyer using the unique QR code
+//     const buyer = giftCard.buyers.find((buyer) => buyer.qrCode.uniqueCode === qrCode);
+//     if (!buyer || buyer.status === "redeemed") {
+//       return res.status(400).json({ message: "QR code already redeemed or invalid" });
+//     }
+
+//     // Check if the redeem amount does not exceed available balance
+//     if (amount > giftCard.amount) {
+//       return res.status(400).json({ message: "Amount exceeds available balance" });
+//     }
+
+//     // Proceed with redemption
+//     buyer.status = "redeemed";
+//     buyer.usedDate = new Date();
+
+//     // Calculate the remaining amount after redemption
+//     const remainingAmount = giftCard.amount - amount;
+
+//     // Add to redemption history
+//     giftCard.redemptionHistory.push({
+//       redeemedAmount: amount,
+//       redemptionDate: new Date(),
+//       originalAmount: giftCard.amount,
+//       remainingAmount: remainingAmount,
+//     });
+
+//     // Deduct the redeem amount from the gift card's balance
+//     giftCard.amount = remainingAmount;
+
+//     // Save the updated gift card
+//     const updatedGiftCard = await giftCard.save();
+
+//     // Respond with success and updated data
+//     res.status(200).json({
+//       message: "Gift card redeemed successfully",
+//       buyer,
+//       redemptionHistory: updatedGiftCard.redemptionHistory,
+//     });
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// };
 const redeemGiftCard = async (req, res) => {
   try {
     const { qrCode, amount } = req.body;
@@ -822,32 +840,29 @@ const redeemGiftCard = async (req, res) => {
 
     // Find the buyer using the unique QR code
     const buyer = giftCard.buyers.find((buyer) => buyer.qrCode.uniqueCode === qrCode);
-    if (!buyer || buyer.status === "redeemed") {
-      return res.status(400).json({ message: "QR code already redeemed or invalid" });
+    if (!buyer) {
+      return res.status(400).json({ message: "Buyer not found for the given QR code" });
     }
 
-    // Check if the redeem amount does not exceed available balance
-    if (amount > giftCard.amount) {
-      return res.status(400).json({ message: "Amount exceeds available balance" });
+    // Check if the redeem amount does not exceed available balance for the buyer
+    const remainingBalance = giftCard.amount - (buyer.usedAmount || 0);
+    if (amount > remainingBalance) {
+      return res.status(400).json({ message: "Amount exceeds available balance for the buyer." });
     }
 
-    // Proceed with redemption
-    buyer.status = "redeemed";
+    // Update buyer's details
+    buyer.usedAmount = (buyer.usedAmount || 0) + amount; // Update the used amount
+    buyer.remainingBalance = giftCard.amount - buyer.usedAmount; // Update the remaining balance
+    buyer.status = buyer.remainingBalance === 0 ? "redeemed" : "partial"; // Set status to 'redeemed' if balance is 0
     buyer.usedDate = new Date();
-
-    // Calculate the remaining amount after redemption
-    const remainingAmount = giftCard.amount - amount;
 
     // Add to redemption history
     giftCard.redemptionHistory.push({
       redeemedAmount: amount,
       redemptionDate: new Date(),
-      originalAmount: giftCard.amount,
-      remainingAmount: remainingAmount,
+      originalAmount: giftCard.amount, // Keep the original amount intact
+      remainingAmount: buyer.remainingBalance, // Track remaining balance
     });
-
-    // Deduct the redeem amount from the gift card's balance
-    giftCard.amount = remainingAmount;
 
     // Save the updated gift card
     const updatedGiftCard = await giftCard.save();
@@ -863,6 +878,65 @@ const redeemGiftCard = async (req, res) => {
   }
 };
 
+
+// const redeemGiftCard = async (req, res) => {
+//   try {
+//     console.log("Request body:", req.body);
+//     const { qrCode, userAmount } = req.body; // Renamed `amount` to `redeemAmount`
+
+//     if (!userAmount || userAmount <= 0) {
+//       return res.status(400).json({ message: "Invalid redeem amount." });
+//     }
+
+//     // Find the gift card based on the unique QR code
+//     const giftCard = await GiftCard.findOne({ "buyers.qrCode.uniqueCode": qrCode });
+
+//     if (!giftCard) {
+//       return res.status(404).json({ message: "Gift card not found." });
+//     }
+
+//     // Find the buyer using the unique QR code
+//     const buyer = giftCard.buyers.find((buyer) => buyer.qrCode.uniqueCode === qrCode);
+    
+//     if (!buyer || buyer.status === "redeemed") {
+//       return res.status(400).json({ message: "QR code already redeemed or invalid" });
+//     }
+
+//     // Check if the redeem amount does not exceed the buyer's balance
+//     if (userAmount > buyer.balance) {
+//       return res.status(400).json({ message: "Redeem amount exceeds available balance" });
+//     }
+
+//     // Calculate the remaining balance after redemption
+//     const remainingBalance = buyer.balance - userAmount;
+
+//     // Add to redemption history
+//     giftCard.redemptionHistory.push({
+//       redeemedAmount: redeemAmount,
+//       redemptionDate: new Date(),
+//       originalAmount: amount, // Original balance before redemption
+//       remainingAmount: remainingBalance, // Updated balance after redemption
+//     });
+
+//     // Update the buyer's balance in the buyers array
+//     buyer.balance = remainingBalance;
+//     buyer.status = "redeemed"; // Set the buyer status to redeemed
+//     buyer.usedDate = new Date(); // Store the date of redemption
+
+//     // Save the updated gift card with the new balance and redemption history
+//     const updatedGiftCard = await giftCard.save();
+
+//     // Respond with success and updated data
+//     res.status(200).json({
+//       message: "Gift card redeemed successfully",
+//       buyer,
+//       redemptionHistory: updatedGiftCard.redemptionHistory,
+//       updatedBalance: remainingBalance, // Send the updated balance
+//     });
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// };
 
 
 

@@ -42,6 +42,8 @@ router.get('/scan-giftcard/:id', fetchGiftCardById);
 router.put("/purchase", addBuyer);
 
 router.post("/redeem", redeemGiftCard);
+// router.post("/send-otp", sendRedemptionOtp);
+// router.post("/verify-otp", verifyRedemptionOtp);
 router.post("/send-otp", sendOtp);
 router.post("/verify-otp", verifyOtp);
 
