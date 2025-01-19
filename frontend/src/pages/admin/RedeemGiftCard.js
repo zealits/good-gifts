@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import QRScanner from "./QRScanner.js";
-import "./RedeemGiftCard.css"; 
+import "./RedeemGiftCard.css";
 
 const RedeemGiftCard = () => {
   // Define state for originalAmount and updatedBalance
@@ -13,6 +13,7 @@ const RedeemGiftCard = () => {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isOtpVerified, setIsOtpVerified] = useState(false);
   const [selectedBuyer, setSelectedBuyer] = useState(null);
+  const [qrUniqueCode, setqrUniqueCode] = useState(null);
 
   // Handle QR scan
   const handleQRScan = (code) => {
@@ -28,6 +29,8 @@ const RedeemGiftCard = () => {
   const fetchGiftCard = async (data) => {
     try {
       let cardId;
+      console.log("data :", data);
+      setqrUniqueCode(data);
 
       // Check if data is a URL or plain text
       if (data.startsWith("http")) {
@@ -79,6 +82,7 @@ const RedeemGiftCard = () => {
 
   const handleSendOTP = async () => {
     try {
+      console.log(qrUniqueCode);
       const buyerEmail = selectedBuyer?.selfInfo?.email;
       const recipientEmail = selectedBuyer?.giftInfo?.recipientEmail;
 
@@ -100,6 +104,7 @@ const RedeemGiftCard = () => {
       const response = await axios.post("/api/v1/admin/send-otp-redeem", {
         email: emailToSendOtp,
         redeemAmount,
+        qrUniqueCode,
         // Assuming selectedBuyer has the giftCardId
       });
 
@@ -117,6 +122,7 @@ const RedeemGiftCard = () => {
       alert(errorMessage);
     }
   };
+
   const handleVerifyOTP = async () => {
     try {
       if (!otp) {
@@ -137,12 +143,16 @@ const RedeemGiftCard = () => {
 
       const response = await axios.post("/api/v1/admin/verify-otp-redeem", {
         email: emailToVerifyOtp,
+        qrUniqueCode,
         // Include giftCardId in the request
         otp,
       });
 
+      console.log(response);
       if (response.data.success) {
+        console.log(response.data.success);
         setIsOtpVerified(true);
+        console.log("asdfadsf : ", isOtpVerified);
         alert(response.data.message);
       } else {
         alert(response.data.message);

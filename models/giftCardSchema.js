@@ -123,6 +123,22 @@ const giftCardSchema = new mongoose.Schema(
             default: false,
           },
         },
+        otp: {
+          code: {
+            type: String, // OTP code
+          },
+          expiresAt: {
+            type: Date, // Expiry of OTP
+          },
+        },
+        usedAmount: {
+          type: Number, // Tracks the total amount redeemed by this buyer
+          default: 0,
+        },
+        remainingBalance: {
+          type: Number, // Tracks the balance after redeeming an amount
+        
+        },
       },
     ],
   },
