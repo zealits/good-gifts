@@ -12,6 +12,7 @@ import Orders from "./pages/admin/Orders.js"; // GiftCards page
 import Customers from "./pages/admin/Customers.js"; // GiftCards page
 import Reports from "./pages/admin/Reports.js"; // GiftCards page
 import Settings from "./pages/admin/Settings.js"; // GiftCards page
+import RedeemGiftCard from "./pages/admin/RedeemGiftCard.js";
 import "./App.css";
 // import 'font-awesome/css/font-awesome.min.css';
 
@@ -97,6 +98,14 @@ function App() {
                 element={
                   <div className="content">
                     <Settings />
+                  </div>
+                }
+              />
+              <Route
+                path="/redeem"
+                element={
+                  <div className="content">
+                    <RedeemGiftCard />
                   </div>
                 }
               />
