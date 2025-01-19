@@ -1,0 +1,88 @@
+.main-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Scanner Container */
+.scanner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1abc9c, #16a085); /* Elegant greenish gradient */
+    border-radius: 20px;
+    padding: 40px 40px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Depth effect */
+    width: 1000px; /* Increased width */
+    
+    height: 100%; /* Increased height */
+    animation: fadeIn 0.5s ease-in-out;
+    overflow: hidden;
+    margin-top: 10px; /* Prevent any content from going out of bounds */
+}
+ 
+
+/* Video element for live feed */
+.scanner-container video {
+   width: 660px;
+    height: 500px;
+    border-radius: 15px;
+    border: 4px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; /* Slightly increased margin */
+}
+
+/* Button styles */
+.scanner-container button {
+    background: linear-gradient(135deg, #3498db, #2980b9); /* Stunning blue gradient */
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 30px; /* Larger padding for the button */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.scanner-container button:hover {
+    background: linear-gradient(135deg, #2980b9, #1e6a8d);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(41, 128, 185, 0.5);
+}
+
+/* Scanning text */
+.scanner-container p {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 12px 18px;
+    border-radius: 10px;
+    margin-top: 15px;
+    animation: blink 1.2s infinite;
+}
+
+/* Keyframes for blink animation */
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
