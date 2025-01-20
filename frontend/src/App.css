@@ -19,7 +19,7 @@
   }
   
   .content {
-    background-color: #D1F8D2;
+    background-color: #0F0F0F;
     flex-grow: 1; /* Take remaining space */
     margin-left: 78px; /* Default width of the sidebar */
     transition: all 0.5s ease;
@@ -34,11 +34,23 @@
  
 
   
-
+  @import url(https://fonts.googleapis.com/css?family=Lato);
   
-
+  @import url('https://fonts.googleapis.com/css2?family=Amatic+SC&family=Space+Mono&family=Rampart+One&family=Dancing+Script&family=Rubik+Iso&family=Gajraj+One&family=Mynerve&family=Climate+Crisis&family=Tilt+Prism&family=Smokum&display=swap');
   .heading{
     text-align: center;
     padding: 20px;
-    color: #2C6B2F;
+    color: white;
+    font-family: 'Rampart One';
+}
+
+.heading {
+  text-align: center;
+  font-size: 3rem;
+  
+  margin-top: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-bottom: 30px;
 }

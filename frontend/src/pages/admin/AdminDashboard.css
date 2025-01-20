@@ -7,16 +7,6 @@ body {
 }
 
 /* Heading Styling */
-.heading {
-  text-align: center;
-  font-size: 2.5rem;
-  color: #2c3e50;
-  margin-top: 20px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding-bottom: 30px;
-}
 
 /* Container for the Stats Cards */
 .dashboard-container {
