@@ -48,6 +48,7 @@ const RedeemGiftCard = () => {
       console.log("Fetching Gift Card for ID:", cardId);
 
       const { data: giftCard } = await axios.get(`/api/v1/admin/scan-giftcard/${cardId}`);
+      
       setGiftCard(giftCard);
 
       // Open modal to display card details

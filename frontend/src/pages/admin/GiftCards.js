@@ -170,7 +170,7 @@ const GiftCards = () => {
       <div>
         <div className="main-content">
           <div className="actions">
-            <button className="create-giftcard cbtn green" onClick={handleOpenModal}>
+            <button className="create-giftcard cbtn white" onClick={handleOpenModal}>
               Create Giftcard
             </button>
             <input
