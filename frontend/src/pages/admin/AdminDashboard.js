@@ -163,7 +163,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="stat-card">
-          <h3>Total Revenue from Gift Cards</h3>
+          <h3>Total Redemption </h3>
           {loading ? <div className="skeleton" /> : <p>${totalRevenue.toFixed(2)}</p>}
         </div>
       </div>
