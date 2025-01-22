@@ -137,8 +137,26 @@ const giftCardSchema = new mongoose.Schema(
         },
         remainingBalance: {
           type: Number, // Tracks the balance after redeeming an amount
-        
         },
+        redemptionHistory: [
+          {
+            redeemedAmount: {
+              type: Number,
+              required: true,
+            },
+            redemptionDate: {
+              type: Date,
+              default: Date.now,
+            },
+            originalAmount: {
+              type: Number,
+              required: true,
+            },
+            remainingAmount: {
+              type: Number, // New field for tracking remaining balance
+            },
+          }
+        ],
       },
     ],
   },
