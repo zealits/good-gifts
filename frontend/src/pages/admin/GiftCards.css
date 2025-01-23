@@ -23,7 +23,7 @@
 .search-box {
     padding: 12px 15px;
     width: 300px;
-    border: 1px solid #2e7d32;
+    border: 1px solid #ffffff;
     border-radius: 20px; /* Rounded edges for a modern look */
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     font-size: 1rem;
@@ -42,6 +42,7 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+   color: white;
 
     border-radius: 8px;
     overflow: hidden;
@@ -61,8 +62,8 @@
 }
 
 .giftcards-table th {
-    background-color: #2e7d32;
-    color: #fff;
+    background-color: #ffffff;
+    color: #000000;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -72,6 +73,7 @@
 
 .giftcards-table tr:hover {
     background-color: #f9f9f9;
+    color: black;
     cursor: pointer;
     transition: background-color 0.3s;
 }
@@ -115,6 +117,11 @@
 .cbtn.green {
     background-color: #2e7d32;
 }
+.cbtn.white {
+    background-color: white;
+    color:black;
+}
+
 
 .cbtn.edit {
     margin-right: 10px;

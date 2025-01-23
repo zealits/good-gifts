@@ -13,12 +13,9 @@ const {
   getSalesData,
   addBuyer,
   redeemGiftCard,
-  fetchGiftCardById,
   sendOtp,
   verifyOtp,
-  
-  
-  
+  fetchGiftCardById,
 } = require("../controllers/giftCardController.js");
 
 const router = express.Router();
@@ -49,5 +46,10 @@ router.post("/verify-otp", verifyOtp);
 
 
 
+
+router.get("/scan-giftcard/:id", fetchGiftCardById);
+
+router.post("/send-otp-redeem", sendOtp);
+router.post("/verify-otp-redeem", verifyOtp);
 
 module.exports = router;

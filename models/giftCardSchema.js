@@ -77,17 +77,30 @@ const giftCardSchema = new mongoose.Schema(
           },
         },
         paymentDetails: {
-          cardNumber: {
+          // add here payment details
+          transactionId: {
             type: String,
-            required: true,
           },
-          expiryDate: {
+          paymentMethod: {
             type: String,
-            required: true,
           },
-          cvv: {
+          paymentamount: {
+            type: Number,
+          },
+          currency: {
             type: String,
-            required: true,
+          },
+          status: {
+            type: String,
+          },
+          receiptNumber: {
+            type: String,
+          },
+          receiptUrl: {
+            type: String,
+          },
+          paymentdAt: {
+            type: Date,
           },
         },
         purchaseDate: {
@@ -98,9 +111,9 @@ const giftCardSchema = new mongoose.Schema(
           uniqueCode: {
             type: String,
           },
-          dataUrl: {
-            type: String,
-          },
+          // dataUrl: {
+          //   type: String,
+          // },
           createdAt: {
             type: Date,
             default: Date.now,
@@ -124,29 +137,26 @@ const giftCardSchema = new mongoose.Schema(
         },
         remainingBalance: {
           type: Number, // Tracks the balance after redeeming an amount
-          default: function () {
-            return this.usedAmount > 0 ? this.usedAmount : null;
-          },
         },
-      },
-    ],
-    redemptionHistory: [
-      {
-        redeemedAmount: {
-          type: Number,
-          required: true,
-        },
-        redemptionDate: {
-          type: Date,
-          default: Date.now,
-        },
-        originalAmount: {
-          type: Number,
-          required: true,
-        },
-        remainingAmount: {
-          type: Number, // New field for tracking remaining balance
-        },
+        redemptionHistory: [
+          {
+            redeemedAmount: {
+              type: Number,
+              required: true,
+            },
+            redemptionDate: {
+              type: Date,
+              default: Date.now,
+            },
+            originalAmount: {
+              type: Number,
+              required: true,
+            },
+            remainingAmount: {
+              type: Number, // New field for tracking remaining balance
+            },
+          }
+        ],
       },
     ],
   },

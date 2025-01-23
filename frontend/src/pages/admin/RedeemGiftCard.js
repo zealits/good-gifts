@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import QRScanner from "./QRScanner";
-import "./RedeemGiftCard.css"; // Add a CSS file for styling the modal
+import QRScanner from "./QRScanner.js";
+import "./RedeemGiftCard.css";
 
 const RedeemGiftCard = () => {
   // Define state for originalAmount and updatedBalance
@@ -13,6 +13,7 @@ const RedeemGiftCard = () => {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isOtpVerified, setIsOtpVerified] = useState(false);
   const [selectedBuyer, setSelectedBuyer] = useState(null);
+  const [qrUniqueCode, setqrUniqueCode] = useState(null);
 
   // Handle QR scan
   const handleQRScan = (code) => {
@@ -25,52 +26,11 @@ const RedeemGiftCard = () => {
     fetchGiftCard(code);
   };
 
-  // Fetch the gift card by scanning the QR code
-  // const fetchGiftCard = async (data) => {
-  //   try {
-  //     let cardId;
-
-  //     // Check if data is a URL or plain text
-  //     if (data.startsWith("http")) {
-  //       const url = new URL(data);
-  //       cardId = url.pathname.split("/").pop();
-  //     } else {
-  //       cardId = data.trim();
-  //     }
-
-  //     if (!cardId) {
-  //       alert("Invalid QR code data.");
-  //       return;
-  //     }
-
-  //     console.log("Fetching Gift Card for ID:", cardId);
-
-  //     const { data: giftCard } = await axios.get(`/api/v1/admin/scan-giftcard/${cardId}`);
-  //     setGiftCard(giftCard);
-
-  //      // Set the balance to the original amount
-  //     setIsModalOpen(true);
-
-  //     // Search for the buyer matching the scanned QR code
-  //     const scannedBuyer = giftCard.buyers.find(buyer => buyer.qrCode.uniqueCode === data);
-
-  //     if (scannedBuyer) {
-  //       setSelectedBuyer(scannedBuyer);
-  //       setUpdatedBalance(scannedBuyer.usedAmount || 0);
-  //     } else {
-  //       alert("No buyer found for the scanned QR code.");
-  //     }
-
-  //     console.log("Gift Card Details:", giftCard);
-  //   } catch (error) {
-  //     const errorMessage =
-  //       error.response?.data?.message || "Gift card not found.";
-  //     alert(`Error: ${errorMessage}`);
-  //   }
-  // };
   const fetchGiftCard = async (data) => {
     try {
       let cardId;
+      console.log("data :", data);
+      setqrUniqueCode(data);
 
       // Check if data is a URL or plain text
       if (data.startsWith("http")) {
@@ -87,18 +47,15 @@ const RedeemGiftCard = () => {
 
       console.log("Fetching Gift Card for ID:", cardId);
 
-      const { data: giftCard } = await axios.get(
-        `/api/v1/admin/scan-giftcard/${cardId}`
-      );
+      const { data: giftCard } = await axios.get(`/api/v1/admin/scan-giftcard/${cardId}`);
+      
       setGiftCard(giftCard);
 
       // Open modal to display card details
       setIsModalOpen(true);
 
       // Search for the buyer matching the scanned QR code
-      const scannedBuyer = giftCard.buyers.find(
-        (buyer) => buyer.qrCode.uniqueCode === data
-      );
+      const scannedBuyer = giftCard.buyers.find((buyer) => buyer.qrCode.uniqueCode === data);
 
       if (scannedBuyer) {
         setSelectedBuyer(scannedBuyer);
@@ -109,8 +66,7 @@ const RedeemGiftCard = () => {
 
       console.log("Gift Card Details:", giftCard);
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gift card not found.";
+      const errorMessage = error.response?.data?.message || "Gift card not found.";
       alert(`Error: ${errorMessage}`);
     }
   };
@@ -127,6 +83,7 @@ const RedeemGiftCard = () => {
 
   const handleSendOTP = async () => {
     try {
+      console.log(qrUniqueCode);
       const buyerEmail = selectedBuyer?.selfInfo?.email;
       const recipientEmail = selectedBuyer?.giftInfo?.recipientEmail;
 
@@ -142,17 +99,13 @@ const RedeemGiftCard = () => {
         return;
       }
 
-      console.log(
-        "Sending OTP to:",
-        emailToSendOtp,
-        "with redeem amount:",
-        redeemAmount
-      );
+      console.log("Sending OTP to:", emailToSendOtp, "with redeem amount:", redeemAmount);
 
       // Make API call to the backend to send OTP
-      const response = await axios.post("/api/v1/admin/send-otp", {
+      const response = await axios.post("/api/v1/admin/send-otp-redeem", {
         email: emailToSendOtp,
         redeemAmount,
+        qrUniqueCode,
         // Assuming selectedBuyer has the giftCardId
       });
 
@@ -166,11 +119,11 @@ const RedeemGiftCard = () => {
       }
     } catch (error) {
       console.error("Error sending OTP:", error);
-      const errorMessage =
-        error.response?.data?.message || "Failed to send OTP.";
+      const errorMessage = error.response?.data?.message || "Failed to send OTP.";
       alert(errorMessage);
     }
   };
+
   const handleVerifyOTP = async () => {
     try {
       if (!otp) {
@@ -189,222 +142,77 @@ const RedeemGiftCard = () => {
         return;
       }
 
-      const response = await axios.post("/api/v1/admin/verify-otp", {
+      const response = await axios.post("/api/v1/admin/verify-otp-redeem", {
         email: emailToVerifyOtp,
+        qrUniqueCode,
         // Include giftCardId in the request
         otp,
       });
 
+      console.log(response);
       if (response.data.success) {
+        console.log(response.data.success);
         setIsOtpVerified(true);
+        console.log("asdfadsf : ", isOtpVerified);
         alert(response.data.message);
       } else {
         alert(response.data.message);
       }
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Failed to verify OTP.";
+      const errorMessage = error.response?.data?.message || "Failed to verify OTP.";
       alert(errorMessage);
     }
   };
 
-  // const handleRedeemGiftCard = async (qrCode, amount) => {
-  //   try {
-  //     if (!qrCode || !amount || amount <= 0) {
-  //       throw new Error("Invalid QR code or redeem amount.");
-  //     }
-
-  //     const response = await axios.post("/api/v1/admin/redeem", {
-  //       qrCode,
-  //       amount,
-  //     });
-
-  //     console.log("Redemption successful:", response.data);
-
-  //     // Update local gift card data, only update the balance, not the amount
-  //     setGiftCard((prevCard) => ({
-  //       ...prevCard,
-  //       redemptionHistory: response.data.redemptionHistory,
-  //     }));
-
-  //     setUpdatedBalance((prev) => prev - amount); // Update only the balance
-  //     setRedeemAmount(""); // Clear redeem amount field
-  //     alert("Redeem successful!");
-
-  //     handleCloseModal();
-  //   } catch (error) {
-  //     const errorMessage =
-  //       error.response?.data?.message || "Redemption failed.";
-  //     alert(errorMessage);
-  //   }
-  // };
-
-  // const handleRedeemGiftCard = async (qrCode, amount) => {
-  //   try {
-  //     if (!qrCode || !amount || amount <= 0) {
-  //       throw new Error("Invalid QR code or redeem amount.");
-  //     }
-
-  //     const response = await axios.post("/api/v1/admin/redeem", {
-  //       qrCode,
-  //       amount,
-  //     });
-
-  //     console.log("Redemption successful:", response.data);
-
-  //     // Assuming the backend returns the updated balance and redemption history
-  //     const { updatedBalance, redemptionHistory } = response.data;
-
-  //     // Update local state to reflect the new balance and redemption history
-  //     setGiftCard((prevCard) => ({
-  //       ...prevCard,
-  //       redemptionHistory, // Update redemption history
-  //       balance: updatedBalance, // Update the balance, not the original amount
-  //     }));
-
-  //     setUpdatedBalance(updatedBalance); // Update balance for UI
-  //     setRedeemAmount(""); // Clear redeem amount field
-  //     alert("Redeem successful!");
-
-  //     handleCloseModal();
-  //   } catch (error) {
-  //     console.error("Error during redemption:", error);
-  //     const errorMessage =
-  //       error.response?.data?.message || "Redemption failed.";
-  //     alert(errorMessage);
-  //   }
-  // };
-  // const handleRedeemGiftCard = async (qrCode, amount) => {
-  //   try {
-  //     if (!qrCode || !amount || amount <= 0) {
-  //       throw new Error("Invalid QR code or redeem amount.");
-  //     }
-
-  //     // Send the QR code and amount to the backend for redemption
-  //     const response = await axios.post("/api/v1/admin/redeem", {
-  //       qrCode,
-  //       amount,
-  //     });
-
-  //     console.log("Redemption successful:", response.data);
-
-  //     // Assuming the backend returns updated buyer data and redemption history
-  //     const { buyer, redemptionHistory } = response.data;
-
-  //     // Update local state to reflect the new buyer data and redemption history
-  //     setGiftCard((prevCard) => {
-  //       const updatedBuyers = prevCard.buyers.map((b) =>
-  //         b.qrCode.uniqueCode === qrCode ? { ...b, ...buyer } : b
-  //       );
-
-  //       return {
-  //         ...prevCard,
-  //         buyers: updatedBuyers, // Update the specific buyer's data
-  //         redemptionHistory, // Update redemption history
-  //       };
-  //     });
-
-  //     setRedeemAmount(""); // Clear redeem amount field
-  //     alert("Redeem successful!");
-
-  //     handleCloseModal();
-  //   } catch (error) {
-  //     console.error("Error during redemption:", error);
-  //     const errorMessage =
-  //       error.response?.data?.message || "Redemption failed.";
-  //     alert(errorMessage);
-  //   }
-  // };
   const handleRedeemGiftCard = async (qrCode, amount) => {
     try {
       if (!qrCode || !amount || amount <= 0) {
         throw new Error("Invalid QR code or redeem amount.");
       }
-  
       // Send the QR code and amount to the backend for redemption
       const response = await axios.post("/api/v1/admin/redeem", {
         qrCode,
         amount,
       });
-  
+
       console.log("Redemption successful:", response.data);
-  
+
       const { buyer, redemptionHistory } = response.data;
-  
+
       // Update the selected buyer's state
       setSelectedBuyer((prevBuyer) => ({
         ...prevBuyer,
         ...buyer,
         remainingBalance: buyer.remainingBalance,
       }));
-  
+
       // Update the gift card state with the updated buyer data
       setGiftCard((prevCard) => {
         const updatedBuyers = prevCard.buyers.map((b) =>
-          b.qrCode.uniqueCode === qrCode
-            ? { ...b, ...buyer, remainingBalance: buyer.remainingBalance }
-            : b
+          b.qrCode.uniqueCode === qrCode ? { ...b, ...buyer, remainingBalance: buyer.remainingBalance } : b
         );
-  
+
         return {
           ...prevCard,
           buyers: updatedBuyers,
           redemptionHistory, // Update redemption history
         };
       });
-  
+
       setRedeemAmount(""); // Clear redeem amount field
       alert("Redeem successful!");
-  
+
       handleCloseModal();
     } catch (error) {
       console.error("Error during redemption:", error);
-      const errorMessage =
-        error.response?.data?.message || "Redemption failed.";
+      const errorMessage = error.response?.data?.message || "Redemption failed.";
       alert(errorMessage);
     }
   };
-  
-
-  // const handleRedeemGiftCard = async (qrCode, userAmount) => {
-  //   try {
-  //     if (!qrCode || !userAmount || userAmount <= 0) {
-  //       throw new Error("Invalid QR code or redeem amount.");
-  //     }
-
-  //     const response = await axios.post("/api/v1/admin/redeem", {
-  //       qrCode,
-  //       redeemAmount, // Rename the argument to redeemAmount
-  //     });
-
-  //     console.log("Redemption successful:", response.data);
-
-  //     // Assuming the backend returns the updated balance and redemption history
-  //     const { updatedBalance, redemptionHistory } = response.data;
-
-  //     // Update local state to reflect the new balance and redemption history
-  //     setGiftCard((prevCard) => ({
-  //       ...prevCard,
-  //       redemptionHistory, // Update redemption history
-  //       balance: updatedBalance, // Update the balance with the updated value
-  //     }));
-
-  //     setUpdatedBalance(updatedBalance); // Update balance for UI
-  //     setRedeemAmount(""); // Clear redeem amount field
-  //     alert("Redeem successful!");
-
-  //     handleCloseModal();
-  //   } catch (error) {
-  //     console.error("Error during redemption:", error);
-  //     const errorMessage =
-  //       error.response?.data?.message || "Redemption failed.";
-  //     alert(errorMessage);
-  //   }
-  // };
 
   return (
     <div>
-      <h2>Scan QR Code to Fetch Gift Card</h2>
+      <h1 className="heading">Redeem GiftCard</h1>
       <QRScanner onScan={handleQRScan} />
       {isModalOpen && (
         <div className="modal">
@@ -428,16 +236,11 @@ const RedeemGiftCard = () => {
               </label>
               <label>
                 Amount:
-                <input type="number" value={giftCard.amount} readOnly />{" "}
-                {/* Keep the original amount */}
+                <input type="number" value={giftCard.amount} readOnly /> {/* Keep the original amount */}
               </label>
               <label>
                 Remaining Balance:
-                <input
-                  type="number"
-                  value={selectedBuyer.remainingBalance || giftCard.amount}
-                  readOnly
-                />
+                <input type="number" value={selectedBuyer.remainingBalance || giftCard.amount} readOnly />
                 {/* Update balance */}
               </label>
               <label>
@@ -446,47 +249,27 @@ const RedeemGiftCard = () => {
               </label>
               <label>
                 Expiration Date:
-                <input
-                  type="text"
-                  value={new Date(giftCard.expirationDate).toLocaleDateString()}
-                  readOnly
-                />
+                <input type="text" value={new Date(giftCard.expirationDate).toLocaleDateString()} readOnly />
               </label>
-              <h4>
-                {selectedBuyer?.giftInfo?.recipientEmail
-                  ? "Recipient Details"
-                  : "Buyer Details"}
-              </h4>
+              <h4>{selectedBuyer?.giftInfo?.recipientEmail ? "Recipient Details" : "Buyer Details"}</h4>
 
               {/* Display buyer or recipient details */}
               <label>
-                {selectedBuyer?.giftInfo?.recipientEmail
-                  ? "Recipient Name"
-                  : "Buyer Name"}
+                {selectedBuyer?.giftInfo?.recipientEmail ? "Recipient Name" : "Buyer Name"}
                 :
                 <input
                   type="text"
-                  value={
-                    selectedBuyer?.giftInfo?.recipientName ||
-                    selectedBuyer?.selfInfo?.name ||
-                    ""
-                  }
+                  value={selectedBuyer?.giftInfo?.recipientName || selectedBuyer?.selfInfo?.name || ""}
                   readOnly
                 />
               </label>
 
               <label>
-                {selectedBuyer?.giftInfo?.recipientEmail
-                  ? "Recipient Email"
-                  : "Buyer Email"}
+                {selectedBuyer?.giftInfo?.recipientEmail ? "Recipient Email" : "Buyer Email"}
                 :
                 <input
                   type="text"
-                  value={
-                    selectedBuyer?.giftInfo?.recipientEmail ||
-                    selectedBuyer?.selfInfo?.email ||
-                    ""
-                  }
+                  value={selectedBuyer?.giftInfo?.recipientEmail || selectedBuyer?.selfInfo?.email || ""}
                   readOnly
                 />
               </label>
@@ -499,13 +282,9 @@ const RedeemGiftCard = () => {
                   value={redeemAmount}
                   onChange={(e) => {
                     const enteredAmount = Number(e.target.value);
-                    const availableBalance =
-                      selectedBuyer?.remainingBalance ?? giftCard.amount; // Fallback to original amount if remainingBalance is undefined
+                    const availableBalance = selectedBuyer?.remainingBalance ?? giftCard.amount; // Fallback to original amount if remainingBalance is undefined
 
-                    if (
-                      enteredAmount > 0 &&
-                      enteredAmount <= availableBalance
-                    ) {
+                    if (enteredAmount > 0 && enteredAmount <= availableBalance) {
                       setRedeemAmount(enteredAmount);
                     } else if (enteredAmount > availableBalance) {
                       alert("Redeem amount exceeds the available balance.");
@@ -524,11 +303,7 @@ const RedeemGiftCard = () => {
                 <div>
                   <label>
                     Enter OTP:
-                    <input
-                      type="text"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value)}
-                    />
+                    <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} />
                   </label>
                   <button type="button" onClick={handleVerifyOTP}>
                     Verify OTP
@@ -542,12 +317,7 @@ const RedeemGiftCard = () => {
               {isOtpVerified && (
                 <button
                   type="button"
-                  onClick={() =>
-                    handleRedeemGiftCard(
-                      selectedBuyer?.qrCode?.uniqueCode,
-                      redeemAmount
-                    )
-                  }
+                  onClick={() => handleRedeemGiftCard(selectedBuyer?.qrCode?.uniqueCode, redeemAmount)}
                 >
                   Redeem Gift Card
                 </button>
@@ -561,3 +331,191 @@ const RedeemGiftCard = () => {
 };
 
 export default RedeemGiftCard;
+
+// const handleRedeemGiftCard = async (qrCode, amount) => {
+//   try {
+//     if (!qrCode || !amount || amount <= 0) {
+//       throw new Error("Invalid QR code or redeem amount.");
+//     }
+
+//     const response = await axios.post("/api/v1/admin/redeem", {
+//       qrCode,
+//       amount,
+//     });
+
+//     console.log("Redemption successful:", response.data);
+
+//     // Update local gift card data, only update the balance, not the amount
+//     setGiftCard((prevCard) => ({
+//       ...prevCard,
+//       redemptionHistory: response.data.redemptionHistory,
+//     }));
+
+//     setUpdatedBalance((prev) => prev - amount); // Update only the balance
+//     setRedeemAmount(""); // Clear redeem amount field
+//     alert("Redeem successful!");
+
+//     handleCloseModal();
+//   } catch (error) {
+//     const errorMessage =
+//       error.response?.data?.message || "Redemption failed.";
+//     alert(errorMessage);
+//   }
+// };
+
+// const handleRedeemGiftCard = async (qrCode, amount) => {
+//   try {
+//     if (!qrCode || !amount || amount <= 0) {
+//       throw new Error("Invalid QR code or redeem amount.");
+//     }
+
+//     const response = await axios.post("/api/v1/admin/redeem", {
+//       qrCode,
+//       amount,
+//     });
+
+//     console.log("Redemption successful:", response.data);
+
+//     // Assuming the backend returns the updated balance and redemption history
+//     const { updatedBalance, redemptionHistory } = response.data;
+
+//     // Update local state to reflect the new balance and redemption history
+//     setGiftCard((prevCard) => ({
+//       ...prevCard,
+//       redemptionHistory, // Update redemption history
+//       balance: updatedBalance, // Update the balance, not the original amount
+//     }));
+
+//     setUpdatedBalance(updatedBalance); // Update balance for UI
+//     setRedeemAmount(""); // Clear redeem amount field
+//     alert("Redeem successful!");
+
+//     handleCloseModal();
+//   } catch (error) {
+//     console.error("Error during redemption:", error);
+//     const errorMessage =
+//       error.response?.data?.message || "Redemption failed.";
+//     alert(errorMessage);
+//   }
+// };
+// const handleRedeemGiftCard = async (qrCode, amount) => {
+//   try {
+//     if (!qrCode || !amount || amount <= 0) {
+//       throw new Error("Invalid QR code or redeem amount.");
+//     }
+
+//     // Send the QR code and amount to the backend for redemption
+//     const response = await axios.post("/api/v1/admin/redeem", {
+//       qrCode,
+//       amount,
+//     });
+
+//     console.log("Redemption successful:", response.data);
+
+//     // Assuming the backend returns updated buyer data and redemption history
+//     const { buyer, redemptionHistory } = response.data;
+
+//     // Update local state to reflect the new buyer data and redemption history
+//     setGiftCard((prevCard) => {
+//       const updatedBuyers = prevCard.buyers.map((b) =>
+//         b.qrCode.uniqueCode === qrCode ? { ...b, ...buyer } : b
+//       );
+
+//       return {
+//         ...prevCard,
+//         buyers: updatedBuyers, // Update the specific buyer's data
+//         redemptionHistory, // Update redemption history
+//       };
+//     });
+
+//     setRedeemAmount(""); // Clear redeem amount field
+//     alert("Redeem successful!");
+
+//     handleCloseModal();
+//   } catch (error) {
+//     console.error("Error during redemption:", error);
+//     const errorMessage =
+//       error.response?.data?.message || "Redemption failed.";
+//     alert(errorMessage);
+//   }
+// };
+
+// const handleRedeemGiftCard = async (qrCode, userAmount) => {
+//   try {
+//     if (!qrCode || !userAmount || userAmount <= 0) {
+//       throw new Error("Invalid QR code or redeem amount.");
+//     }
+
+//     const response = await axios.post("/api/v1/admin/redeem", {
+//       qrCode,
+//       redeemAmount, // Rename the argument to redeemAmount
+//     });
+
+//     console.log("Redemption successful:", response.data);
+
+//     // Assuming the backend returns the updated balance and redemption history
+//     const { updatedBalance, redemptionHistory } = response.data;
+
+//     // Update local state to reflect the new balance and redemption history
+//     setGiftCard((prevCard) => ({
+//       ...prevCard,
+//       redemptionHistory, // Update redemption history
+//       balance: updatedBalance, // Update the balance with the updated value
+//     }));
+
+//     setUpdatedBalance(updatedBalance); // Update balance for UI
+//     setRedeemAmount(""); // Clear redeem amount field
+//     alert("Redeem successful!");
+
+//     handleCloseModal();
+//   } catch (error) {
+//     console.error("Error during redemption:", error);
+//     const errorMessage =
+//       error.response?.data?.message || "Redemption failed.";
+//     alert(errorMessage);
+//   }
+// };
+
+// Fetch the gift card by scanning the QR code
+// const fetchGiftCard = async (data) => {
+//   try {
+//     let cardId;
+
+//     // Check if data is a URL or plain text
+//     if (data.startsWith("http")) {
+//       const url = new URL(data);
+//       cardId = url.pathname.split("/").pop();
+//     } else {
+//       cardId = data.trim();
+//     }
+
+//     if (!cardId) {
+//       alert("Invalid QR code data.");
+//       return;
+//     }
+
+//     console.log("Fetching Gift Card for ID:", cardId);
+
+//     const { data: giftCard } = await axios.get(`/api/v1/admin/scan-giftcard/${cardId}`);
+//     setGiftCard(giftCard);
+
+//      // Set the balance to the original amount
+//     setIsModalOpen(true);
+
+//     // Search for the buyer matching the scanned QR code
+//     const scannedBuyer = giftCard.buyers.find(buyer => buyer.qrCode.uniqueCode === data);
+
+//     if (scannedBuyer) {
+//       setSelectedBuyer(scannedBuyer);
+//       setUpdatedBalance(scannedBuyer.usedAmount || 0);
+//     } else {
+//       alert("No buyer found for the scanned QR code.");
+//     }
+
+//     console.log("Gift Card Details:", giftCard);
+//   } catch (error) {
+//     const errorMessage =
+//       error.response?.data?.message || "Gift card not found.";
+//     alert(`Error: ${errorMessage}`);
+//   }
+// };
