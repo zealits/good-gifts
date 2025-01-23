@@ -38,45 +38,53 @@
 }
 
 
-.giftcards-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-   color: white;
 
-    border-radius: 8px;
-    overflow: hidden;
-   
-}
 .react-icons {
     font-size: 1.5em; /* Increase icon size */
     color: #000; /* Set icon color to black or any color of your choice */
   }
   
+  .create-giftcard cbtn white{
+    background-color: #fff;
+
+  }
+
+  .giftcards-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    color: rgb(246, 241, 241);
+    border-radius: 8px;
+    overflow: hidden;
+    table-layout: auto;/* Ensures consistent column widths */
+}
 
 .giftcards-table th, .giftcards-table td {
-/*     border: 1px solid #ddd; */
     padding: 12px 15px;
-    text-align: left;
+    text-align: center; /* Center aligns text */
     font-size: 0.95rem;
+    
 }
 
 .giftcards-table th {
     background-color: #ffffff;
-    color: #000000;
+    color: #1b1a1a;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
+.giftcards-table td {
+    color: #f2eded; /* Ensure table data is visible */
+}
 
 
 .giftcards-table tr:hover {
-    background-color: #f9f9f9;
-    color: black;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+
+    
 }
+
 
 
 @media (max-width: 768px) {
@@ -126,14 +134,24 @@
 .cbtn.edit {
     margin-right: 10px;
     background-color: #00796b;
+    width: 70px;
 }
 
 .cbtn.delete {
     background-color: #d32f2f;
 }
 
+.submit-btn{
+    
+    color: #000;
+}
+.submit-btn:hover{
+    transform: scale(1.14);
+}
 .cbtn.view {
     background-color: #1976d2;
+    width: 100px;
+    height: 60px;
 }
 
 .cbtn:hover {
@@ -161,9 +179,9 @@
   
   .image-modal {
     position: relative;
-    background: #bde7bd; /* Light greenish background */
-    border: 3px solid #28a745; /* Green border */
-    box-shadow: 0 4px 15px rgba(0, 128, 0, 0.5);
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a); /* Lighter black gradient */
+    
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     width: 70%;
     max-width: 800px;
@@ -183,24 +201,42 @@
   
   .image-modal-close {
     position: absolute;
-    top: 10px;
+    top: 2px;
     right: 10px;
-    background: #28a745; /* Greenish background */
+    
     color: white;
     font-size: 18px;
     border: none;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     cursor: pointer;
+
   }
-  
-  .image-modal-close:hover {
-    background: #218838; /* Slightly darker green */
+  .image-modal-close:hover{
+    transform: scale(1.2);
+    
   }
-  
+ 
+  .yes-del-btn{
+    background-color: #100f0f;
+    border: none;
+  }
+
+  .yes-del-btn:hover{
+    transform: scale(1.1);
+    border: 1px solid #fff;
+  }
 
 
+  .no-del-btn{
+    background-color: #100f0f;
+    border: none;
+  }
+  .no-del-btn:hover{
+    transform: scale(1.1);
+    border: 1px solid #fff;
+  }
 
 
 /* Modal Styles */
@@ -217,87 +253,269 @@
     padding-bottom: 15px;
    
   }
+  /* Add this CSS for your modal container */
+  .modal-container {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    justify-content: flex-start; /* Align items at the start of the container */
+    align-items: center; /* Center content horizontally */
+    height: 200px;
+    width: 400px;
+    position: fixed; /* Keeps the modal in view regardless of scrolling */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for the modal's size */
+    z-index: 1000; /* Ensure it appears on top of other elements */
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a); /* Lighter black gradient */
+    padding: 20px; /* Padding for inner spacing */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow */
+    border-radius: 8px; /* Optional rounded corners */
+    font-size: 1rem;
+  }
   
-  .creategiftcard-modal-content {
-    height: 98%;
-    background: white;
-    padding: 20px 30px; /* Reduced top and bottom padding */
-    border-radius: 8px;
+  .modal-container p {
+    flex-grow: 1; /* Allow the paragraph to take all remaining vertical space */
+    width: 100%; /* Ensure it spans the entire modal width */
+    text-align: left; /* Align the text to the left */
+    font-size: 1.3rem;
+    margin: 0 0 20px 0; /* Bottom margin for spacing below the paragraph */
+    color: #fff; /* Text color for contrast with background */
+  }
+  
+  .modal-container .button-group {
+    display: flex; /* Align buttons side by side */
+    justify-content: center; /* Center buttons horizontally */
+    gap: 20px; /* Space between buttons */
+  }
+  
+  .modal-container button {
+    margin: 10px 5px 0; /* Add spacing between the buttons and the paragraph */
+    padding: 10px 20px; /* Add padding for a better button appearance */
+    border: none; /* Remove button borders */
+    border-radius: 5px; /* Rounded corners for the buttons */
+    
+    color: #fff; /* Button text color */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    font-size: 1.2rem; /* Adjust button font size */
+  }
+  
+ 
+  
+  .modal-container button:hover {
+    opacity: 0.9;
+     /* Slight transparency effect on hover */
+  }
+  
+  /* Optional: Modal overlay for dimming the background */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    z-index: 999; /* Must be lower than the modal's z-index */
+  }
+  
+  
+/* Modal Content Styling */
+.creategiftcard-modal-content {
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a); /* Lighter black gradient */
+    background-image: 
+      radial-gradient(circle, #333 25%, #1a1a1a 75%), /* Lighter radial gradient for depth */
+      url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"%3E%3Cpath fill="none" stroke="%23bbb" stroke-width="2" d="M0 100 Q50 80 100 100 T200 100" /%3E%3C/svg%3E'); /* Wavy pattern */
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: #fff; /* White text for contrast */
+    border-radius: 12px; /* Rounded corners */
+    padding: 30px 40px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Shadow for floating effect */
     width: 500px;
+    margin: 40vh auto; /* Centers the modal vertically and adds 20% space from top */
     position: relative;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-}
-
-.creategiftcard-modal-content h2 {
-    text-align: center;
-    color: #28A745;
-    margin-bottom: 20px;
-}
-
-
-  label {
-    font-size: 14px;
-    color: #333;
-    display: block;
-    margin-bottom: 5px;
-    text-align: left;
-}
+    overflow: hidden; /* Hide excess gradient outside the rounded corners */
+    max-height: 90vh; /* Limits the height of the modal */
+    overflow-y: auto; /* Enables scrolling if the content overflows */
+  }
+  /* Style for the button */
+.create-giftcard.cbtn.white {
+    background-color: white; /* White background */
+    color: #2a2a2a; /* Dark text color for contrast */
+    border: 1px solid #444; /* Subtle border to match the form style */
+    padding: 10px 20px; /* Padding to make the button look good */
+    font-size: 14px; /* Set font size */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition on hover */
+  }
   
-  .close-btn {
+  /* Style when button is hovered */
+  .create-giftcard.cbtn.white:hover {
+    background-color: #f0f0f0; /* Lighter background on hover */
+    color: #1a1a1a; /* Darker text color on hover */
+  }
+  
+  /* Title */
+  .creategiftcard-modal-content h2 {
+    text-align: center;
+    color: #d2d5d3;
+    margin-bottom: 20px;
+  }
+  
+  /* General Styling for all elements inside the modal */
+  .creategiftcard-modal-content * {
+    color: #fff !important; /* Enforce white color for all text */
+  }
+
+  .sub-updt-btn{
+    margin-left: 100px;
+    width: 200px;
+    background-color: #100f0f;
+    color: #000000;
+    border: none;
+  }
+
+  .sub-updt-btn:hover{
+    transform: scale(1.2);
+    border: 1px solid  #fff;
+  }
+  
+  /* Close Button */
+.close-btn {
+    color: #fff; /* White text */
+    font-size: 24px;
+    border: none;
     position: absolute;
     top: 10px;
     right: 10px;
-    background: none;
-    border: none;
-    font-size: 18px;
     cursor: pointer;
-  
+    transition: all 0.3s ease;
+    background: linear-gradient(145deg, #444, #2a2a2a); /* Subtle contrast background */
+    padding: 5px 10px; /* Add padding for a button-like appearance */
+    border-radius: 50%; /* Rounded button for a clean look */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
   }
   
+  /* Close Button Hover */
   .close-btn:hover {
-    color: red;
+    transform: scale(1.1); /* Slight scale effect */
+    background: linear-gradient(145deg, #666, #444); /* Brighter contrast on hover */
   }
   
+  /* Form Styling */
   .giftcard-form {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 15px; /* Add consistent spacing between form elements */
+  }
+  /* Input fields, textarea, and select dropdown styling */
+.creategiftcard-modal-content input,
+.creategiftcard-modal-content textarea,
+.creategiftcard-modal-content select {
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a); /* Darker background for inputs *//* Dark background */
+  color: #ffffff; /* White text for contrast */
+  border: 1px solid #444444; /* Slightly lighter border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px; /* Padding inside the fields */
+  margin-top: 5px; /* Spacing between label and field */
+  font-size: 14px; /* Adjust font size */
+  width: 100%; /* Full width for better alignment */
+  box-sizing: border-box; /* Ensure padding doesn't break layout */
 }
 
-.giftcard-form .form-group {
-    margin-bottom: 0; /* Remove bottom margin since `gap` handles spacing */
+/* Hover and focus effects for better UX */
+.creategiftcard-modal-content input:hover,
+.creategiftcard-modal-content textarea:hover,
+.creategiftcard-modal-content select:hover,
+.creategiftcard-modal-content input:focus,
+.creategiftcard-modal-content textarea:focus,
+.creategiftcard-modal-content select:focus {
+  outline: none; /* Remove default focus outline */
+  border: 1px solid #888888; /* Highlight border on hover or focus */
+  background-color: #333333; /* Slightly lighter background on focus */
 }
 
-.giftcard-form label {
+/* Label spacing for better alignment */
+.creategiftcard-modal-content label {
+  display: block;
+  color: #ffffff; /* White text for labels */
+  font-weight: bold;
+  margin-bottom: 5px; /* Space below the label */
+}
+
+/* Add margin between form groups for spacing */
+.creategiftcard-modal-content .form-group {
+  margin-bottom: 15px;
+}
+
+ /* Style for the select dropdown */
+select {
+    background-color: #2a2a2a; /* Match the background color of the rest of the form */
+    color: #fff; /* White text */
+    border: 1px solid #444; /* Subtle border color */
+    padding: 10px; /* Add padding for better spacing */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 14px; /* Font size for the text */
+    width: 100%; /* Make it span the full width of the form */
+    outline: none; /* Remove the outline when focused */
+    box-sizing: border-box; /* Ensure padding does not affect width calculation */
+    transition: background-color 0.3s ease; /* Smooth transition for background color change */
+  }
+  
+  select:focus {
+    background-color: #3a3a3a; /* Darker background when focused */
+    border-color: #777; /* Lighter border color on focus */
+  }
+  
+  /* Style for options inside the select */
+  option {
+    background-color: #2a2a2a; /* Match the dropdown background */
+    color: #fff; /* White text for options */
+    padding: 10px; /* Padding for options */
+    border: none; /* Remove any default border */
+  }
+  
+  option:hover {
+    background-color: #444; /* Lighter background color on hover */
+  }
+  
+  
+  /* Label Styling */
+  .giftcard-form label {
     margin-bottom: 5px;
-}
-
-.giftcard-form input,
-.giftcard-form select,
-.giftcard-form textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; /* Ensures consistent box sizing */
-}
-
-.submit-btn {
+  }
+  
+  /* Submit Button Styling */
+  .submit-btn {
     align-self: flex-start; /* Aligns button to the left (can change to center if needed) */
-    background-color: green;
-    color: white;
+    background-color: rgb(226, 233, 226);
+    color: black;
     padding: 10px 15px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     margin-top: 10px; /* Adds space between the button and the form fields */
-}
-
-.submit-btn:hover {
-    background-color: darkgreen;
-}
+  }
+  
+  /* Submit Button Hover Effect */
+ 
+  
+  /* Scrollbar Styling */
+  .creategiftcard-modal-content::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .creategiftcard-modal-content::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+  }
+  
+  .creategiftcard-modal-content::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }
+  
 
 /* Icon Styling */
 .react-icons {
@@ -305,56 +523,13 @@
     margin-right: 10px; /* Space between icon and text */
 }
 
-/* Stunning Green-Themed Scrollbar Styling */
-.giftcard-form select::-webkit-scrollbar {
-    width: 10px;
-   
-   /* Wider scrollbar for a bold look */
-}
 
-.giftcard-form select::-webkit-scrollbar-track {
-    background: linear-gradient(180deg, #004d00, #007d00, #094b09); /* Rich green gradient for track */
-    border-radius: 10px; /* Smooth edges */
-    box-shadow: inset 0 0 6px rgba(0, 128, 0, 0.5); /* Inner green glow for depth */
-    border: 2px solid #007d00;
-    /* Dark green border */
-}
 
-.giftcard-form select::-webkit-scrollbar-thumb {
-   background-color: #3aab3a;
-    border-radius: 20px; /* Smooth, rounded thumb edges */
-    /* border: 2px solid #004d00; Dark green border */
-    /* box-shadow: 0 4px 12px rgba(0, 255, 0, 0.6); Radiant green glow */
-    animation: thumb-glow 4s infinite ease-in-out; /* Subtle glowing animation */
-}
 
-.giftcard-form select::-webkit-scrollbar-thumb:hover {
-   /* Earthy and bold forest greens */
 
-    /* Bright green gradient on hover */
-    box-shadow: 0 5px 15px rgba(0, 255, 0, 0.8); /* Enhanced glow effect on hover */
-    transform: scale(1.1); /* Slight enlargement for interactivity */
-}
 
-.giftcard-form select::-webkit-scrollbar-corner {
-    background: #006600; /* Deep green corner for consistency */
-}
 
-/* Smooth pulsing glow for the scrollbar thumb */
-@keyframes thumb-glow {
-    0%, 100% {
-        box-shadow: 0 4px 12px rgba(0, 255, 0, 0.6);
-    }
-    50% {
-        box-shadow: 0 4px 18px rgba(0, 255, 0, 1);
-    }
-}
 
-/* General styling for broader compatibility */
-.giftcard-form select {
-    scrollbar-color: #33cc33 #004d00; /* Green shades for thumb and track */
-    scrollbar-width: thin; /* Sleek, thin scrollbar */
-}
 
 
 /* Icon colors for each option */

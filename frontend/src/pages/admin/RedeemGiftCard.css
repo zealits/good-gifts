@@ -1,0 +1,150 @@
+/* Modal and Form Styling */
+.modal-content {
+  background: linear-gradient(145deg, #2a2a2a, #1a1a1a); /* Lighter black gradient */
+    background-image: 
+      radial-gradient(circle, #333 25%, #1a1a1a 75%), /* Lighter radial gradient for depth */
+      url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"%3E%3Cpath fill="none" stroke="%23bbb" stroke-width="2" d="M0 100 Q50 80 100 100 T200 100" /%3E%3C/svg%3E'); /* Wavy pattern */
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: #fff; /* White text for contrast */
+    border-radius: 12px; /* Rounded corners */
+    padding: 30px 40px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Shadow for floating effect */
+    width: 500px;
+    margin: 40vh auto; /* Centers the modal vertically and adds 20% space from top */
+    position: relative;
+    overflow: hidden; /* Hide excess gradient outside the rounded corners */
+    max-height: 90vh; /* Limits the height of the modal */
+    overflow-y: auto;  /* Hide excess gradient outside the rounded corners */
+}
+
+/* Ensure all text within the modal is white */
+.modal-content * {
+  color: #fff !important; /* Enforce white color for all text */
+}
+
+/* Form Styling */
+.redeem-form {
+  display: flex;
+  
+  flex-direction: column;
+  gap: 23px;
+}
+
+/* Label Styling */
+.redeem-form label {
+    text-align: left; /* Align the label text to the start */
+    display: block; /* Ensure labels take up the full width */
+    margin-bottom: 12px; /* Add spacing between the label and input field */
+    font-size: 14px; /* Adjust font size if needed */
+    font-weight: bold; /* Optionally make the labels bold for better visibility */
+  }
+  
+ 
+  
+  /* Input Fields and Fields Spacing */
+  .redeem-form input, .redeem-form textarea, .redeem-form select {
+    margin-bottom: 20px; /* Space between each input field */
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a); /* Darker background for inputs */
+    color: #fff; /* White text for inputs */
+    border: 2px solid #555; /* Slightly lighter border for inputs */
+    padding: 10px;
+    border-radius: 8px; /* Rounded corners for inputs */
+    font-size: 16px;
+    transition: all 0.3s ease; /* Smooth transition */
+  }
+  
+
+
+
+/* Input Focus Styling */
+input:focus, textarea:focus {
+  border-color: #fff; /* White border on focus */
+  outline: none;
+  /* Slightly lighter background on focus */
+}
+
+/* Button Styling (Already added earlier) */
+button {
+ 
+  color: #fff; /* White text */
+  border: 2px solid #fff; /* White border */
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease; /* Smooth transition on hover */
+  outline: none;
+  margin-top: 5px;
+  margin-left:20px;
+}
+
+/* Close Button */
+.close-btn {
+  background-color: #2a2a2a;
+  color: #fff; /* White text */
+  font-size: 24px;
+  border: none;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+  .send-otp-btn{
+    background-color: #100f0f;
+    width: 310px;
+    margin-left: 50px;
+   border: none;
+    
+  }
+
+  .send-otp-btn:hover{
+    border: 1px solid #fff;
+    transform: scale(1.1);
+  }
+
+
+  .verify-otp-btn{
+    background-color: #100f0f;
+    width: 310px;
+    margin-left:5px;
+    border: none;
+  }
+
+  .verify-otp-btn:hover{
+    border: 1px solid #fff;
+    transform: scale(1.1);
+  }
+  
+/* button{
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+} */
+
+
+  
+ 
+  
+  /* Button Active State */
+  button:active {
+    transform: scale(0.98); /* Slightly shrink the button on click */
+  }
+  
+  /* Scrollable Modal (if form content overflows) */
+  .modal-content {
+    overflow-y: auto; /* Allows scrolling if the form content exceeds the modal */
+    max-height: 80vh; /* Limit the maximum height */
+  }
+  
+ 
+  
+  /* Textareas */
+  textarea {
+    min-height: 100px; /* Set a minimum height for text areas */
+    resize: vertical; /* Allow resizing vertically */
+  }
+  

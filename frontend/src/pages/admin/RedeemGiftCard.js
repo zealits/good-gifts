@@ -169,47 +169,50 @@ const RedeemGiftCard = () => {
       if (!qrCode || !amount || amount <= 0) {
         throw new Error("Invalid QR code or redeem amount.");
       }
+  
       // Send the QR code and amount to the backend for redemption
       const response = await axios.post("/api/v1/admin/redeem", {
         qrCode,
         amount,
       });
-
+  
       console.log("Redemption successful:", response.data);
-
-      const { buyer, redemptionHistory } = response.data;
-
+  
+      const { buyer } = response.data;
+  
       // Update the selected buyer's state
       setSelectedBuyer((prevBuyer) => ({
         ...prevBuyer,
         ...buyer,
         remainingBalance: buyer.remainingBalance,
+        redemptionHistory: buyer.redemptionHistory, // Update redemption history
       }));
-
+  
       // Update the gift card state with the updated buyer data
       setGiftCard((prevCard) => {
         const updatedBuyers = prevCard.buyers.map((b) =>
-          b.qrCode.uniqueCode === qrCode ? { ...b, ...buyer, remainingBalance: buyer.remainingBalance } : b
+          b.qrCode.uniqueCode === qrCode
+            ? { ...b, ...buyer, redemptionHistory: buyer.redemptionHistory }
+            : b
         );
-
+  
         return {
           ...prevCard,
           buyers: updatedBuyers,
-          redemptionHistory, // Update redemption history
         };
       });
-
+  
       setRedeemAmount(""); // Clear redeem amount field
       alert("Redeem successful!");
-
-      handleCloseModal();
+  
+      handleCloseModal(); // Close the modal after successful redemption
     } catch (error) {
       console.error("Error during redemption:", error);
       const errorMessage = error.response?.data?.message || "Redemption failed.";
       alert(errorMessage);
     }
   };
-
+  
   return (
     <div>
       <h1 className="heading">Redeem GiftCard</h1>
@@ -217,11 +220,12 @@ const RedeemGiftCard = () => {
       {isModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <button className="close" onClick={handleCloseModal}>
+            <button className="close-btn" onClick={handleCloseModal}>
               &times;
             </button>
             <h3>Gift Card Details</h3>
-            <form>
+            <div className="form-container">
+            <form className="redeem-form">
               <label>
                 Gift Card Name:
                 <input type="text" value={giftCard.giftCardName} readOnly />
@@ -296,7 +300,8 @@ const RedeemGiftCard = () => {
               </label>
 
               {/* Send OTP */}
-              <button type="button" onClick={handleSendOTP}>
+              <button type="button" className="send-otp-btn"
+               onClick={handleSendOTP}>
                 Send OTP
               </button>
               {isOtpSent && (
@@ -305,7 +310,7 @@ const RedeemGiftCard = () => {
                     Enter OTP:
                     <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} />
                   </label>
-                  <button type="button" onClick={handleVerifyOTP}>
+                  <button type="button" className="verify-otp-btn" onClick={handleVerifyOTP}>
                     Verify OTP
                   </button>
                 </div>
@@ -317,12 +322,14 @@ const RedeemGiftCard = () => {
               {isOtpVerified && (
                 <button
                   type="button"
+                  className="redeem-btn"
                   onClick={() => handleRedeemGiftCard(selectedBuyer?.qrCode?.uniqueCode, redeemAmount)}
                 >
                   Redeem Gift Card
                 </button>
               )}
             </form>
+          </div>
           </div>
         </div>
       )}

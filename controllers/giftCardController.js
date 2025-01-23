@@ -677,8 +677,19 @@ const redeemGiftCard = async (req, res) => {
     buyer.remainingBalance = remainingBalance - amount;
     buyer.usedAmount = (buyer.usedAmount || 0) + amount;
 
+    const redemptionDetails = {
+      redeemedAmount: amount,
+      redemptionDate : new Date(),
+      originalAmount: giftCard.amount,
+      remainingAmount: buyer.remainingBalance,
+    };
+    buyer.redemptionHistory.push(redemptionDetails);
+
     // Save the updated gift card document
     await giftCard.save();
+    console.log("Gift card document saved:", giftCard);
+    console.log("Buyer object after redemption:", buyer);
+
 
     // Respond with success and updated data
     res.status(200).json({
@@ -686,6 +697,7 @@ const redeemGiftCard = async (req, res) => {
       buyer: {
         remainingBalance: buyer.remainingBalance,
         usedAmount: buyer.usedAmount,
+        redemptionHistory: buyer.redemptionHistory, 
       },
     });
   } catch (error) {

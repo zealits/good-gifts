@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -18,6 +19,7 @@ import "./AdminDashboard.css";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
   const [totalGiftCards, setTotalGiftCards] = useState(0);
   const [totalSold, setTotalSold] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
@@ -152,7 +154,11 @@ const AdminDashboard = () => {
     <div>
       <h1 className="heading">Dashboard</h1>
       <div className="dashboard-container">
-        <div className="stat-card">
+        <div
+          className="stat-card"
+          onClick={() => navigate("/giftcards")} // Navigate to GiftCards page on click
+          style={{ cursor: "pointer" }} // Make it look clickable
+        >
           <h3>Types Of Gift Card</h3>
           {loading ? <div className="skeleton" /> : <p>{totalGiftCards}</p>}
         </div>
