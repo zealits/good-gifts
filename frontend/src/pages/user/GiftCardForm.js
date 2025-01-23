@@ -1,16 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./GiftCardForm.css"; // Import CSS for styling
 import { purchaseGiftCard } from "../../services/Actions/giftCardActions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import SquarePaymentForm from "./SquarePaymentForm.js";
 
 const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [purchaseType, setPurchaseType] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const[showForm,setShowForm] = useState(true);
- // Initially set modal to closed
+  const [showForm, setShowForm] = useState(true);
+  // Initially set modal to closed
 
   const dispatch = useDispatch();
+  const { paymentData } = useSelector((state) => state.payment);
+  console.log("ser : ", paymentData?.payment);
+  console.log("amount : ", paymentData?.payment?.amountMoney?.amount);
+  console.log("receiptUrl : ", paymentData?.payment?.receiptUrl);
+  console.log("receiptNumber : ", paymentData?.payment?.receiptNumber);
+  console.log("transactionId : ", paymentData?.payment?.id);
+  console.log("sourceType : ", paymentData?.payment?.sourceType);
+  console.log("status : ", paymentData?.payment?.status);
+  console.log("paymentTime : ", paymentData?.payment?.updatedAt);
+
+  useEffect(() => {
+    if (paymentData?.payment) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        paymentDetails: {
+          transactionId: paymentData.payment.id || "",
+          paymentMethod: paymentData.payment.sourceType || "",
+          paymentamount: paymentData.payment.amountMoney?.amount || "",
+          currency: paymentData.payment.amountMoney?.currency || "",
+          status: paymentData.payment.status || "",
+          receiptNumber: paymentData.payment.receiptNumber || "",
+          receiptUrl: paymentData.payment.receiptUrl || "",
+          paymentdAt: paymentData.payment.updatedAt || "",
+        },
+      }));
+    }
+  }, [paymentData]);
 
   console.log(id);
 
@@ -31,9 +59,14 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
       senderPhone: "",
     },
     paymentDetails: {
-      cardNumber: "",
-      expiryDate: "",
-      cvv: "",
+      transactionId: "",
+      paymentMethod: "",
+      paymentamount: "",
+      currency: "",
+      status: "",
+      receiptNumber: "",
+      receiptUrl: "",
+      paymentdAt: "",
     },
   });
 
@@ -142,9 +175,6 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
     }
   };
 
-
-  
-
   const handlePrev = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
@@ -152,11 +182,11 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
 
+    console.log("formdata : ", formData);
     // Dispatch the purchaseGiftCard action with formData
     dispatch(purchaseGiftCard(formData));
     setShowModal(true);
     setShowForm(false);
-   
   };
 
   React.useEffect(() => {
@@ -324,22 +354,9 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
 
         {currentStep === 3 && (
           <div className="form-section">
-            <h2>Payment Method</h2>
-            <div className="payment-methods">
-              <div className="payment-method active" data-method="credit-card">
-                <img src="/api/placeholder/150/40" alt="Credit Card" />
-                <h3>Credit Card</h3>
-              </div>
-              <div className="payment-method " data-method="credit-card">
-                <img src="/api/placeholder/150/40" alt="Credit Card" />
-                <h3>Credit Card</h3>
-              </div>
-              <div className="payment-method " data-method="credit-card">
-                <img src="/api/placeholder/150/40" alt="Credit Card" />
-                <h3>Credit Card</h3>
-              </div>
-            </div>
-            <div className="payment-details">
+            <SquarePaymentForm />
+
+            {/* <div className="payment-details">
               <div className="form-group">
                 <label htmlFor="card-number">Card Number</label>
                 <input
@@ -369,7 +386,7 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
                   onChange={(e) => handlePaymentChange("cvv", e.target.value)}
                 />
               </div>
-            </div>
+            </div> */}
           </div>
         )}
 

@@ -60,22 +60,22 @@ const AdminDashboard = () => {
       {
         label: "Gift Cards Sold",
         data: salesData.data,
-        borderColor: "rgba(75, 192, 192, 1)",
+        borderColor: "rgb(255, 255, 255)",
         fill: true,
         tension: 0.3, // Smooth curves
         pointRadius: 6, // Slightly larger points for better visibility
-        pointBackgroundColor: "rgba(75, 192, 192, 1)", // Point color matching the line
+        pointBackgroundColor: "rgb(255, 255, 255)", // Point color matching the line
         borderWidth: 3, // Thicker line
         hoverBorderWidth: 4, // Border width on hover for points
-        hoverBackgroundColor: "rgba(75, 192, 192, 0.6)", // Highlight color for hover
+        hoverBackgroundColor: "rgba(0, 0, 0, 0.6)", // Highlight color for hover
         // Apply gradient effect for filling
         backgroundColor: (context) => {
           const chart = context.chart;
           const { ctx, chartArea } = chart;
           if (!chartArea) return; // if chart isn't rendered yet
           const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
-          gradient.addColorStop(0, "rgba(75, 192, 192, 0.2)");
-          gradient.addColorStop(1, "rgba(75, 192, 192, 0.05)");
+          gradient.addColorStop(0, "rgba(6, 6, 6, 0.2)");
+          gradient.addColorStop(1, "rgba(0, 0, 0, 0.05)");
           return gradient;
         },
       },
@@ -113,7 +113,7 @@ const AdminDashboard = () => {
         backgroundColor: "rgba(0, 0, 0, 0.8)", // Darker background for tooltips
         titleColor: "#fff", // White color for tooltip title
         bodyColor: "#fff", // White color for tooltip body text
-        borderColor: "rgba(75, 192, 192, 1)", // Border color matching the line
+        borderColor: "rgb(0, 0, 0)", // Border color matching the line
         borderWidth: 2, // Tooltip border width
         padding: 10,
         displayColors: false, // Hide color box in tooltip
@@ -133,13 +133,13 @@ const AdminDashboard = () => {
     elements: {
       line: {
         borderWidth: 3, // Line thickness
-        borderColor: "rgba(75, 192, 192, 1)", // Line color
+        borderColor: "rgb(0, 0, 0)", // Line color
         tension: 0.3, // Smooth line
       },
       point: {
         radius: 6, // Point size
         hitRadius: 10, // Area for hover detection
-        backgroundColor: "rgba(75, 192, 192, 1)", // Point color matching the line
+        backgroundColor: "rgb(0, 0, 0)", // Point color matching the line
       },
     },
     animation: {
@@ -153,7 +153,7 @@ const AdminDashboard = () => {
       <h1 className="heading">Dashboard</h1>
       <div className="dashboard-container">
         <div className="stat-card">
-          <h3>Total Gift Cards Created</h3>
+          <h3>Types Of Gift Card</h3>
           {loading ? <div className="skeleton" /> : <p>{totalGiftCards}</p>}
         </div>
 
@@ -163,7 +163,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="stat-card">
-          <h3>Total Revenue from Gift Cards</h3>
+          <h3>Total Redemption </h3>
           {loading ? <div className="skeleton" /> : <p>${totalRevenue.toFixed(2)}</p>}
         </div>
       </div>

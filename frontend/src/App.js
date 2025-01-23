@@ -102,13 +102,13 @@ function App() {
                 }
               />
               <Route
-        path="/redeem"
-        element={
-          <div className="content">
-            <RedeemGiftCard />
-          </div>
-        }
-      />
+                path="/redeem"
+                element={
+                  <div className="content">
+                    <RedeemGiftCard />
+                  </div>
+                }
+              />
             </>
           )}
 

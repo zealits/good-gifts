@@ -10,7 +10,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #1abc9c, #16a085); /* Elegant greenish gradient */
+    /* background: linear-gradient(135deg, #1abc9c, #16a085);  */
     border-radius: 20px;
     padding: 40px 40px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Depth effect */
