@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./GiftCards.css";
 import { useDispatch, useSelector } from "react-redux";
-import { createGiftCard,listGiftCards ,updateGiftCard ,deleteGiftCard } from "../../services/Actions/giftCardActions";
+import {
+  createGiftCard,
+  listGiftCards,
+  updateGiftCard,
+  deleteGiftCard,
+} from "../../services/Actions/giftCardActions";
 import Modal from "../../components/Notification/Modal";
 
 const GiftCards = () => {
@@ -28,11 +33,17 @@ const GiftCards = () => {
   const giftCardCreate = useSelector((state) => state.giftCardCreate);
   const giftCardUpdate = useSelector((state) => state.giftCardUpdate);
   const giftCardDelete = useSelector((state) => state.giftCardDelete);
-  const { giftCards, loading, error } = useSelector((state) => state.giftCardList);
+  const { giftCards, loading, error } = useSelector(
+    (state) => state.giftCardList
+  );
 
   useEffect(() => {
     if (giftCardCreate.success || giftCardUpdate.success) {
-      setModalMessage(giftCardCreate.success ? "Gift card created successfully!" : "Gift card updated successfully!");
+      setModalMessage(
+        giftCardCreate.success
+          ? "Gift card created successfully!"
+          : "Gift card updated successfully!"
+      );
       setMessageModalOpen(true);
       setModalOpen(false); // Close modal after successful action
       dispatch(listGiftCards()); // Refresh the list
@@ -170,7 +181,10 @@ const GiftCards = () => {
       <div>
         <div className="main-content">
           <div className="actions">
-            <button className="create-giftcard cbtn white" onClick={handleOpenModal}>
+            <button
+              className="create-giftcard cbtn white"
+              onClick={handleOpenModal}
+            >
               Create Giftcard
             </button>
             <input
@@ -209,19 +223,34 @@ const GiftCards = () => {
                     <td>{card.giftCardName}</td>
                     <td>$ {card.amount}</td>
                     <td>{card.discount}%</td>
-                    <td>$ {card.amount - (card.amount * card.discount) / 100}</td>
-
-                    <td>{new Date(card.expirationDate).toLocaleDateString("en-GB")}</td>
                     <td>
-                      <button className="cbtn view" onClick={() => viewImage(card.giftCardImg)}>
+                      $ {card.amount - (card.amount * card.discount) / 100}
+                    </td>
+
+                    <td>
+                      {new Date(card.expirationDate).toLocaleDateString(
+                        "en-GB"
+                      )}
+                    </td>
+                    <td>
+                      <button
+                        className="cbtn view"
+                        onClick={() => viewImage(card.giftCardImg)}
+                      >
                         View Image
                       </button>
                     </td>
                     <td>
-                      <button className="cbtn edit" onClick={() => handleEdit(card)}>
+                      <button
+                        className="cbtn edit"
+                        onClick={() => handleEdit(card)}
+                      >
                         Edit
                       </button>
-                      <button className="cbtn delete" onClick={() => handleDelete(card._id)}>
+                      <button
+                        className="cbtn delete"
+                        onClick={() => handleDelete(card._id)}
+                      >
                         Delete
                       </button>
                     </td>
@@ -430,40 +459,63 @@ const GiftCards = () => {
 
               <div className="form-group">
                 <label htmlFor="image">Upload Image</label>
-                <input type="file" id="image" name="image" accept="image/*" onChange={handleFileChange} required />
+                <input
+                  type="file"
+                  id="image"
+                  name="image"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  required
+                />
               </div>
-              <button type="submit" className="submit-btn">
+              <button type="submit" className="sub-updt-btn">
                 {isEditing ? "Update" : "Submit"}
               </button>
             </form>
           </div>
         </div>
       )}
+
       {isImageModalOpen && (
         <div className="image-modal-overlay">
           <div className="image-modal">
             <button className="image-modal-close" onClick={closeImageModal}>
               &times;
             </button>
-            <img src={selectedImage} alt="Gift Card" className="image-modal-content" loading="lazy" />
+            <img
+              src={selectedImage}
+              alt="Gift Card"
+              className="image-modal-content"
+              loading="lazy"
+            />
           </div>
         </div>
       )}
 
-      {isMessageModalOpen && <Modal message={modalMessage} onClose={closeModal} />}
-
-      {isDeleteModalOpen && (
-        <Modal
-          message="Are you sure you want to delete this gift card?"
-          onClose={() => setDeleteModalOpen(false)}
-          showCloseButton={false} // Do not show the Close button
-        >
-          <button onClick={confirmDelete}>Yes</button>
-          <button onClick={() => setDeleteModalOpen(false)}>No</button>
-        </Modal>
+      {isMessageModalOpen && (
+        <Modal message={modalMessage} onClose={closeModal} />
       )}
 
-      {isMessageModalOpen && <Modal message={modalMessage} onClose={closeModal} />}
+      {isDeleteModalOpen && (
+  <div className="modal-overlay">
+    <div className="modal-container">
+      <p>Are you sure you want to delete this gift card?</p>
+      <div className="button-group">
+      <button className="yes-del-btn" onClick={confirmDelete}>
+        Yes
+      </button>
+      <button className="no-del-btn" onClick={() => setDeleteModalOpen(false)}>
+        No
+      </button>
+    </div>
+    </div>
+  </div>
+)}
+
+
+      {isMessageModalOpen && (
+        <Modal message={modalMessage} onClose={closeModal} />
+      )}
     </div>
   );
 };

@@ -117,6 +117,9 @@ function App() {
 
           {/* Fallback route */}
           <Route path="*" element={<Navigate to="/" />} />
+
+          <Route path="/" element={<AdminDashboard />} />
+      <Route path="/giftcards" element={<GiftCards />} />
         </Routes>
       </Router>
     </div>

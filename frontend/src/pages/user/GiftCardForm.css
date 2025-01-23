@@ -118,6 +118,7 @@
 
 .purchase-option {
     padding: 2rem 1.5rem;
+    color: black;
     border: 2px solid #ddd;
     border-radius: var(--border-radius);
     text-align: center;
@@ -158,14 +159,17 @@ input, textarea, select {
     border: 2px solid #ddd;
     border-radius: var(--border-radius);
     font-size: 1rem;
+    background-color: white; /* Set the background color to white */
     transition: var(--transition);
 }
 
 input:focus, textarea:focus, select:focus {
+    background-color: white; /* Keep background white even on focus */
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 5px rgba(44, 62, 80, 0.2);
 }
+
 
 textarea {
     min-height: 100px;
@@ -220,6 +224,8 @@ textarea {
 
 .giftFormBtn {
     padding: 0.8rem 1.5rem;
+    color: #efecec;
+   background-color: #e95746;
     border: none;
     border-radius: var(--border-radius);
     font-size: 1rem;
