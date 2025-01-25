@@ -124,6 +124,30 @@ const getTotalGiftCardsSold = async (req, res) => {
   }
 };
 
+const getSoldGiftCards = async (req, res) => {
+  try {
+    // Fetch only gift cards with buyers (indicating they are sold)
+    const soldGiftCards = await GiftCard.find({ "buyers.0": { $exists: true } });
+
+    // Map gift cards to include only relevant details
+    const giftCards = soldGiftCards.map((card) => ({
+      id: card._id,
+      name: card.giftCardName,
+      tag: card.giftCardTag,
+      description: card.description,
+      image: card.giftCardImg,
+      totalBuyers: card.buyers.length, // Count of buyers
+    }));
+
+    res.status(200).json({ giftCards });
+  } catch (error) {
+    console.error("Error in getSoldGiftCards:", error);
+    res.status(500).json({ error: "Failed to fetch sold gift cards" });
+  }
+};
+
+
+
 const getTotalRevenue = async (req, res) => {
   try {
     const allGiftCards = await GiftCard.find();
@@ -826,6 +850,90 @@ const fetchGiftCardById = async (req, res) => {
   }
 };
 
+
+
+
+
+
+const getGiftCardBuyers = async (req, res) => {
+  try {
+    const { id } = req.params; // Gift card ID
+    const giftCard = await GiftCard.findById(id);
+
+    if (!giftCard) {
+      return res.status(404).json({ error: "Gift card not found" });
+    }
+
+    // Sort buyers by purchase date and include remaining balance and redemption history
+    const sortedBuyers = giftCard.buyers
+      .sort((a, b) => new Date(a.purchaseDate) - new Date(b.purchaseDate))
+      .map((buyer) => {
+        const isGift = buyer.purchaseType === "gift";
+        const buyerName = isGift
+          ? buyer.giftInfo?.senderName || "Unknown Buyer"
+          : buyer.selfInfo?.name || "Unknown Buyer";
+        const recipientName = buyer.giftInfo?.recipientName || "Recipient";
+
+        const name = isGift
+          ? `${buyerName} bought for ${recipientName}`
+          : buyerName;
+
+        return {
+          name,
+          purchaseDate: buyer.purchaseDate,
+          remainingBalance: buyer.remainingBalance || 0,
+          redemptionHistory: buyer.redemptionHistory || [],
+        };
+      });
+
+    res.status(200).json({ buyers: sortedBuyers });
+  } catch (error) {
+    console.error("Error in getGiftCardBuyers:", error);
+    res.status(500).json({ error: "Failed to fetch buyers" });
+  }
+};
+
+const getAllBuyers = async (req, res) => {
+  try {
+    const giftCards = await GiftCard.find({}, "giftCardName buyers"); // Only fetch `giftCardName` and `buyers`
+
+    // Extract buyers from all gift cards and sort them by purchaseDate
+    const buyers = giftCards.flatMap((card) =>
+      card.buyers.map((buyer) => ({
+        buyerName: buyer.purchaseType === "self" ? buyer.selfInfo.name : buyer.giftInfo.senderName,
+        email: buyer.purchaseType === "self" ? buyer.selfInfo.email : buyer.giftInfo.senderEmail,
+        remainingBalance: buyer.remainingBalance,
+        giftCardName: card.giftCardName,
+        purchaseDate: buyer.purchaseDate,
+        usedAmount: buyer.usedAmount,
+        redemptionHistory: buyer.redemptionHistory.map((entry) => ({
+          redeemedAmount: entry.redeemedAmount,
+          redemptionDate: entry.redemptionDate,
+          remainingAmount: entry.remainingAmount,
+          originalAmount: entry.originalAmount,
+        })),
+      }))
+    );
+
+    // Sort buyers by purchaseDate in ascending order
+    buyers.sort((a, b) => new Date(a.purchaseDate) - new Date(b.purchaseDate));
+
+    res.status(200).json({
+      success: true,
+      buyers,
+    });
+  } catch (error) {
+    console.error("Error fetching buyers:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch buyers.",
+    });
+  }
+};
+
+
+
+
 module.exports = {
   createGiftCard,
   getGiftCardById,
@@ -841,4 +949,7 @@ module.exports = {
   sendOtp,
   verifyOtp,
   fetchGiftCardById,
+  getSoldGiftCards,
+  getGiftCardBuyers,
+  getAllBuyers,
 };

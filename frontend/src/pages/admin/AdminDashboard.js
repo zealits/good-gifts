@@ -163,7 +163,11 @@ const AdminDashboard = () => {
           {loading ? <div className="skeleton" /> : <p>{totalGiftCards}</p>}
         </div>
 
-        <div className="stat-card">
+        <div
+          className="stat-card"
+          onClick={() => navigate("/orders")} // Navigate to Orders page on click
+          style={{ cursor: "pointer" }} // Make it look clickable
+        >
           <h3>Total Gift Cards Sold</h3>
           {loading ? <div className="skeleton" /> : <p>{totalSold}</p>}
         </div>

@@ -19,7 +19,8 @@
   }
   
   .content {
-    background-color: #0F0F0F;
+    background: linear-gradient(145deg, #1c1c1c, #292929);
+
     color:white;
     flex-grow: 1; /* Take remaining space */
     margin-left: 78px; /* Default width of the sidebar */
@@ -42,7 +43,7 @@
     text-align: center;
     padding: 20px;
     color: white;
-    font-family: 'Rampart One';
+    font-family: 'Lato';
 }
 
 .heading {
