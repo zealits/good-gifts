@@ -47,15 +47,19 @@ const RedeemGiftCard = () => {
 
       console.log("Fetching Gift Card for ID:", cardId);
 
-      const { data: giftCard } = await axios.get(`/api/v1/admin/scan-giftcard/${cardId}`);
-      
+      const { data: giftCard } = await axios.get(
+        `/api/v1/admin/scan-giftcard/${cardId}`
+      );
+
       setGiftCard(giftCard);
 
       // Open modal to display card details
       setIsModalOpen(true);
 
       // Search for the buyer matching the scanned QR code
-      const scannedBuyer = giftCard.buyers.find((buyer) => buyer.qrCode.uniqueCode === data);
+      const scannedBuyer = giftCard.buyers.find(
+        (buyer) => buyer.qrCode.uniqueCode === data
+      );
 
       if (scannedBuyer) {
         setSelectedBuyer(scannedBuyer);
@@ -66,7 +70,8 @@ const RedeemGiftCard = () => {
 
       console.log("Gift Card Details:", giftCard);
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Gift card not found.";
+      const errorMessage =
+        error.response?.data?.message || "Gift card not found.";
       alert(`Error: ${errorMessage}`);
     }
   };
@@ -99,7 +104,12 @@ const RedeemGiftCard = () => {
         return;
       }
 
-      console.log("Sending OTP to:", emailToSendOtp, "with redeem amount:", redeemAmount);
+      console.log(
+        "Sending OTP to:",
+        emailToSendOtp,
+        "with redeem amount:",
+        redeemAmount
+      );
 
       // Make API call to the backend to send OTP
       const response = await axios.post("/api/v1/admin/send-otp-redeem", {
@@ -119,100 +129,165 @@ const RedeemGiftCard = () => {
       }
     } catch (error) {
       console.error("Error sending OTP:", error);
-      const errorMessage = error.response?.data?.message || "Failed to send OTP.";
+      const errorMessage =
+        error.response?.data?.message || "Failed to send OTP.";
       alert(errorMessage);
     }
   };
 
-  const handleVerifyOTP = async () => {
-    try {
-      if (!otp) {
-        alert("OTP is missing.");
-        return;
-      }
+  // const handleVerifyOTP = async () => {
+  //   try {
+  //     if (!otp) {
+  //       alert("OTP is missing.");
+  //       return;
+  //     }
 
-      const buyerEmail = selectedBuyer?.selfInfo?.email;
-      const recipientEmail = selectedBuyer?.giftInfo?.recipientEmail;
-      // Add the giftCardId
+  //     const buyerEmail = selectedBuyer?.selfInfo?.email;
+  //     const recipientEmail = selectedBuyer?.giftInfo?.recipientEmail;
+  //     // Add the giftCardId
 
-      const emailToVerifyOtp = recipientEmail || buyerEmail;
+  //     const emailToVerifyOtp = recipientEmail || buyerEmail;
 
-      if (!emailToVerifyOtp) {
-        alert("Email is missing. Cannot verify OTP.");
-        return;
-      }
+  //     if (!emailToVerifyOtp) {
+  //       alert("Email is missing. Cannot verify OTP.");
+  //       return;
+  //     }
 
-      const response = await axios.post("/api/v1/admin/verify-otp-redeem", {
-        email: emailToVerifyOtp,
-        qrUniqueCode,
-        // Include giftCardId in the request
-        otp,
-      });
+  //     const response = await axios.post("/api/v1/admin/verify-otp-redeem", {
+  //       email: emailToVerifyOtp,
+  //       qrUniqueCode,
+  //       // Include giftCardId in the request
+  //       otp,
+  //     });
 
-      console.log(response);
-      if (response.data.success) {
-        console.log(response.data.success);
-        setIsOtpVerified(true);
-        console.log("asdfadsf : ", isOtpVerified);
-        alert(response.data.message);
-      } else {
-        alert(response.data.message);
-      }
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || "Failed to verify OTP.";
-      alert(errorMessage);
-    }
-  };
+  //     console.log(response);
+  //     if (response.data.success) {
+  //       console.log(response.data.success);
+  //       setIsOtpVerified(true);
+  //       console.log("asdfadsf : ", isOtpVerified);
+  //       alert(response.data.message);
+  //     } else {
+  //       alert(response.data.message);
+  //     }
+  //   } catch (error) {
+  //     const errorMessage = error.response?.data?.message || "Failed to verify OTP.";
+  //     alert(errorMessage);
+  //   }
+  // };
 
   const handleRedeemGiftCard = async (qrCode, amount) => {
     try {
-      if (!qrCode || !amount || amount <= 0) {
-        throw new Error("Invalid QR code or redeem amount.");
+      console.log("Initiating redeem process...");
+
+      // Debug 1: Check if OTP is provided
+      if (!otp) {
+        alert("OTP is missing.");
+        console.error("Error: OTP is missing.");
+        return;
       }
-  
-      // Send the QR code and amount to the backend for redemption
-      const response = await axios.post("/api/v1/admin/redeem", {
-        qrCode,
-        amount,
+
+      // Debug 2: Verify buyer's email
+      const buyerEmail = selectedBuyer?.selfInfo?.email;
+      const recipientEmail = selectedBuyer?.giftInfo?.recipientEmail;
+      const emailToVerifyOtp = recipientEmail || buyerEmail;
+      console.log("Buyer email:", buyerEmail);
+      console.log("Recipient email:", recipientEmail);
+      console.log("Email used for OTP verification:", emailToVerifyOtp);
+
+      if (!emailToVerifyOtp) {
+        alert("Email is missing. Cannot verify OTP.");
+        console.error("Error: Email is missing.");
+        return;
+      }
+
+      // Debug 3: Log OTP verification payload
+      console.log("OTP verification payload:", {
+        email: emailToVerifyOtp,
+        qrUniqueCode,
+        otp,
       });
-  
-      console.log("Redemption successful:", response.data);
-  
-      const { buyer } = response.data;
-  
-      // Update the selected buyer's state
-      setSelectedBuyer((prevBuyer) => ({
-        ...prevBuyer,
-        ...buyer,
-        remainingBalance: buyer.remainingBalance,
-        redemptionHistory: buyer.redemptionHistory, // Update redemption history
-      }));
-  
-      // Update the gift card state with the updated buyer data
-      setGiftCard((prevCard) => {
-        const updatedBuyers = prevCard.buyers.map((b) =>
-          b.qrCode.uniqueCode === qrCode
-            ? { ...b, ...buyer, redemptionHistory: buyer.redemptionHistory }
-            : b
-        );
-  
-        return {
-          ...prevCard,
-          buyers: updatedBuyers,
-        };
+
+      // Call the backend to verify OTP
+      const otpResponse = await axios.post("/api/v1/admin/verify-otp-redeem", {
+        email: emailToVerifyOtp,
+        qrUniqueCode,
+        otp,
       });
-  
-      setRedeemAmount(""); // Clear redeem amount field
-      alert("Redeem successful!");
-  
-      handleCloseModal(); // Close the modal after successful redemption
+
+      // Debug 4: Log OTP verification response
+      console.log("OTP verification response:", otpResponse.data);
+
+      if (otpResponse.data.success) {
+        console.log("OTP verified successfully.");
+
+        // OTP verification successful, now redeem the gift card
+        console.log("Redeeming gift card...");
+        console.log("Redeem payload:", { qrCode, amount });
+
+        if (!qrCode || !amount || amount <= 0) {
+          alert("Invalid QR code or redeem amount.");
+          console.error("Error: Invalid QR code or redeem amount.");
+          return;
+        }
+
+        // Debug 5: Log redeem request payload
+        console.log("Redeem request payload:", { qrCode, amount });
+
+        // Call the backend to redeem the gift card
+        const response = await axios.post("/api/v1/admin/redeem", {
+          qrCode,
+          amount,
+        });
+
+        // Debug 6: Log redemption response
+        console.log("Redemption response:", response.data);
+
+        const { buyer } = response.data;
+
+        // Update the selected buyer's state
+        console.log("Updating selected buyer...");
+        setSelectedBuyer((prevBuyer) => ({
+          ...prevBuyer,
+          ...buyer,
+          remainingBalance: buyer.remainingBalance,
+          redemptionHistory: buyer.redemptionHistory,
+        }));
+
+        // Update the gift card state with the updated buyer data
+        console.log("Updating gift card state...");
+        setGiftCard((prevCard) => {
+          const updatedBuyers = prevCard.buyers.map((b) =>
+            b.qrCode.uniqueCode === qrCode
+              ? { ...b, ...buyer, redemptionHistory: buyer.redemptionHistory }
+              : b
+          );
+
+          return {
+            ...prevCard,
+            buyers: updatedBuyers,
+          };
+        });
+
+        setRedeemAmount(""); // Clear redeem amount field
+        console.log("Redeem process completed successfully.");
+        alert("Redeem successful!");
+
+        handleCloseModal(); // Close the modal after successful redemption
+      } else {
+        alert(otpResponse.data.message);
+        console.error("OTP verification failed:", otpResponse.data.message);
+      }
     } catch (error) {
-      console.error("Error during redemption:", error);
-      const errorMessage = error.response?.data?.message || "Redemption failed.";
+      // Debug 7: Log errors during the process
+      console.error("Error during OTP verification or redemption:", error);
+      console.error("Error response from server:", error.response?.data);
+
+      const errorMessage =
+        error.response?.data?.message || "Failed to process redemption.";
       alert(errorMessage);
     }
   };
-  
+
   return (
     <div>
       <h1 className="heading">Redeem GiftCard</h1>
@@ -223,113 +298,154 @@ const RedeemGiftCard = () => {
             <button className="close-btn" onClick={handleCloseModal}>
               &times;
             </button>
-            <h3>Gift Card Details</h3>
+            <h3 className="redeem-form-heading">Gift Card Details</h3>
             <div className="form-container">
-            <form className="redeem-form">
-              <label>
-                Gift Card Name:
-                <input type="text" value={giftCard.giftCardName} readOnly />
-              </label>
-              <label>
-                Tag:
-                <input type="text" value={giftCard.giftCardTag} readOnly />
-              </label>
-              <label>
-                Description:
-                <textarea value={giftCard.description} readOnly />
-              </label>
-              <label>
-                Amount:
-                <input type="number" value={giftCard.amount} readOnly /> {/* Keep the original amount */}
-              </label>
-              <label>
-                Remaining Balance:
-                <input type="number" value={selectedBuyer.remainingBalance || giftCard.amount} readOnly />
-                {/* Update balance */}
-              </label>
-              <label>
-                Status:
-                <input type="text" value={giftCard.status} readOnly />
-              </label>
-              <label>
-                Expiration Date:
-                <input type="text" value={new Date(giftCard.expirationDate).toLocaleDateString()} readOnly />
-              </label>
-              <h4>{selectedBuyer?.giftInfo?.recipientEmail ? "Recipient Details" : "Buyer Details"}</h4>
+              <form className="redeem-form">
+                <label>
+                  Gift Card Name:
+                  <input type="text" value={giftCard.giftCardName} readOnly />
+                </label>
+                <label>
+                  Tag:
+                  <input type="text" value={giftCard.giftCardTag} readOnly />
+                </label>
+                <label>
+                  Description:
+                  <textarea value={giftCard.description} readOnly />
+                </label>
+                <label>
+                  Amount:
+                  <input type="number" value={giftCard.amount} readOnly />{" "}
+                  {/* Keep the original amount */}
+                </label>
+                <label>
+                  Remaining Balance:
+                  <input
+                    type="number"
+                    value={selectedBuyer.remainingBalance || giftCard.amount}
+                    readOnly
+                  />
+                  {/* Update balance */}
+                </label>
+                <label>
+                  Status:
+                  <input type="text" value={giftCard.status} readOnly />
+                </label>
+                <label>
+                  Expiration Date:
+                  <input
+                    type="text"
+                    value={new Date(
+                      giftCard.expirationDate
+                    ).toLocaleDateString()}
+                    readOnly
+                  />
+                </label>
+                <h4>
+                  {selectedBuyer?.giftInfo?.recipientEmail
+                    ? "Recipient Details"
+                    : "Buyer Details"}
+                </h4>
 
-              {/* Display buyer or recipient details */}
-              <label>
-                {selectedBuyer?.giftInfo?.recipientEmail ? "Recipient Name" : "Buyer Name"}
-                :
-                <input
-                  type="text"
-                  value={selectedBuyer?.giftInfo?.recipientName || selectedBuyer?.selfInfo?.name || ""}
-                  readOnly
-                />
-              </label>
-
-              <label>
-                {selectedBuyer?.giftInfo?.recipientEmail ? "Recipient Email" : "Buyer Email"}
-                :
-                <input
-                  type="text"
-                  value={selectedBuyer?.giftInfo?.recipientEmail || selectedBuyer?.selfInfo?.email || ""}
-                  readOnly
-                />
-              </label>
-
-              {/* Redeem Amount Section */}
-              <label>
-                Enter Amount to Redeem:
-                <input
-                  type="number"
-                  value={redeemAmount}
-                  onChange={(e) => {
-                    const enteredAmount = Number(e.target.value);
-                    const availableBalance = selectedBuyer?.remainingBalance ?? giftCard.amount; // Fallback to original amount if remainingBalance is undefined
-
-                    if (enteredAmount > 0 && enteredAmount <= availableBalance) {
-                      setRedeemAmount(enteredAmount);
-                    } else if (enteredAmount > availableBalance) {
-                      alert("Redeem amount exceeds the available balance.");
-                    } else {
-                      setRedeemAmount(""); // Clear invalid input
+                {/* Display buyer or recipient details */}
+                <label>
+                  {selectedBuyer?.giftInfo?.recipientEmail
+                    ? "Recipient Name"
+                    : "Buyer Name"}
+                  :
+                  <input
+                    type="text"
+                    value={
+                      selectedBuyer?.giftInfo?.recipientName ||
+                      selectedBuyer?.selfInfo?.name ||
+                      ""
                     }
-                  }}
-                />
-              </label>
+                    readOnly
+                  />
+                </label>
 
-              {/* Send OTP */}
-              <button type="button" className="send-otp-btn"
-               onClick={handleSendOTP}>
-                Send OTP
-              </button>
-              {isOtpSent && (
-                <div>
-                  <label>
-                    Enter OTP:
-                    <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} />
-                  </label>
-                  <button type="button" className="verify-otp-btn" onClick={handleVerifyOTP}>
-                    Verify OTP
-                  </button>
-                </div>
-              )}
+                <label>
+                  {selectedBuyer?.giftInfo?.recipientEmail
+                    ? "Recipient Email"
+                    : "Buyer Email"}
+                  :
+                  <input
+                    type="text"
+                    value={
+                      selectedBuyer?.giftInfo?.recipientEmail ||
+                      selectedBuyer?.selfInfo?.email ||
+                      ""
+                    }
+                    readOnly
+                  />
+                </label>
 
-              {isOtpVerified && <p>OTP verified successfully!</p>}
+                {/* Redeem Amount Section */}
+                <label>
+                  Enter Amount to Redeem:
+                  <input
+                    type="number"
+                    value={redeemAmount}
+                    onChange={(e) => {
+                      const enteredAmount = Number(e.target.value);
+                      const availableBalance =
+                        selectedBuyer?.remainingBalance ?? giftCard.amount; // Fallback to original amount if remainingBalance is undefined
 
-              {/* Redeem Button only after OTP is verified */}
-              {isOtpVerified && (
+                      if (
+                        enteredAmount > 0 &&
+                        enteredAmount <= availableBalance
+                      ) {
+                        setRedeemAmount(enteredAmount);
+                      } else if (enteredAmount > availableBalance) {
+                        alert("Redeem amount exceeds the available balance.");
+                      } else {
+                        setRedeemAmount(""); // Clear invalid input
+                      }
+                    }}
+                  />
+                </label>
+
+                {/* Send OTP */}
                 <button
                   type="button"
-                  className="redeem-btn"
-                  onClick={() => handleRedeemGiftCard(selectedBuyer?.qrCode?.uniqueCode, redeemAmount)}
+                  className="send-otp-btn"
+                  onClick={handleSendOTP}
                 >
-                  Redeem Gift Card
+                  Send OTP
                 </button>
-              )}
-            </form>
-          </div>
+
+                {isOtpSent && (
+                  <div>
+                    <label>
+                      Enter OTP:
+                      <input
+                        type="text"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                      />
+                    </label>
+                  </div>
+                )}
+
+                {isOtpVerified && <p>OTP verified successfully!</p>}
+
+                {/* Redeem Button: Verifies OTP and Redeems Gift Card */}
+                {isOtpSent && !isOtpVerified && otp && (
+                  <button
+                    type="button"
+                    className="redeem-btn"
+                    onClick={() =>
+                      handleRedeemGiftCard(
+                        selectedBuyer?.qrCode?.uniqueCode,
+                        redeemAmount
+                      )
+                    }
+                  >
+                    Redeem Gift Card
+                  </button>
+                )}
+              </form>
+            </div>
           </div>
         </div>
       )}

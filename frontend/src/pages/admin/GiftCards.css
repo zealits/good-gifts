@@ -49,44 +49,42 @@
 
   }
 
-  .giftcards-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    color: rgb(246, 241, 241);
-    border-radius: 8px;
-    overflow: hidden;
-    table-layout: auto;/* Ensures consistent column widths */
+ /* Giftcards Table Styling */
+ .giftcards-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  color: rgb(246, 241, 241);
+  border-radius: 8px;
+  overflow: hidden;
+  table-layout: auto;/* Ensures consistent column widths */
 }
 
 .giftcards-table th, .giftcards-table td {
-    padding: 12px 15px;
-    text-align: center; /* Center aligns text */
-    font-size: 0.95rem;
-    
+  padding: 12px 15px;
+  text-align: center; /* Center aligns text */
+  font-size: 0.95rem;
+  
 }
 
 .giftcards-table th {
-    background-color: #ffffff;
-    color: #1b1a1a;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  background-color: #ffffff;
+  color: #1b1a1a;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .giftcards-table td {
-    color: #f2eded; /* Ensure table data is visible */
+  color: #f2eded; /* Ensure table data is visible */
 }
 
 
 .giftcards-table tr:hover {
-    background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+  background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
 
-    
-}
-
-
-
+  
+}  
 @media (max-width: 768px) {
     .actions {
         flex-direction: column;
@@ -203,8 +201,8 @@
     position: absolute;
     top: 2px;
     right: 10px;
-    
-    color: white;
+    background-color: none;
+    color: rgb(11, 10, 10);
     font-size: 18px;
     border: none;
     border-radius: 50%;
@@ -215,6 +213,7 @@
   }
   .image-modal-close:hover{
     transform: scale(1.2);
+   
     
   }
  
@@ -336,7 +335,8 @@
     position: relative;
     overflow: hidden; /* Hide excess gradient outside the rounded corners */
     max-height: 90vh; /* Limits the height of the modal */
-    overflow-y: auto; /* Enables scrolling if the content overflows */
+    overflow-y: auto;
+     /* Enables scrolling if the content overflows */
   }
   /* Style for the button */
 .create-giftcard.cbtn.white {

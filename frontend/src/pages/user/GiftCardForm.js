@@ -409,11 +409,11 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
         </div>
       </form>
       {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
+        <div className="purchase-modal-overlay">
+          <div className="purchase-modal-content">
             <h2>Purchase Completed Successfully!</h2>
             <p>Thank you for your purchase. A confirmation email has been sent to your inbox.</p>
-            <button className="modal-close-btn" onClick={() => setShowModal(false)}>
+            <button className="purchase-modal-close-btn" onClick={() => setShowModal(false)}>
               Close
             </button>
           </div>

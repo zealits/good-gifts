@@ -16,6 +16,9 @@ const {
   sendOtp,
   verifyOtp,
   fetchGiftCardById,
+  getSoldGiftCards,
+  getGiftCardBuyers,
+  getAllBuyers,
 } = require("../controllers/giftCardController.js");
 
 const router = express.Router();
@@ -43,8 +46,12 @@ router.post("/redeem", redeemGiftCard);
 // router.post("/verify-otp", verifyRedemptionOtp);
 router.post("/send-otp", sendOtp);
 router.post("/verify-otp", verifyOtp);
+// Endpoint to get all sold gift cards
+router.get('/giftcards', getSoldGiftCards);
 
-
+// Endpoint to get buyers for a specific gift card
+router.get('/giftcards/:id/buyers', getGiftCardBuyers);
+router.get("/buyers", getAllBuyers);
 
 
 router.get("/scan-giftcard/:id", fetchGiftCardById);

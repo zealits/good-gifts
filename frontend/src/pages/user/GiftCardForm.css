@@ -280,7 +280,7 @@ textarea {
     padding-bottom: 30px;
 }
 /* Modal Overlay */
-.modal-overlay {
+.purchase-modal-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -295,7 +295,7 @@ textarea {
 }
 
 /* Modal Content */
-.modal-content {
+.purchase-modal-content {
     background: #fff;
     border-radius: var(--border-radius);
     padding: 30px;
@@ -321,7 +321,7 @@ textarea {
 }
 
 /* Modal Title */
-.modal-content h2 {
+.purchase-modal-content h2 {
     font-size: 1.8rem;
     color: var(--primary-color);
     margin-bottom: 15px;
@@ -330,7 +330,7 @@ textarea {
 }
 
 /* Decorative underline on title */
-.modal-content h2::after {
+.purchase-modal--content h2::after {
     content: '';
     position: absolute;
     bottom: -8px;
@@ -342,7 +342,7 @@ textarea {
 }
 
 /* Modal Close Button */
-.modal-close-btn {
+.purchase-modal-close-btn {
     background: var(--secondary-color);
     color: #fff;
     border: none;
@@ -356,7 +356,7 @@ textarea {
     margin-top: 20px;
 }
 
-.modal-close-btn:hover {
+.purchase-modal-close-btn:hover {
     background: var(--accent-color);
     transform: translateY(-3px);
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
