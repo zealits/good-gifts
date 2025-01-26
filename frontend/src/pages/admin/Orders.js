@@ -99,13 +99,13 @@ const Orders = () => {
           onClick={handleGiftCardView}
           className={view === "giftCards" ? "active-view-button" : "view-button"}
         >
-          Gift Card
+          Gift Card Orders
         </button>
         <button
           onClick={handleUserView}
           className={view === "users" ? "active-view-button" : "view-button"}
         >
-          User
+          Time-Based Orders
         </button>
       </div>
 
