@@ -19,6 +19,7 @@ const {
   getSoldGiftCards,
   getGiftCardBuyers,
   getAllBuyers,
+  addGiftCardToWallet
 } = require("../controllers/giftCardController.js");
 
 const router = express.Router();
@@ -58,5 +59,11 @@ router.get("/scan-giftcard/:id", fetchGiftCardById);
 
 router.post("/send-otp-redeem", sendOtp);
 router.post("/verify-otp-redeem", verifyOtp);
+
+
+
+
+// Route to store gift card in Google Wallet
+router.post('/add-to-wallet', addGiftCardToWallet);
 
 module.exports = router;

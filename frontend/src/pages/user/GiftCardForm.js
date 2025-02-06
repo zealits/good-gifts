@@ -179,14 +179,39 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
 
-    console.log("formdata : ", formData);
-    // Dispatch the purchaseGiftCard action with formData
-    dispatch(purchaseGiftCard(formData));
-    setShowModal(true);
-    setShowForm(false);
+    try {
+      console.log("formdata : ", formData);
+      // Step 1: Handle payment (assuming already implemented)
+      dispatch(purchaseGiftCard(formData));
+
+      // Step 2: Add gift card to Google Wallet
+      const response = await fetch("/api/v1/admin/add-to-wallet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: formData.id,
+          cardNumber: 456,
+          balance: 500,
+        }),
+      });
+
+      console.log(response);
+
+      const data = await response.json();
+      if (data.saveUrl) {
+        window.location.href = data.saveUrl; // Redirect to Google Wallet
+      } else {
+        alert("Failed to add to Google Wallet");
+      }
+
+      setShowModal(true);
+      setShowForm(false);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   React.useEffect(() => {
