@@ -6,6 +6,8 @@ const sendEmail = require("../utils/sendEmailRedeem.js"); // Assuming sendEmail 
 const QRCode = require("qrcode"); // For generating QR codes
 const cloudinary = require("cloudinary");
 const fs = require("fs");
+const { google } = require("googleapis");
+const auth = require("../config/googleConfig");
 
 // Create a new gift card
 // const cloudinary = require("cloudinary").v2;
@@ -145,8 +147,6 @@ const getSoldGiftCards = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch sold gift cards" });
   }
 };
-
-
 
 const getTotalRevenue = async (req, res) => {
   try {
@@ -703,7 +703,7 @@ const redeemGiftCard = async (req, res) => {
 
     const redemptionDetails = {
       redeemedAmount: amount,
-      redemptionDate : new Date(),
+      redemptionDate: new Date(),
       originalAmount: giftCard.amount,
       remainingAmount: buyer.remainingBalance,
     };
@@ -714,14 +714,13 @@ const redeemGiftCard = async (req, res) => {
     console.log("Gift card document saved:", giftCard);
     console.log("Buyer object after redemption:", buyer);
 
-
     // Respond with success and updated data
     res.status(200).json({
       message: "Gift card redeemed successfully",
       buyer: {
         remainingBalance: buyer.remainingBalance,
         usedAmount: buyer.usedAmount,
-        redemptionHistory: buyer.redemptionHistory, 
+        redemptionHistory: buyer.redemptionHistory,
       },
     });
   } catch (error) {
@@ -729,7 +728,6 @@ const redeemGiftCard = async (req, res) => {
     res.status(500).json({ error: "An error occurred while redeeming the gift card." });
   }
 };
-
 
 const sendOtp = async (req, res, next) => {
   const { email, redeemAmount, qrUniqueCode } = req.body;
@@ -850,11 +848,6 @@ const fetchGiftCardById = async (req, res) => {
   }
 };
 
-
-
-
-
-
 const getGiftCardBuyers = async (req, res) => {
   try {
     const { id } = req.params; // Gift card ID
@@ -874,9 +867,7 @@ const getGiftCardBuyers = async (req, res) => {
           : buyer.selfInfo?.name || "Unknown Buyer";
         const recipientName = buyer.giftInfo?.recipientName || "Recipient";
 
-        const name = isGift
-          ? `${buyerName} bought for ${recipientName}`
-          : buyerName;
+        const name = isGift ? `${buyerName} bought for ${recipientName}` : buyerName;
 
         return {
           name,
@@ -931,8 +922,51 @@ const getAllBuyers = async (req, res) => {
   }
 };
 
+// Function to generate and save gift card to Google Wallet
+const addGiftCardToWallet = async (req, res) => {
+  try {
+    const { userId, cardNumber, balance } = req.body;
 
+    console.log("triggerd");
+    const walletService = google.walletobjects({
+      version: "v1",
+      auth: auth,
+    });
 
+    const giftCardId = `gift_card_${userId}_${Date.now()}`;
+
+    const microsValue = 50000000; // Representing $50.00 in micros
+
+    const giftCardObject = {
+      id: `${process.env.GOOGLE_WALLET_ISSUER_ID}.${giftCardId}`,
+      classId: `${process.env.GOOGLE_WALLET_ISSUER_ID}.giftcardclass`,
+      state: "active",
+      cardNumber: cardNumber,
+      balance: {
+        currencyCode: "USD",
+        value: microsValue, // This is the dollar value in micros
+        micros: microsValue, // Ensure micros is also explicitly set
+      },
+      barcode: {
+        type: "QR_CODE",
+        value: giftCardId,
+      },
+      issuerName: "Your Company Name",
+      programName: "Gift Card Program",
+    };
+
+    console.log(giftCardObject);
+    // Insert gift card into Google Wallet
+    await walletService.giftcardobject.insert({ requestBody: giftCardObject });
+
+    const saveUrl = `https://pay.google.com/gp/v/save/${giftCardObject.id}`;
+
+    res.status(200).json({ message: "Gift card added to wallet", saveUrl });
+  } catch (error) {
+    console.error("Error adding gift card:", error);
+    res.status(500).json({ error: "Failed to add gift card to wallet" });
+  }
+};
 
 module.exports = {
   createGiftCard,
@@ -952,4 +986,5 @@ module.exports = {
   getSoldGiftCards,
   getGiftCardBuyers,
   getAllBuyers,
+  addGiftCardToWallet,
 };
