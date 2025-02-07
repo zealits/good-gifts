@@ -925,27 +925,25 @@ const getAllBuyers = async (req, res) => {
 // Function to generate and save gift card to Google Wallet
 const addGiftCardToWallet = async (req, res) => {
   try {
-    const { userId, cardNumber, balance } = req.body;
+    const { userId, cardNumber } = req.body;
+    console.log("Triggered");
 
-    console.log("triggerd");
     const walletService = google.walletobjects({
       version: "v1",
       auth: auth,
     });
 
     const giftCardId = `gift_card_${userId}_${Date.now()}`;
-
-    const microsValue = 50000000; // Representing $50.00 in micros
+    const microsValue = 50000000; // $50 in micros
 
     const giftCardObject = {
       id: `${process.env.GOOGLE_WALLET_ISSUER_ID}.${giftCardId}`,
-      classId: `${process.env.GOOGLE_WALLET_ISSUER_ID}.giftcardclass`,
+      classId: `${process.env.GOOGLE_WALLET_ISSUER_ID}.aii_hotels.giftcardclass`,
       state: "active",
       cardNumber: cardNumber,
       balance: {
         currencyCode: "USD",
-        value: microsValue, // This is the dollar value in micros
-        micros: microsValue, // Ensure micros is also explicitly set
+        micros: microsValue, // Use only micros
       },
       barcode: {
         type: "QR_CODE",
@@ -955,18 +953,21 @@ const addGiftCardToWallet = async (req, res) => {
       programName: "Gift Card Program",
     };
 
-    console.log(giftCardObject);
+    console.log("Gift Card Object:", giftCardObject);
+
     // Insert gift card into Google Wallet
-    await walletService.giftcardobject.insert({ requestBody: giftCardObject });
+    const response = await walletService.giftcardobject.insert({ requestBody: giftCardObject });
+    console.log("Gift Card Created:", response.data);
 
     const saveUrl = `https://pay.google.com/gp/v/save/${giftCardObject.id}`;
-
     res.status(200).json({ message: "Gift card added to wallet", saveUrl });
+
   } catch (error) {
-    console.error("Error adding gift card:", error);
+    console.error("Error adding gift card:", error.response?.data || error);
     res.status(500).json({ error: "Failed to add gift card to wallet" });
   }
 };
+
 
 module.exports = {
   createGiftCard,
