@@ -6,6 +6,8 @@ const sendEmail = require("../utils/sendEmailRedeem.js"); // Assuming sendEmail 
 const QRCode = require("qrcode"); // For generating QR codes
 const cloudinary = require("cloudinary");
 const fs = require("fs");
+const { google } = require("googleapis");
+const auth = require("../config/googleConfig");
 
 // Create a new gift card
 // const cloudinary = require("cloudinary").v2;
@@ -145,8 +147,6 @@ const getSoldGiftCards = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch sold gift cards" });
   }
 };
-
-
 
 const getTotalRevenue = async (req, res) => {
   try {
@@ -761,7 +761,7 @@ const redeemGiftCard = async (req, res) => {
 
     const redemptionDetails = {
       redeemedAmount: amount,
-      redemptionDate : new Date(),
+      redemptionDate: new Date(),
       originalAmount: giftCard.amount,
       remainingAmount: buyer.remainingBalance,
     };
@@ -772,14 +772,13 @@ const redeemGiftCard = async (req, res) => {
     console.log("Gift card document saved:", giftCard);
     console.log("Buyer object after redemption:", buyer);
 
-
     // Respond with success and updated data
     res.status(200).json({
       message: "Gift card redeemed successfully",
       buyer: {
         remainingBalance: buyer.remainingBalance,
         usedAmount: buyer.usedAmount,
-        redemptionHistory: buyer.redemptionHistory, 
+        redemptionHistory: buyer.redemptionHistory,
       },
     });
   } catch (error) {
@@ -787,7 +786,6 @@ const redeemGiftCard = async (req, res) => {
     res.status(500).json({ error: "An error occurred while redeeming the gift card." });
   }
 };
-
 
 const sendOtp = async (req, res, next) => {
   const { email, redeemAmount, qrUniqueCode } = req.body;
@@ -908,11 +906,6 @@ const fetchGiftCardById = async (req, res) => {
   }
 };
 
-
-
-
-
-
 const getGiftCardBuyers = async (req, res) => {
   try {
     const { id } = req.params; // Gift card ID
@@ -932,9 +925,7 @@ const getGiftCardBuyers = async (req, res) => {
           : buyer.selfInfo?.name || "Unknown Buyer";
         const recipientName = buyer.giftInfo?.recipientName || "Recipient";
 
-        const name = isGift
-          ? `${buyerName} bought for ${recipientName}`
-          : buyerName;
+        const name = isGift ? `${buyerName} bought for ${recipientName}` : buyerName;
 
         return {
           name,
@@ -1052,7 +1043,111 @@ const getRevenueForLast30Days = async (req, res) => {
 };
 
 
+// Function to generate and save gift card to Google Wallet
+const addGiftCardToWallet = async (req, res) => {
+  try {
+    const { userId, cardNumber } = req.body;
+    console.log("Triggered");
 
+const totalRedemptionValue = async (req, res) => {
+  try {
+    // Use aggregation to sum up the redeemedAmount for all buyers in all gift cards
+    const totalRedemption = await GiftCard.aggregate([
+      { $unwind: "$buyers" }, // Unwind buyers array
+      { $unwind: "$buyers.redemptionHistory" }, // Unwind redemptionHistory array
+      { $group: {
+        _id: null, // Group all data together
+        totalRedemption: { $sum: "$buyers.redemptionHistory.redeemedAmount" } // Sum the redeemedAmount
+      }},
+    ]);
+
+    if (totalRedemption.length > 0) {
+      res.json({ totalRedemption: totalRedemption[0].totalRedemption });
+    } else {
+      res.json({ totalRedemption: 0 });
+    }
+  } catch (error) {
+    console.error("Error fetching total redemption:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getRevenueForLast30Days = async (req, res) => {
+  try {
+    // Calculate the start and end date for the last 30 days
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(endDate.getDate() - 30);
+
+    // Fetch gift cards sold within the last 30 days
+    const giftCards = await GiftCard.find({
+      "buyers.purchaseDate": { $gte: startDate, $lt: endDate },
+    });
+
+    // Calculate revenue grouped by day
+    const revenueByDate = {};
+
+    giftCards.forEach((card) => {
+      const discount = card.discount ? parseFloat(card.discount) / 100 : 0;
+      const cardRevenue = (card.amount || 0) * (1 - discount);
+
+      card.buyers.forEach((buyer) => {
+        const purchaseDate = new Date(buyer.purchaseDate).toISOString().split("T")[0]; // Extract date only
+
+        if (!revenueByDate[purchaseDate]) {
+          revenueByDate[purchaseDate] = 0;
+        }
+        revenueByDate[purchaseDate] += cardRevenue;
+      });
+    });
+
+    res.json({ revenueByDate });
+  } catch (error) {
+    res.status(500).json({ message: "Error calculating revenue for the last 30 days", error });
+  }
+};
+
+
+
+    const walletService = google.walletobjects({
+      version: "v1",
+      auth: auth,
+    });
+
+    const giftCardId = `gift_card_${userId}_${Date.now()}`;
+    const microsValue = 50000000; // $50 in micros
+
+    const giftCardObject = {
+      id: `${process.env.GOOGLE_WALLET_ISSUER_ID}.${giftCardId}`,
+      classId: `${process.env.GOOGLE_WALLET_ISSUER_ID}.aii_hotels.giftcardclass`,
+      state: "active",
+      cardNumber: cardNumber,
+      balance: {
+        currencyCode: "USD",
+        micros: microsValue, // Use only micros
+      },
+      barcode: {
+        type: "QR_CODE",
+        value: giftCardId,
+      },
+      issuerName: "Your Company Name",
+      programName: "Gift Card Program",
+    };
+
+    console.log("Gift Card Object:", giftCardObject);
+
+    // Insert gift card into Google Wallet
+    const response = await walletService.giftcardobject.insert({ requestBody: giftCardObject });
+    console.log("Gift Card Created:", response.data);
+
+    const saveUrl = `https://pay.google.com/gp/v/save/${giftCardObject.id}`;
+    res.status(200).json({ message: "Gift card added to wallet", saveUrl });
+
+  } catch (error) {
+    console.error("Error adding gift card:", error.response?.data || error);
+    res.status(500).json({ error: "Failed to add gift card to wallet" });
+  }
+};
 
 
 module.exports = {
@@ -1074,5 +1169,6 @@ module.exports = {
   getGiftCardBuyers,
   getAllBuyers,
   totalRedemptionValue,
-  getRevenueForLast30Days
+  getRevenueForLast30Days,
+  addGiftCardToWallet,
 };
