@@ -272,7 +272,7 @@ const GiftCards = () => {
             <button className="close-btn" onClick={handleCloseModal}>
               &times;
             </button>
-            <h2>{isEditing ? "Edit Gift Card" : "Create a Gift Card"}</h2>
+            <h2 className="gc-page-modal-heading">{isEditing ? "Edit Gift Card" : "Create a Gift Card"}</h2>
             <form className="giftcard-form" onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="giftCardName">Gift Card Name</label>
@@ -492,32 +492,36 @@ const GiftCards = () => {
         </div>
       )}
 
-      {isMessageModalOpen && (
-        <Modal message={modalMessage} onClose={closeModal} />
-      )}
 
-      {isDeleteModalOpen && (
-  <div className="modal-overlay">
-    <div className="modal-container">
-      <p>Are you sure you want to delete this gift card?</p>
-      <div className="button-group">
-      <button className="yes-del-btn" onClick={confirmDelete}>
-        Yes
-      </button>
-      <button className="no-del-btn" onClick={() => setDeleteModalOpen(false)}>
-        No
-      </button>
-    </div>
+
+{isMessageModalOpen && <Modal message={modalMessage} onClose={closeModal} />}
+
+{isDeleteModalOpen && (
+  <div className="delete-confirmation-modal-overlay">
+    <div className="delete-confirmation-modal-container">
+      <p className="delete-confirmation-modal-text">
+        Are you sure you want to delete this gift card?
+      </p>
+      <div className="delete-confirmation-button-group">
+        <button className="delete-confirmation-yes-button" onClick={confirmDelete}>
+          Yes
+        </button>
+        <button className="delete-confirmation-no-button" onClick={() => setDeleteModalOpen(false)}>
+          No
+        </button>
+      </div>
     </div>
   </div>
+  
+
 )}
-
-
-      {isMessageModalOpen && (
-        <Modal message={modalMessage} onClose={closeModal} />
-      )}
-    </div>
+</div>
   );
 };
+
+
+
+
+
 
 export default GiftCards;

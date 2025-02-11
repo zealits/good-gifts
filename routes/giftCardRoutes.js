@@ -19,6 +19,8 @@ const {
   getSoldGiftCards,
   getGiftCardBuyers,
   getAllBuyers,
+  totalRedemptionValue,
+  getRevenueForLast30Days
 } = require("../controllers/giftCardController.js");
 
 const router = express.Router();
@@ -59,4 +61,6 @@ router.get("/scan-giftcard/:id", fetchGiftCardById);
 router.post("/send-otp-redeem", sendOtp);
 router.post("/verify-otp-redeem", verifyOtp);
 
+router.get("/total-redemption", totalRedemptionValue); 
+router.get("/last-30-days", getRevenueForLast30Days);
 module.exports = router;

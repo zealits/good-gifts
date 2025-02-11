@@ -4,7 +4,7 @@ import { purchaseGiftCard } from "../../services/Actions/giftCardActions";
 import { useDispatch, useSelector } from "react-redux";
 import SquarePaymentForm from "./SquarePaymentForm.js";
 
-const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
+const GiftCardForm = ({ giftCardName, amount, discount, id }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [purchaseType, setPurchaseType] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -100,53 +100,62 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
     }));
   };
 
-  const validateStep = (step) => {
-    let isValid = true;
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-    switch (step) {
-      case 1:
-        if (!purchaseType) {
-          isValid = false;
-          alert("Please select a purchase type");
-        }
-        break;
+  const isValidName = (name) => /^[A-Za-z]+(?:\s[A-Za-z]+)*$/.test(name.trim());
 
-      case 2:
-        if (purchaseType === "self") {
-          const selfName = document.getElementById("self-name").value;
-          const selfEmail = document.getElementById("self-email").value;
-          if (!selfName || !selfEmail) {
-            isValid = false;
-          }
-        } else {
-          const recipientName = document.getElementById("recipient-name").value;
-          const recipientEmail = document.getElementById("recipient-email").value;
-          const senderName = document.getElementById("sender-name").value;
-          const senderEmail = document.getElementById("sender-email").value;
-          if (!recipientName || !recipientEmail || !senderName || !senderEmail) {
-            isValid = false;
-          }
-        }
-        break;
 
-      case 3:
-        const cardNumber = document.getElementById("card-number").value;
-        const expiryDate = document.getElementById("expiry-date").value;
-        const cvv = document.getElementById("cvv").value;
-        if (!cardNumber || !expiryDate || !cvv) {
+const isValidPhone = (phone) => /^\d{10}$/.test(phone);
+
+const validateStep = (step) => {
+  let isValid = true;
+
+  switch (step) {
+    case 1:
+      if (!purchaseType) {
+        alert("Please select a purchase type");
+        isValid = false;
+      }
+      break;
+
+    case 2:
+      if (purchaseType === "self") {
+        const { name, email, phone } = formData.selfInfo;
+        if (!isValidName(name) || !isValidEmail(email) || !isValidPhone(phone)) {
+          alert("Please enter valid details: Name (letters only), Email (correct format), and Phone (10 digits).");
           isValid = false;
         }
-        break;
+      } else {
+        const { recipientName, recipientEmail, senderName, senderEmail, senderPhone } = formData.giftInfo;
+        if (
+          !isValidName(recipientName) || 
+          !isValidEmail(recipientEmail) || 
+          !isValidName(senderName) || 
+          !isValidEmail(senderEmail) || 
+          !isValidPhone(senderPhone)
+        ) {
+          alert("Please enter valid details for all fields.");
+          isValid = false;
+        }
+      }
+      break;
 
-      default:
-        break;
-    }
+    case 3:
+      const cardNumber = document.getElementById("card-number")?.value;
+      const expiryDate = document.getElementById("expiry-date")?.value;
+      const cvv = document.getElementById("cvv")?.value;
+      if (!cardNumber || !expiryDate || !cvv) {
+        alert("Please enter valid payment details.");
+        isValid = false;
+      }
+      break;
 
-    if (!isValid) {
-      alert("Please fill in all required fields before proceeding.");
-    }
-    return isValid;
-  };
+    default:
+      break;
+  }
+
+  return isValid;
+};
 
   const updateSteps = () => {
     const selfPurchaseForm = document.getElementById("self-purchase-form");
@@ -193,19 +202,26 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
     updateSteps();
   }, [currentStep]);
 
+  const handleClose = () => {
+    setShowForm(false)
+  }
+  
+  if (!showForm) return null;
   return (
-    <div className="giftCardContainer">
-      <span className="close" onClick={onClose}>
+    
+    <div className="gift-card-wrapper">
+      <span className="gift-card-wrapper__close-btn" onClick={handleClose}>
         &times;
       </span>
-      <h1>{giftCardName}</h1>
+      <h1 className="gift-card-wrapper__title">{giftCardName}</h1>
 
-      <div className="progress-bar">
+      <div className="gift-card-progress">
         {[...Array(totalSteps)].map((_, index) => (
           <div
             key={index}
-            className={`progress-step ${
-              index + 1 === currentStep ? "active" : index + 1 < currentStep ? "completed" : ""
+            className={`gift-card-progress__step ${
+              index + 1 === currentStep ? "gift-card-progress__step--active" : 
+              index + 1 < currentStep ? "gift-card-progress__step--completed" : ""
             }`}
             data-step={index + 1}
           >
@@ -214,63 +230,68 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
         ))}
       </div>
 
-      <form id="gift-card-form" onSubmit={handleSubmit}>
+      <form id="gift-card-form" className="gift-card-form" onSubmit={handleSubmit}>
         {currentStep === 1 && (
-          <div className="form-section">
-            <h2>Select Purchase Type</h2>
-            <div className="purchase-type-options">
+          <div className="gift-card-purchase-type">
+            <h2 className="gift-card-purchase-type__heading">Select Purchase Type</h2>
+            <div className="gift-card-purchase-type__options">
               <div
-                className={`purchase-option ${purchaseType === "self" ? "active" : ""}`}
+                className={`gift-card-purchase-type__option ${
+                  purchaseType === "self" ? "gift-card-purchase-type__option--active" : ""
+                }`}
                 onClick={() => handlePurchaseTypeSelect("self")}
               >
-                <div className="icon">👤</div>
-                <h3>For Myself</h3>
-                <p>I want to purchase a gift card for my own use</p>
+                <div className="gift-card-purchase-type__icon">👤</div>
+                <h3 className="gift-card-purchase-type__option-title">For Myself</h3>
+                <p className="gift-card-purchase-type__option-desc">I want to purchase a gift card for my own use</p>
               </div>
               <div
-                className={`purchase-option ${purchaseType === "gift" ? "active" : ""}`}
+                className={`gift-card-purchase-type__option ${
+                  purchaseType === "gift" ? "gift-card-purchase-type__option--active" : ""
+                }`}
                 onClick={() => handlePurchaseTypeSelect("gift")}
               >
-                <div className="icon">🎁</div>
-                <h3>As a Gift</h3>
-                <p>I want to send this gift card to someone else</p>
+                <div className="gift-card-purchase-type__icon">🎁</div>
+                <h3 className="gift-card-purchase-type__option-title">As a Gift</h3>
+                <p className="gift-card-purchase-type__option-desc">I want to send this gift card to someone else</p>
               </div>
             </div>
           </div>
         )}
 
         {currentStep === 2 && (
-          <div className="form-section">
+          <div className="gift-card-info">
             {purchaseType === "self" && (
-              <div id="self-purchase-form">
-                <h2>Your Information</h2>
-                <div className="form-group">
-                  <label htmlFor="self-name">Your Name</label>
-                  {/* <input type="text" id="self-name" required /> */}
+              <div className="gift-card-self-info">
+                <h2 className="gift-card-self-info__heading">Your Information</h2>
+                <div className="gift-card-self-info__field">
+                  <label className="gift-card-self-info__label" htmlFor="self-name">Your Name</label>
                   <input
                     type="text"
                     id="self-name"
+                    className="gift-card-self-info__input"
                     required
                     value={formData.selfInfo.name}
                     onChange={(e) => handleInputChange("selfInfo", "name", e.target.value)}
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="self-email">Your Email</label>
-                  {/* <input type="email" id="self-email" required /> */}
+                <div className="gift-card-self-info__field">
+                  <label className="gift-card-self-info__label" htmlFor="self-email">Your Email</label>
                   <input
                     type="email"
                     id="self-email"
+                    className="gift-card-self-info__input"
                     required
                     value={formData.selfInfo.email}
                     onChange={(e) => handleInputChange("selfInfo", "email", e.target.value)}
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="self-phone">Your Phone Number</label>
+                <div className="gift-card-self-info__field">
+                  <label className="gift-card-self-info__label" htmlFor="self-phone">Your Phone Number</label>
                   <input
                     type="tel"
                     id="self-phone"
+                    className="gift-card-self-info__input"
                     required
                     value={formData.selfInfo.phone}
                     onChange={(e) => handleInputChange("selfInfo", "phone", e.target.value)}
@@ -280,33 +301,36 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
             )}
 
             {purchaseType === "gift" && (
-              <div id="gift-purchase-form">
-                <div>
-                  <h2>Recipient Information</h2>
-                  <div className="form-group">
-                    <label htmlFor="recipient-name">Recipient's Name</label>
+              <div className="gift-card-recipient-info">
+                <div className="gift-card-recipient-details">
+                  <h2 className="gift-card-recipient-details__heading">Recipient Information</h2>
+                  <div className="gift-card-recipient-details__field">
+                    <label className="gift-card-recipient-details__label" htmlFor="recipient-name">Recipient's Name</label>
                     <input
                       type="text"
                       id="recipient-name"
+                      className="gift-card-recipient-details__input"
                       required
                       value={formData.giftInfo.recipientName}
                       onChange={(e) => handleInputChange("giftInfo", "recipientName", e.target.value)}
                     />
                   </div>
-                  <div className="form-group">
-                    <label htmlFor="recipient-email">Recipient's Email</label>
+                  <div className="gift-card-recipient-details__field">
+                    <label className="gift-card-recipient-details__label" htmlFor="recipient-email">Recipient's Email</label>
                     <input
                       type="email"
                       id="recipient-email"
+                      className="gift-card-recipient-details__input"
                       required
                       value={formData.giftInfo.recipientEmail}
                       onChange={(e) => handleInputChange("giftInfo", "recipientEmail", e.target.value)}
                     />
                   </div>
-                  <div className="form-group">
-                    <label htmlFor="message">Personal Message</label>
+                  <div className="gift-card-recipient-details__field">
+                    <label className="gift-card-recipient-details__label" htmlFor="message">Personal Message</label>
                     <textarea
                       id="message"
+                      className="gift-card-recipient-details__message"
                       rows="4"
                       placeholder="Add a personal message for the recipient"
                       value={formData.giftInfo.message}
@@ -314,33 +338,36 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
                     />
                   </div>
                 </div>
-                <div>
-                  <h2>Your Information</h2>
-                  <div className="form-group">
-                    <label htmlFor="sender-name">Your Name</label>
+                <div className="gift-card-sender-info">
+                  <h2 className="gift-card-sender-info__heading">Your Information</h2>
+                  <div className="gift-card-sender-info__field">
+                    <label className="gift-card-sender-info__label" htmlFor="sender-name">Your Name</label>
                     <input
                       type="text"
                       id="sender-name"
+                      className="gift-card-sender-info__input"
                       value={formData.giftInfo.senderName}
                       onChange={(e) => handleInputChange("giftInfo", "senderName", e.target.value)}
                       required
                     />
                   </div>
-                  <div className="form-group">
-                    <label htmlFor="sender-email">Your Email</label>
+                  <div className="gift-card-sender-info__field">
+                    <label className="gift-card-sender-info__label" htmlFor="sender-email">Your Email</label>
                     <input
                       type="email"
                       id="sender-email"
+                      className="gift-card-sender-info__input"
                       value={formData.giftInfo.senderEmail}
                       onChange={(e) => handleInputChange("giftInfo", "senderEmail", e.target.value)}
                       required
                     />
                   </div>
-                  <div className="form-group">
-                    <label htmlFor="sender-phone">Your Phone Number</label>
+                  <div className="gift-card-sender-info__field">
+                    <label className="gift-card-sender-info__label" htmlFor="sender-phone">Your Phone Number</label>
                     <input
                       type="tel"
                       id="sender-phone"
+                      className="gift-card-sender-info__input"
                       value={formData.giftInfo.senderPhone}
                       onChange={(e) => handleInputChange("giftInfo", "senderPhone", e.target.value)}
                       required
@@ -353,74 +380,45 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
         )}
 
         {currentStep === 3 && (
-          <div className="form-section">
+          <div className="gift-card-payment">
             <SquarePaymentForm />
-
-            {/* <div className="payment-details">
-              <div className="form-group">
-                <label htmlFor="card-number">Card Number</label>
-                <input
-                  type="text"
-                  id="card-number"
-                  placeholder="1234 5678 9012 3456"
-                  value={formData.paymentDetails.cardNumber}
-                  onChange={(e) => handlePaymentChange("cardNumber", e.target.value)}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="expiry-date">Expiry Date</label>
-                <input
-                  type="month"
-                  id="expiry-date"
-                  value={formData.paymentDetails.expiryDate}
-                  onChange={(e) => handlePaymentChange("expiryDate", e.target.value)}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="cvv">CVV</label>
-                <input
-                  type="text"
-                  id="cvv"
-                  placeholder="123"
-                  value={formData.paymentDetails.cvv}
-                  onChange={(e) => handlePaymentChange("cvv", e.target.value)}
-                />
-              </div>
-            </div> */}
           </div>
         )}
 
-        <div className="navigation-buttons">
+        <div className="gift-card-navigation">
           {currentStep > 1 && (
-            <button type="button" className="giftFormBtn btn-secondary" onClick={handlePrev}>
+            <button type="button" className="gift-card-navigation__btn gift-card-navigation__btn--secondary" onClick={handlePrev}>
               Previous
             </button>
           )}
           {currentStep < totalSteps && (
-            <button type="button" className="giftFormBtn" onClick={handleNext}>
+            <button type="button" className="gift-card-navigation__btn gift-card-navigation__btn--primary" onClick={handleNext}>
               Next
             </button>
           )}
           {currentStep === totalSteps && (
-            <button type="submit" className="giftFormBtn">
+            <button type="submit" className="gift-card-navigation__btn gift-card-navigation__btn--submit">
               Complete Purchase
             </button>
           )}
         </div>
       </form>
       {showModal && (
-        <div className="purchase-modal-overlay">
-          <div className="purchase-modal-content">
-            <h2>Purchase Completed Successfully!</h2>
-            <p>Thank you for your purchase. A confirmation email has been sent to your inbox.</p>
-            <button className="purchase-modal-close-btn" onClick={() => setShowModal(false)}>
+        <div className="gift-card-modal">
+          <div className="gift-card-modal__content">
+            <h2 className="gift-card-modal__heading">Purchase Completed Successfully!</h2>
+            <p className="gift-card-modal__message">Thank you for your purchase. A confirmation email has been sent to your inbox.</p>
+            <button className="gift-card-modal__close-btn" onClick={() => setShowModal(false)}>
               Close
             </button>
           </div>
         </div>
       )}
     </div>
+    
   );
 };
+
+
 
 export default GiftCardForm;

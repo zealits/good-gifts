@@ -19,7 +19,7 @@
   }
   
   .content {
-    background: linear-gradient(145deg, #1c1c1c, #292929);
+     background: linear-gradient(135deg, rgba(29, 29, 39, 0.95), rgba(22, 22, 32, 0.95));
 
     color:white;
     flex-grow: 1; /* Take remaining space */
