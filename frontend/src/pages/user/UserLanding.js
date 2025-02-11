@@ -94,7 +94,7 @@ const UserLanding = () => {
               </div>
             </div>
             <div className="card-content">
-              <h2 className="card-title">{card.giftCardName}</h2>
+              <h2 className="user-card-title">{card.giftCardName}</h2>
               <p className="card-description">{card.description}</p>
               <div className="card-info">
                 <span className="card-price">$ {card.amount}</span>

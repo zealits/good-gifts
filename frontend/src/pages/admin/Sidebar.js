@@ -114,34 +114,7 @@ const Sidebar = () => {
           </Link>
           <span className="tooltip">Redeem</span>
         </li>
-        {/* <li>
-          <Link to="/preferences" className="linke">
-            <i className="bx bx-cart-alt">
-              <FaCog className="icon " />
-            </i>
-            <span className="links_name">Preferences</span>
-          </Link>
-          <span className="tooltip">Preferences</span>
-        </li> */}
-
-        {/* <li>
-          <Link to="/knowledge-bank" className="linke">
-            <i className="bx bx-cog">
-              <FaInfoCircle className="icon " />
-            </i>
-            <span className="links_name">Knowledge Bank</span>
-          </Link>
-          <span className="tooltip">Knowledge Bank</span>
-        </li> */}
-        {/* <li>
-          <Link to="/support" className="linke">
-            <i className="bx bx-cog">
-              <FaHeadset className="icon " />
-            </i>
-            <span className="links_name">Support</span>
-          </Link>
-          <span className="tooltip">Support</span>
-        </li> */}
+       
         <li className="profile">
           <div className="profile-details" onClick={handleLogout}>
             <i className="bx bx-export">
@@ -154,7 +127,9 @@ const Sidebar = () => {
           <i className="bx bx-log-out" id="log_out"></i>
         </li>
       </ul>
+      <div className="sidebar-overlay" onClick={toggleSidebar}></div>
     </div>
+    
   );
 };
 
