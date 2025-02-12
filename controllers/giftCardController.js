@@ -959,15 +959,14 @@ const addGiftCardToWallet = async (req, res) => {
     const response = await walletService.giftcardobject.insert({ requestBody: giftCardObject });
     console.log("Gift Card Created:", response.data);
 
-    const saveUrl = `https://pay.google.com/gp/v/save/${giftCardObject.id}`;
-    res.status(200).json({ message: "Gift card added to wallet", saveUrl });
+    const saveUrl = `https://pay.google.com/gp/v/save/${encodeURIComponent(giftCardObject.id)}`;
 
+    res.status(200).json({ message: "Gift card added to wallet", saveUrl });
   } catch (error) {
     console.error("Error adding gift card:", error.response?.data || error);
     res.status(500).json({ error: "Failed to add gift card to wallet" });
   }
 };
-
 
 module.exports = {
   createGiftCard,
