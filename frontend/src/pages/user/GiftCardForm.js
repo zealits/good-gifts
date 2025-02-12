@@ -10,6 +10,7 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
   const [showModal, setShowModal] = useState(false);
   const [showForm, setShowForm] = useState(true);
   // Initially set modal to closed
+  const [walletUrl, setWalletUrl] = useState("");
 
   const dispatch = useDispatch();
   const { paymentData } = useSelector((state) => state.payment);
@@ -188,24 +189,38 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
       dispatch(purchaseGiftCard(formData));
 
       // Step 2: Add gift card to Google Wallet
-      const response = await fetch("/api/v1/admin/add-to-wallet", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: formData.id,
-          cardNumber: 456,
-          balance: 500,
-        }),
-      });
+      // const response = await fetch("/api/v1/admin/add-to-wallet", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({
+      //     userId: formData.id,
+      //     cardNumber: 456,
+      //     balance: 500,
+      //   }),
+      // });
 
-      console.log(response);
-
-      const data = await response.json();
-      if (data.saveUrl) {
-        window.location.href = data.saveUrl; // Redirect to Google Wallet
-      } else {
-        alert("Failed to add to Google Wallet");
+      try {
+        console.log("started ..");
+        const response = await fetch("api/wallet/generate-wallet-pass", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+        console.log("response :", response);
+        const data = await response.json();
+        setWalletUrl(data.saveUrl);
+        console.log(data.saveUrl);
+      } catch (error) {
+        console.error("Error generating wallet pass:", error);
       }
+
+      // const data = await response.json();
+
+      // if (data.saveUrl) {
+      //   window.location.href = data.saveUrl; // Redirect to Google Wallet
+      // } else {
+      //   alert("Failed to add to Google Wallet");
+      // }
 
       setShowModal(true);
       setShowForm(false);
