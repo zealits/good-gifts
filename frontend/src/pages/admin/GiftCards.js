@@ -274,7 +274,7 @@ const GiftCards = () => {
             </button>
             <h2 className="gc-page-modal-heading">{isEditing ? "Edit Gift Card" : "Create a Gift Card"}</h2>
             <form className="giftcard-form" onSubmit={handleSubmit}>
-              <div className="form-group">
+              <div className="giftcards-page-form-group">
                 <label htmlFor="giftCardName">Gift Card Name</label>
                 <input
                   type="text"
@@ -285,7 +285,7 @@ const GiftCards = () => {
                   required
                 />
               </div>
-              <div className="form-group">
+              <div className="giftcards-page-form-group">
                 <label htmlFor="giftCardTag">Gift Card Tag</label>
                 <select
                   id="giftCardTag"
@@ -410,7 +410,7 @@ const GiftCards = () => {
                   </option>
                 </select>
               </div>
-              <div className="form-group">
+              <div className="giftcards-page-form-group">
                 <label htmlFor="description">Description</label>
                 <textarea
                   id="description"
@@ -421,7 +421,7 @@ const GiftCards = () => {
                   required
                 ></textarea>
               </div>
-              <div className="form-group">
+              <div className="giftcards-page-form-group">
                 <label htmlFor="amount">Amount</label>
                 <input
                   type="number"
@@ -432,7 +432,7 @@ const GiftCards = () => {
                   required
                 />
               </div>
-              <div className="form-group">
+              <div className="giftcards-page-form-group">
                 <label htmlFor="discount">Discount (%)</label>
                 <input
                   type="number"
@@ -445,7 +445,7 @@ const GiftCards = () => {
                   required
                 />
               </div>
-              <div className="form-group">
+              <div className="giftcards-page-form-group">
                 <label htmlFor="expirationDate">Expiration Date</label>
                 <input
                   type="date"
@@ -457,7 +457,7 @@ const GiftCards = () => {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="giftcards-page-form-group">
                 <label htmlFor="image">Upload Image</label>
                 <input
                   type="file"

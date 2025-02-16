@@ -50,11 +50,7 @@ const Orders = () => {
     setView("users");
     fetchUserBuyers();
   };
-  const handleViewRedemptionHistory = (buyer) => {
-    setSelectedBuyer(buyer); // Set the selected buyer
-    setRedemptionHistory(buyer.redemptionHistory || []); // Set the redemption history
-    setModalName("redemptionHistoryModal"); // Open the modal
-  };
+
 
   const closeModal = () => {
     if (modalName === "redemptionHistoryModal") {
@@ -74,19 +70,31 @@ const Orders = () => {
     card.name?.toLowerCase().includes(giftCardSearch.toLowerCase())
   );
 
-  const filteredBuyers = buyers.filter(
-    (buyer) =>
-      buyer.buyerName?.toLowerCase().includes(buyerSearch.toLowerCase()) ||
-      buyer.email?.toLowerCase().includes(buyerSearch.toLowerCase())
-  );
+  const filteredBuyers = Array.isArray(buyers)
+  ? buyers.filter((buyer) => {
+      const nameMatch = buyer.buyerName?.toLowerCase()?.includes(buyerSearch.toLowerCase()) ?? false;
+      const emailMatch = buyer.email?.toLowerCase()?.includes(buyerSearch.toLowerCase()) ?? false;
+      return nameMatch || emailMatch;
+    })
+  : [];
+
 
   const handleViewBuyers = (cardId) => {
     fetchBuyers(cardId);
     setModalName("buyersModal"); // Fetch buyers when clicking on the "View Buyers" button
   };
-
+  const handleViewRedemptionHistory = (buyer) => {
+    setSelectedBuyer({}); // Temporary empty state to force re-render
+    setTimeout(() => {
+      setSelectedBuyer(buyer); // Set the selected buyer
+      setRedemptionHistory(buyer.redemptionHistory || []); // Set the redemption history
+      setModalName("redemptionHistoryModal"); // Open the modal
+    }, 0);
+  };
+  
   return (
     <div className="orders-page-container">
+    <div className="sticky-header">
       <h1 className="orders-page-header">Orders</h1>
       <div className="view-toggle-buttons">
         <button
@@ -101,7 +109,7 @@ const Orders = () => {
           onClick={handleUserView}
           className={view === "users" ? "active-view-button" : "view-button"}
         >
-          Time-Based Orders
+          Customer Orders
         </button>
       </div>
 
@@ -163,36 +171,52 @@ const Orders = () => {
             <table className="buyers-table">
               <thead>
                 <tr>
-                  <th>Sr No.</th>
                   <th>Name</th>
                   <th>Email</th>
                   <th>Gift Card</th>
-                  <th>Remaining Balance</th>
-                  <th>Used Amount</th>
+                  <th>Redemption Progress</th>
                   <th>Purchase Date</th>
                   <th>Redemption History</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredBuyers.map((buyer, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{buyer.buyerName}</td>
-                    <td>{buyer.email}</td>
-                    <td>{buyer.giftCardName}</td>
-                    <td>{buyer.remainingBalance}</td>
-                    <td>{buyer.usedAmount}</td>
-                    <td>{new Date(buyer.purchaseDate).toLocaleDateString()}</td>
-                    <td>
-                      <button
-                        onClick={() => handleViewRedemptionHistory(buyer)}
-                        className="view-redemption-history-button"
-                      >
-                        View Redemption History
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {filteredBuyers.map((buyer, index) => {
+                  const totalAmount = buyer.remainingBalance + buyer.usedAmount || 1000;
+                  const usedAmount = buyer.usedAmount || 0;
+                  const remainingBalance = totalAmount - usedAmount;
+                  const fillPercentage = (usedAmount / totalAmount) * 100;
+
+                  return (
+                    <tr key={index}>
+                      <td>{buyer.buyerName}</td> 
+                      <td>{buyer.email}</td>
+                      <td>{buyer.giftCardName}</td>
+                      <td>
+                        <div className="progress-bar-container">
+                          <div
+                            className="progress-bar"
+                            style={{ width: `${fillPercentage}%` }}
+                            title={`Used: ${usedAmount}`}
+                          ></div>
+                          <div
+                            className="progress-bar-empty"
+                            style={{ width: `${100 - fillPercentage}%` }}
+                            title={`Remaining: ${remainingBalance}`}
+                          ></div>
+                        </div>
+                      </td>
+                      <td>{new Date(buyer.purchaseDate).toLocaleDateString()}</td>
+                      <td>
+                        <button
+                          onClick={() => handleViewRedemptionHistory(buyer)}
+                          className="user-page-redemption-history"
+                        >
+                          View Redemption History
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           ) : (
@@ -247,8 +271,9 @@ const Orders = () => {
         </div>
       )}
 
-      {/* Redemption History Modal */}
-      {modalName === "redemptionHistoryModal" && selectedBuyer && (
+     
+       {/* Redemption History Modal */}
+       {modalName === "redemptionHistoryModal" && selectedBuyer && (
         <div className="redemption-history-modal">
           <div className="redemption-history-modal-content">
             <h3 className="redemption-history-title">
@@ -263,20 +288,16 @@ const Orders = () => {
                       <strong>Redeemed Amount:</strong> ₹{entry.redeemedAmount}
                     </p>
                     <p className="remaining-amount">
-                      <strong>Remaining Amount:</strong> ₹
-                      {entry.remainingAmount}
+                      <strong>Remaining Amount:</strong> ₹{entry.remainingAmount}
                     </p>
                     <p className="redemption-date">
-                      <strong>Date:</strong>{" "}
-                      {new Date(entry.redemptionDate).toLocaleDateString()}
+                      <strong>Date:</strong> {new Date(entry.redemptionDate).toLocaleDateString()}
                     </p>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="no-redemption-history">
-                No redemption history available.
-              </p>
+              <p className="no-redemption-history">No redemption history available.</p>
             )}
             <button className="close-modal-button" onClick={closeModal}>
               Close
@@ -284,6 +305,7 @@ const Orders = () => {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 };

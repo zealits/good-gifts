@@ -55,11 +55,12 @@ router.get('/giftcards', getSoldGiftCards);
 // Endpoint to get buyers for a specific gift card
 router.get('/giftcards/:id/buyers', getGiftCardBuyers);
 router.get("/buyers", getAllBuyers);
-
-
+router.get("/total-redemption", totalRedemptionValue);
+router.get("/last-30-days", getRevenueForLast30Days);
 router.get("/scan-giftcard/:id", fetchGiftCardById);
 
 router.post("/send-otp-redeem", sendOtp);
 router.post("/verify-otp-redeem", verifyOtp);
+router.post('/add-to-wallet', addGiftCardToWallet);
 
 module.exports = router;
