@@ -13,7 +13,7 @@ import "./Modal.css"; // Create this CSS file for styling the modal
 //   );
 // };
 
-const Modal = ({ message, onClose, children,showCloseButton = true }) => {
+const Modal = ({ message, onClose, children, showCloseButton = true }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -25,7 +25,6 @@ const Modal = ({ message, onClose, children,showCloseButton = true }) => {
           </button>
         )}
       </div>
-     
     </div>
   );
 };
