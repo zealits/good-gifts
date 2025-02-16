@@ -984,6 +984,11 @@ const getAllBuyers = async (req, res) => {
 };
 
 
+
+
+
+
+
 const totalRedemptionValue = async (req, res) => {
   try {
     // Use aggregation to sum up the redeemedAmount for all buyers in all gift cards
@@ -1041,73 +1046,12 @@ const getRevenueForLast30Days = async (req, res) => {
     res.status(500).json({ message: "Error calculating revenue for the last 30 days", error });
   }
 };
-
 
 // Function to generate and save gift card to Google Wallet
 const addGiftCardToWallet = async (req, res) => {
   try {
     const { userId, cardNumber } = req.body;
     console.log("Triggered");
-
-const totalRedemptionValue = async (req, res) => {
-  try {
-    // Use aggregation to sum up the redeemedAmount for all buyers in all gift cards
-    const totalRedemption = await GiftCard.aggregate([
-      { $unwind: "$buyers" }, // Unwind buyers array
-      { $unwind: "$buyers.redemptionHistory" }, // Unwind redemptionHistory array
-      { $group: {
-        _id: null, // Group all data together
-        totalRedemption: { $sum: "$buyers.redemptionHistory.redeemedAmount" } // Sum the redeemedAmount
-      }},
-    ]);
-
-    if (totalRedemption.length > 0) {
-      res.json({ totalRedemption: totalRedemption[0].totalRedemption });
-    } else {
-      res.json({ totalRedemption: 0 });
-    }
-  } catch (error) {
-    console.error("Error fetching total redemption:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-const getRevenueForLast30Days = async (req, res) => {
-  try {
-    // Calculate the start and end date for the last 30 days
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - 30);
-
-    // Fetch gift cards sold within the last 30 days
-    const giftCards = await GiftCard.find({
-      "buyers.purchaseDate": { $gte: startDate, $lt: endDate },
-    });
-
-    // Calculate revenue grouped by day
-    const revenueByDate = {};
-
-    giftCards.forEach((card) => {
-      const discount = card.discount ? parseFloat(card.discount) / 100 : 0;
-      const cardRevenue = (card.amount || 0) * (1 - discount);
-
-      card.buyers.forEach((buyer) => {
-        const purchaseDate = new Date(buyer.purchaseDate).toISOString().split("T")[0]; // Extract date only
-
-        if (!revenueByDate[purchaseDate]) {
-          revenueByDate[purchaseDate] = 0;
-        }
-        revenueByDate[purchaseDate] += cardRevenue;
-      });
-    });
-
-    res.json({ revenueByDate });
-  } catch (error) {
-    res.status(500).json({ message: "Error calculating revenue for the last 30 days", error });
-  }
-};
-
-
 
     const walletService = google.walletobjects({
       version: "v1",
@@ -1148,7 +1092,6 @@ const getRevenueForLast30Days = async (req, res) => {
     res.status(500).json({ error: "Failed to add gift card to wallet" });
   }
 };
-
 
 module.exports = {
   createGiftCard,

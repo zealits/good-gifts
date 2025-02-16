@@ -1,5 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+/* Import stunning fonts */
+@import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 
 .orders-page-container {
   padding: 30px;
@@ -8,18 +12,31 @@
   color: #f8fafc;
 }
 
+
+
+
 .orders-page-header {
-  font-size: 42px;
+  font-size: 3.2rem;
   text-align: center;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   margin-bottom: 40px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: linear-gradient(120deg, #60a5fa, #a855f7);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
+  font-family: 'Outfit', sans-serif;
+  background: linear-gradient(
+    45deg,
+    #60a5fa,
+    #818cf8,
+    #c084fc,
+    #818cf8,
+    #60a5fa
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  text-shadow: 0 2px 15px rgba(255, 255, 255, 0.1);
-  animation: fadeInDown 0.8s ease-out;
+  
+  animation: gradientFlow 8s linear infinite;
+  text-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .view-toggle-buttons {
@@ -186,253 +203,710 @@
 }
 
 
-/* Import Outfit font - chosen for its modern, clean look and excellent readability */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
-
+/* Enhanced Buyers Modal Styles */
 .buyers-modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: rgba(15, 23, 42, 0.9);
-  backdrop-filter: blur(8px);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   padding: 20px;
+  animation: modalFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
-/* Enhanced Modal Container */
+
 .buyers-modal-content {
-  background: linear-gradient(165deg, #1a1f35, #2d3748);
-  padding: 48px 40px;  /* Increased top padding for better spacing */
-  border-radius: 28px;
+  background: linear-gradient(165deg, #0f172a, #1e293b);
+  padding: 48px 40px;
+  border-radius: 32px;
   width: 92%;
-  max-width: 650px;
+  max-width: 800px;
   height: auto;
   max-height: 85vh;
   color: #f8fafc;
   box-shadow: 
-    0 20px 50px rgba(0, 0, 0, 0.4),
+    0 25px 60px -15px rgba(0, 0, 0, 0.5),
     0 0 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 1px 1px rgba(255, 255, 255, 0.1);  /* Subtle inner highlight */
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
   position: relative;
-  animation: modalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);  /* Improved animation curve */
+  transform-origin: center;
+  animation: modalPopIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
 }
+
+.buyers-modal-content::before,
+.buyers-modal-content::after {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: radial-gradient(circle at center, 
+    rgba(59, 130, 246, 0.1) 0%,
+    transparent 70%);
+  animation: gradientSpin 15s linear infinite;
+  pointer-events: none;
+}
+
+.buyers-modal-content::after {
+  animation: gradientSpin 25s linear infinite reverse;
+  background: radial-gradient(circle at center, 
+    rgba(99, 102, 241, 0.08) 0%,
+    transparent 70%);
+}
+
+.buyers-close-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: #f8fafc;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.buyers-close-btn::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center,
+    rgba(255, 255, 255, 0.2) 0%,
+    transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.buyers-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(180deg) scale(1.1);
+}
+
+.buyers-close-btn:hover::before {
+  opacity: 1;
+}
+
+.buyers-modal-content h3 {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 0 40px;
+  text-align: center;
+  background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: titleGlow 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.buyers-modal-content h3::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent,
+    rgba(59, 130, 246, 0.5),
+    transparent
+  );
+  animation: lineWidth 2s ease-in-out infinite;
+}
+
+.buyer-item {
+  background: rgba(59, 130, 246, 0.08);
+  margin-bottom: 24px;
+  padding: 32px;
+  border-radius: 20px;
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: grid;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+  animation: itemSlideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation-fill-mode: both;
+}
+
+.buyer-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at top right,
+    rgba(59, 130, 246, 0.15),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.buyer-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.25);
+  box-shadow: 
+    0 20px 40px -20px rgba(0, 0, 0, 0.3),
+    0 0 15px rgba(59, 130, 246, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+.buyer-item:hover::before {
+  opacity: 1;
+}
+
+.view-redemption-history-button {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.view-redemption-history-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.view-redemption-history-button:hover::before {
+  left: 100%;
+}
+
+.view-redemption-history-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Enhanced Animations */
+@keyframes modalFadeIn {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+  }
+}
+
+@keyframes modalPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  50% {
+    transform: scale(1.02) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes titleGlow {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes gradientSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes lineWidth {
+  0%, 100% {
+    width: 50px;
+    opacity: 0.5;
+  }
+  50% {
+    width: 100px;
+    opacity: 1;
+  }
+}
+
+@keyframes itemSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered animation delays */
+.buyer-item:nth-child(1) { animation-delay: 0.1s; }
+.buyer-item:nth-child(2) { animation-delay: 0.2s; }
+.buyer-item:nth-child(3) { animation-delay: 0.3s; }
+.buyer-item:nth-child(4) { animation-delay: 0.4s; }
+.buyer-item:nth-child(5) { animation-delay: 0.5s; }
+
 .buyers-modal-content ul {
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: calc(85vh - 140px);
+  max-height: calc(85vh - 180px); /* Adjust for header and padding */
   overflow-y: auto;
-  padding-right: 12px; /* Add padding to prevent content overlap with scrollbar */
-  
-  /* Firefox scrollbar */
+  overflow-x: hidden;
   scrollbar-width: thin;
-  scrollbar-color: rgba(245, 158, 11, 0.6) rgba(30, 41, 59, 0.2);
+  scrollbar-color: rgba(59, 130, 246, 0.5) rgba(30, 41, 59, 0.3);
+  padding-right: 10px;
+  scroll-behavior: smooth;
 }
 
-/* Webkit scrollbar styles */
+/* Rest of the scrollbar styles */
 .buyers-modal-content ul::-webkit-scrollbar {
-  width: 8px; /* Slightly wider for better usability */
+  width: 10px;
+  height: 10px;
+  display: block; /* Ensure scrollbar is visible */
 }
 
 .buyers-modal-content ul::-webkit-scrollbar-track {
   background: rgba(30, 41, 59, 0.3);
   border-radius: 10px;
-  margin: 4px 0; /* Add some space at top and bottom */
+  margin: 5px 0;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .buyers-modal-content ul::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.8), rgba(234, 88, 12, 0.8));
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #60a5fa 100%);
   border-radius: 10px;
   border: 2px solid rgba(30, 41, 59, 0.5);
-  box-shadow: 
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
 .buyers-modal-content ul::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #f59e0b, #ea580c);
-  border: 2px solid rgba(30, 41, 59, 0.7);
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #3b82f6 100%);
+  border-width: 1px;
 }
 
-/* Add smooth scroll behavior */
-.buyers-modal-content ul {
-  scroll-behavior: smooth;
+.buyers-modal-content ul::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 50%, #2563eb 100%);
 }
 
-/* Ensure proper spacing around scrollbar */
+/* Fix modal content container */
 .buyers-modal-content {
-  padding-right: 32px; /* Increased padding to accommodate scrollbar */
+  background: linear-gradient(165deg, #0f172a, #1e293b);
+  padding: 48px 40px;
+  border-radius: 32px;
+  width: 92%;
+  max-width: 800px;
+  height: auto;
+  max-height: 85vh;
+  color: #f8fafc;
+  box-shadow: 
+    0 25px 60px -15px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  transform-origin: center;
+  animation: modalPopIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
 }
 
+/* Style for Firefox */
+@supports (scrollbar-color: auto) {
+  .buyers-modal-content ul {
+    scrollbar-color: #3b82f6 rgba(30, 41, 59, 0.3);
+    scrollbar-width: thin;
+  }
+}
 
-/* Enhanced Modal Header */
-.buyers-modal-content h3 {
-  font-family: 'Outfit', sans-serif;
-  font-size: 32px;
+/* Ensure smooth scrolling on touch devices */
+@media (hover: none) {
+  .buyers-modal-content ul {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .buyers-modal-content {
+    padding: 32px 24px;
+    width: 95%;
+  }
+  
+  .buyers-modal-content ul {
+    max-height: calc(85vh - 140px); /* Adjusted for smaller header on mobile */
+  }
+}
+
+/* Add these new styles for buyer name */
+.buyer-name {
+  font-size: 28px;
   font-weight: 700;
-  margin: 0 0 36px;
-  text-align: center;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  color: #f8fafc;
+  margin: 8px 0;
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(135deg, #f8fafc 0%, #93c5fd 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 10px rgba(147, 197, 253, 0.2);
+  transition: all 0.3s ease;
+}
+
+.buyer-name::before {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  transition: width 0.4s ease;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.buyer-name::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -20px;
+  width: 8px;
+  height: 8px;
+  background: #3b82f6;
+  border-radius: 50%;
+  transform: translateY(-50%) scale(0);
+  opacity: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.buyer-item:hover .buyer-name {
+  transform: translateX(8px);
+  background: linear-gradient(135deg, #ffffff 0%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.buyer-item:hover .buyer-name::before {
+  width: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Core container styles */
+.users-container {
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(29, 29, 39, 0.95), rgba(22, 22, 32, 0.95));
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated background pattern */
+.users-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374z' fill='rgba(56, 189, 248, 0.05)'/%3E%3C/svg%3E");
+  opacity: 0.5;
+  z-index: 0;
+  pointer-events: none;
+  animation: patternFloat 20s linear infinite;
+}
+
+
+/* Search container enhancement */
+.user-search-container {
+  position: relative;
+  margin-bottom: 3rem;
+  max-width: 600px;
+}
+
+.user-search-input {
+  width: 100%;
+  padding: 1.4rem 2rem 1.4rem 3.5rem;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 16px;
+  font-size: 1.1rem;
+  color: #e2e8f0;
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(56, 189, 248, 0.1);
+}
+
+.user-search-input:focus {
+  outline: none;
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 
+    0 8px 30px rgba(56, 189, 248, 0.15),
+    0 0 0 2px rgba(56, 189, 248, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Search icon */
+.user-search-container::before {
+  content: '🔍';
+  position: absolute;
+  left: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: rgba(56, 189, 248, 0.6);
+  pointer-events: none;
+}
+
+.buyers-table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: separate;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 24px;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(56, 189, 248, 0.1);
+  animation: tableReveal 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+  background-image: 
+    linear-gradient(rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.8)),
+    linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+
+
+
+.buyers-table thead {
+  background: linear-gradient(
+    90deg,
+    rgba(56, 189, 248, 0.15),
+    rgba(99, 102, 241, 0.15),
+    rgba(192, 132, 252, 0.15)
+  );
   position: relative;
 }
 
-/* Enhanced Buyer Item */
-.buyer-item {
-  background: rgba(59, 130, 246, 0.08);
-  margin-bottom: 20px;
-  padding: 28px;
-  border-radius: 16px;
-  border: 1px solid rgba(59, 130, 246, 0.15);
-  transition: all 0.3s ease;
-  display: grid;
-  gap: 16px;
-  grid-template-columns: 1fr;
+.buyers-table thead::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    #38bdf8,
+    #818cf8,
+    #c084fc
+  );
 }
 
-/* Enhanced Buyer Information Layout */
-.buyer-info-grid {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 16px 24px;
-  align-items: center;
-}
-
-.buyer-number {
-  font-family: 'Outfit', sans-serif;
-  color: #f59e0b;
+.buyers-table th {
+  padding: 1.5rem;
+  font-family: 'Space Grotesk', sans-serif;
+  color: #e2e8f0;
   font-weight: 600;
-  font-size: 14px;
-  grid-column: 1 / -1;
-  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 0.875rem;
+  text-align: left;
+  position: relative;
 }
 
-.buyer-name {
-  font-family: 'Outfit', sans-serif;
-  font-size: 20px;
-  font-weight: 600;
-  color: #f8fafc;
-  margin: 0;
-  letter-spacing: -0.01em;
-  grid-column: 1 / -1;
+/* New: Add vertical separators between headers */
+.buyers-table th:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 25%;
+  height: 50%;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(56, 189, 248, 0.3),
+    transparent
+  );
 }
 
-.purchase-date {
-  font-family: 'Outfit', sans-serif;
-  color: #94a3b8;
-  font-size: 14px;
-  margin: 0;
+.buyers-table tbody tr {
+  background: linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0.6),
+    rgba(30, 41, 59, 0.6)
+  );
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.buyers-table tbody tr:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(56, 189, 248, 0.05),
+    rgba(99, 102, 241, 0.05)
+  );
+  transform: scale(1.01) translateX(10px);
+}
+
+
+
+
+
+
+.buyers-table td {
+  padding: 1.25rem 1.5rem;
+  color: #f8fafc;  /* Lighter text color for better contrast */
+  font-family: 'Inter', sans-serif;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+}
+
+/* Progress bar enhancement */
+.progress-bar-container {
+  height: 8px;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 4px;
+  overflow: hidden;
   display: flex;
-  align-items: center;
-  gap: 8px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
-.remaining-balance {
-  background: rgba(245, 158, 11, 0.1);
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-family: 'Outfit', sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  border: 1px solid rgba(245, 158, 11, 0.2);
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #15803d);  /* Changed to green gradient */
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
-/* Enhanced View History Button */
-.view-redemption-history-button {
-  font-family: 'Outfit', sans-serif;
-  background: linear-gradient(135deg, #1e40af, #3b82f6);
+.progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+.progress-bar-empty {
+  height: 100%;
+  background: rgba(56, 189, 248, 0.1);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+/* Button styling */
+.user-page-redemption-history {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
   color: white;
   border: none;
-  padding: 12px 20px;
-  border-radius: 10px;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
   cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.01em;
   transition: all 0.3s ease;
-  width: fit-content;
-  margin-top: 12px;
-  justify-self: start;
+  box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
 }
 
-/* Enhanced Close Button */
-.buyers-close-btn {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  font-size: 24px;
-  color: #f8fafc;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(8px);
+.user-page-redemption-history:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.3);
 }
 
-/* Improved Mobile Responsiveness */
-@media (max-width: 768px) {
-  .buyers-modal-content {
-    padding: 40px 24px;
-    width: 95%;
-  }
-
-  .buyers-modal-content h3 {
-    font-size: 26px;
-    margin-bottom: 28px;
-  }
-
-  .buyer-item {
-    padding: 24px;
-  }
-
-  .buyer-info-grid {
-    gap: 12px 20px;
-  }
-
-  .buyer-name {
-    font-size: 18px;
-  }
-}
-@keyframes floatingCard {
-  0%, 100% {
-      transform: translateY(0);
-  }
-  50% {
-      transform: translateY(-10px);
-  }
+.user-page-redemption-history:active {
+  transform: translateY(1px);
 }
 
-/* Combine hover and float animations */
-.giftcard-item:hover {
-  animation: none;
-  transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 12px 40px rgba(59, 130, 246, 0.2);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+/* No results message */
+.users-container > p {
+  text-align: center;
+  padding: 3rem;
+  color: #e2e8f0;
+  font-size: 1.1rem;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(56, 189, 248, 0.2);
 }
 
-
-
-@keyframes tableGlow {
-  0% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
-  50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.4); }
-  100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
-}
-
-@keyframes slideIn {
+/* Animations */
+@keyframes tableReveal {
   0% {
     opacity: 0;
     transform: translateY(20px);
@@ -443,164 +917,127 @@
   }
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+@keyframes patternFloat {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
 }
 
-.users-container {
-  overflow-x: auto;
-   /* Account for collapsed sidebar */
-  max-width: 1250;
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
 
-  padding: 2rem;
-  background: linear-gradient(145deg, #0f172a, #1e293b);
-  border-radius: 24px;
-  box-shadow: 
-      0 25px 50px -12px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(255, 255, 255, 0.1);
-  animation: tableGlow 3s infinite ease-in-out;
+/* Responsive design */
+@media (max-width: 1024px) {
+  .buyers-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .user-search-container {
+    max-width: 100%;
+  }
+}
+
+/* Import fancy fonts */
+/* Import the font */
+@import url('https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&display=swap');
+
+/* Style for buyer name cell */
+.buyers-table td:first-child {
+  font-family: 'Clash Display', sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  padding: 1.2rem;
   position: relative;
-  transition: all 0.4s var(--transition-bezier); /* Match sidebar transition */
+  background: linear-gradient(90deg, #0ea5e9, #6366f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition: all 0.3s ease;
 }
 
 
 
-/* Gradient border effect */
-.users-container::before {
+
+
+
+/* Add shimmer effect on hover */
+@keyframes shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.buyers-table tr:hover td:first-child {
+  background: linear-gradient(
+    90deg,
+    #0ea5e9,
+    #6366f1,
+    #0ea5e9,
+    #6366f1
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 2s linear infinite;
+  text-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
+}
+
+
+
+@keyframes underlineExpand {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Add subtle glow effect */
+.buyers-table td:first-child {
+  position: relative;
+  isolation: isolate;
+}
+
+.buyers-table td:first-child::after {
   content: '';
   position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(
-      45deg, 
-      #3b82f6,
-      #8b5cf6,
-      #ec4899,
-      #3b82f6
-  );
-  border-radius: 24px;
+  inset: 0;
+ 
+  opacity: 0;
+  transition: opacity 0.3s ease;
   z-index: -1;
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
-  opacity: 0.5;
 }
 
-.orders-page-header{
-  font-family: 'Poppins', sans-serif;
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 2rem;
-  background: linear-gradient(120deg, #60a5fa, #8b5cf6, #ec4899);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: slideIn 0.8s ease;
-}
 
-.buyers-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  border-radius: 16px;
-  overflow: hidden;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(10px);
-}
 
-.buyers-table th {
+/* Enhanced hover effect */
+.buyers-table tbody tr:hover {
   background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.9),
-    rgba(139, 92, 246, 0.9)
+    90deg,
+    rgba(15, 23, 42, 0.8),
+    rgba(30, 41, 59, 0.8)
   );
-  color: white;
-  padding: 1.5rem;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.buyers-table th:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 1),
-    rgba(139, 92, 246, 1)
-  );
-  transform: translateY(-2px);
-}
-
-.buyers-table td {
-  padding: 1.25rem;
-  color: #e2e8f0;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
-  background: rgba(30, 41, 59, 0.4);
-  transition: all 0.3s ease;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.buyers-table tr {
-  transform-origin: center;
-  transition: all 0.3s ease;
-}
-
-.buyers-table tr:nth-child(even) td {
-  background: rgba(30, 41, 59, 0.6);
-}
-
-.buyers-table tr:hover {
-  transform: scale(1.01);
-  z-index: 1;
-}
-
-.buyers-table tr:hover td {
-  background: rgba(59, 130, 246, 0.15);
-  color: white;
+  transform: scale(1.01) translateX(10px);
   box-shadow: 
-    0 4px 20px rgba(59, 130, 246, 0.2),
-    0 0 0 1px rgba(59, 130, 246, 0.1);
+    0 4px 20px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(56, 189, 248, 0.1);
 }
 
-.buyers-table td:first-child {
-  font-weight: 600;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
-  color: #93c5fd;
-  border-left: 3px solid #3b82f6;
+.buyers-table tr:hover td:first-child::after {
+  opacity: 1;
 }
-
-
-
-/* Existing scrollbar styles remain the same */
-.users-container::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-.users-container::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
-  border-radius: 5px;
-}
-
-.users-container::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  border-radius: 5px;
-  transition: all 0.3s ease;
-}
-
-.users-container::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #60a5fa, #a855f7);
-}
-
-
-/* Enhanced Redemption History Modal */
 .redemption-history-modal {
   position: fixed;
   top: 0;
@@ -796,10 +1233,7 @@
   }
 }
 
-.view-redemption-history-button{
-  color: #1e1e1e;
 
-}
 
 /* Search container styles */
 .user-search-container {
@@ -949,4 +1383,24 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.progress-bar-container {
+  display: flex;
+  width: 100px;
+  height: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4caf50; /* Green for used */
+}
+
+.progress-bar-empty {
+  height: 100%;
+  background-color: #ddd; /* Gray for remaining */
 }

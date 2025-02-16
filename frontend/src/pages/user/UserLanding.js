@@ -7,7 +7,6 @@ import { listGiftCards } from "../../services/Actions/giftCardActions";
 import { useDispatch, useSelector } from "react-redux";
 import GiftCardForm from "./GiftCardForm";
 
-
 const UserLanding = () => {
   const [modalDetails, setModalDetails] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -60,7 +59,9 @@ const UserLanding = () => {
   };
 
   return (
+    
     <div className="body">
+   
       <div className="header">
         <h1>🍽️ Restaurant Gift Cards</h1>
         <p>Choose a gift card to share unforgettable dining experiences!</p>
@@ -82,26 +83,26 @@ const UserLanding = () => {
         </select>
       </div>
 
-      <div className="container">
+      <div className="purchase-card-container">
         {giftCards?.map?.((card) => (
-          <div className="card" key={card.id}>
-            <div className="card-image">
+          <div className="purchase-card" key={card.id}>
+            <div className="purchase-card-image">
               {/* <img src={`data:image/jpeg;base64,${card.giftCardImg}`} alt="Gift Card" loading="lazy"/> */}
-              <img src={card.giftCardImg} alt="Gift Card" loading="lazy"/>
+              <img src={card.giftCardImg} alt="Gift Card" loading="lazy" />
               {/* Display the gift card tag and icon */}
-              <div className="card-tag">
+              <div className="purchase-card-tag">
                 <i className={card.icon}></i> {card.giftCardTag}
               </div>
             </div>
-            <div className="card-content">
-              <h2 className="user-card-title">{card.giftCardName}</h2>
-              <p className="card-description">{card.description}</p>
-              <div className="card-info">
-                <span className="card-price">$ {card.amount}</span>
-                <span className="card-discount">{card.discount} % Off</span>
+            <div className="purchase-card-content">
+              <h2 className="purchase-card-title">{card.giftCardName}</h2>
+              <p className="purchase-card-description">{card.description}</p>
+              <div className="purchase-card-info">
+                <span className="purchase-card-price">$ {card.amount}</span>
+                <span className="purchase-card-discount">{card.discount} % Off</span>
               </div>
               <button
-                className="card-button"
+                className="purchase-card-button"
                 onClick={() => handleClick(card.giftCardName, card.amount, card.discount, card._id)}
               >
                 Buy Now
@@ -116,7 +117,7 @@ const UserLanding = () => {
       {modalVisible && modalDetails && (
         <div id="modal" className="modal">
           <div className="modal-content">
-            <span className="close" onClick={handleCloseModal}>
+            <span className="purchase-modal-close" onClick={handleCloseModal}>
               &times;
             </span>
             <h2 id="modal-title">{modalDetails.title}</h2>
@@ -144,8 +145,77 @@ const UserLanding = () => {
           </div>
         </div>
       )}
-    </div>
-  );
-};
 
-export default UserLanding;
+{/* Footer section moved outside the modal conditional rendering */}
+<footer className="footer">
+  <div className="footer-content">
+    <div className="footer-section">
+      <h3>About Us</h3>
+      <ul>
+        <li><a href="/about">Our Story</a></li>
+        <li><a href="/how-it-works">How It Works</a></li>
+        <li><a href="/careers">Careers</a></li>
+        <li><a href="/press">Press</a></li>
+      </ul>
+    </div>
+    
+    <div className="footer-section">
+      <h3>Support</h3>
+      <ul>
+        <li><a href="/help">Help Center</a></li>
+        <li><a href="/contact">Contact Us</a></li>
+        <li><a href="/faq">FAQs</a></li>
+        <li><a href="/shipping">Shipping Info</a></li>
+      </ul>
+    </div>
+    
+    <div className="footer-section">
+      <h3>Legal</h3>
+      <ul>
+        <li><a href="/privacy">Privacy Policy</a></li>
+        <li><a href="/terms">Terms of Service</a></li>
+        <li><a href="/refund">Refund Policy</a></li>
+        <li><a href="/accessibility">Accessibility</a></li>
+      </ul>
+    </div>
+    
+    <div className="footer-section">
+      <h3>Connect With Us</h3>
+      <div className="social-links">
+        <a href="https://facebook.com" className="social-icon">
+          <i className="fab fa-facebook"></i>
+        </a>
+        <a href="https://twitter.com" className="social-icon">
+          <i className="fab fa-twitter"></i>
+        </a>
+        <a href="https://instagram.com" className="social-icon">
+          <i className="fab fa-instagram"></i>
+        </a>
+        <a href="https://linkedin.com" className="social-icon">
+          <i className="fab fa-linkedin"></i>
+        </a>
+      </div>
+      <div className="newsletter">
+        <input type="email" placeholder="Subscribe to our newsletter" />
+        <button>Subscribe</button>
+      </div>
+    </div>
+  </div>
+  
+  <div className="footer-bottom">
+    <p>&copy; 2025 Restaurant Gift Cards. All rights reserved.</p>
+    <div className="payment-methods">
+      <i className="fab fa-cc-visa"></i>
+      <i className="fab fa-cc-mastercard"></i>
+      <i className="fab fa-cc-amex"></i>
+      <i className="fab fa-cc-paypal"></i>
+    </div>
+  </div>
+</footer>
+</div>
+
+
+  )}
+  
+  export default UserLanding;
+  
