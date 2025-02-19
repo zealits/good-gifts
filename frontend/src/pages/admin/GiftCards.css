@@ -359,7 +359,289 @@
   color: rgb(245, 236, 236);
 }
 
+/* Create Success Modal Styles */
+.create-success-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
 
+.create-success-modal-container {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: modalPopIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position: relative;
+  overflow: hidden;
+}
+
+.create-success-modal-content {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.create-success-modal-icon {
+  width: 80px;
+  height: 80px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: iconScale 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.2s both;
+}
+
+.create-success-modal-title {
+  color: white;
+  font-size: 28px;
+  margin: 0 0 10px;
+  font-weight: 600;
+}
+
+.create-success-modal-message {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 18px;
+  margin: 0;
+}
+
+.checkmark-svg {
+  width: 40px;
+  height: 40px;
+}
+
+.checkmark-path {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: drawCheck 0.8s ease-in-out forwards 0.4s;
+}
+
+/* Update Success Modal Styles */
+.update-success-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.update-success-modal-container {
+  background: linear-gradient(135deg, #007bff, #6610f2);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: modalSlideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position: relative;
+  overflow: hidden;
+}
+
+.update-success-modal-content {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.update-success-modal-icon {
+  width: 80px;
+  height: 80px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: iconRotate 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.2s both;
+}
+
+.update-success-modal-title {
+  color: white;
+  font-size: 28px;
+  margin: 0 0 10px;
+  font-weight: 600;
+}
+
+.update-success-modal-message {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 18px;
+  margin: 0;
+}
+
+.update-checkmark-svg {
+  width: 40px;
+  height: 40px;
+}
+
+.update-checkmark-path {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: drawCheck 0.8s ease-in-out forwards 0.4s;
+}
+
+/* Animations */
+@keyframes modalPopIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideIn {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes iconScale {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes iconRotate {
+  0% {
+    transform: scale(0) rotate(-180deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes drawCheck {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Add ripple effect for update modal */
+.update-success-modal-ripple {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+/* Add these styles to your GiftCards.css file */
+
+/* Add these styles to your GiftCards.css file */
+
+.delete-success-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.delete-success-modal-container {
+  position: relative;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.delete-success-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.delete-success-modal-icon {
+  background-color: #ff6b6b;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.delete-checkmark-svg {
+  width: 30px;
+  height: 30px;
+}
+
+.delete-checkmark-path {
+  stroke-dasharray: 30;
+  stroke-dashoffset: 30;
+  animation: draw 0.5s ease forwards;
+}
+
+.delete-success-modal-title {
+  font-size: 24px;
+  color: #ff6b6b;
+  margin-bottom: 10px;
+}
+
+.delete-success-modal-message {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.delete-success-modal-fade {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
 
 
@@ -473,6 +755,54 @@
   color: white;
   font-size: 1.1rem;
   margin-bottom: 20px;
+}
+
+
+.create-update-modal-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+  border: none;
+  border-radius: 20%;
+  font-size: 18px;
+  color: #444;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.create-update-modal-close-btn:hover {
+  background: linear-gradient(135deg, #4dd0e1, #26c6da);
+  color: white;
+  box-shadow: 0 4px 12px rgba(77, 208, 225, 0.4);
+  transform: rotate(90deg);
+}
+
+.create-update-modal-close-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(77, 208, 225, 0.5);
+}
+
+.create-update-modal-close-btn:active {
+  transform: scale(0.95);
+  background: linear-gradient(135deg, #26c6da, #00acc1);
+}
+
+@keyframes shine {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
 .button-group {

@@ -1,6 +1,6 @@
 /* Core variables */
 :root {
-    --sidebar-width-collapsed: 120px;
+    --sidebar-width-collapsed: 100px;
     --sidebar-width-expanded: 300px;
     --sidebar-bg: linear-gradient(180deg, #000000, #111827);
     --accent-primary: #3b82f6;
@@ -244,7 +244,7 @@
 .sidebar li a:hover .icon,
 .sidebar li a:hover .links_name {
     color: var(--accent-primary);
-    transform: translateX(2px);
+    
 }
 
 /* Animation for the indicator */
@@ -302,7 +302,7 @@
     border-radius: 8px;
     width: 100%;
     transition: all 0.3s ease;
-    margin-top : 60px;
+    margin-top : 120px;
   }
   
   .profile-details:hover {

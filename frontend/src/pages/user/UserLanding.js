@@ -148,68 +148,11 @@ const UserLanding = () => {
 
 {/* Footer section moved outside the modal conditional rendering */}
 <footer className="footer">
-  <div className="footer-content">
-    <div className="footer-section">
-      <h3>About Us</h3>
-      <ul>
-        <li><a href="/about">Our Story</a></li>
-        <li><a href="/how-it-works">How It Works</a></li>
-        <li><a href="/careers">Careers</a></li>
-        <li><a href="/press">Press</a></li>
-      </ul>
-    </div>
-    
-    <div className="footer-section">
-      <h3>Support</h3>
-      <ul>
-        <li><a href="/help">Help Center</a></li>
-        <li><a href="/contact">Contact Us</a></li>
-        <li><a href="/faq">FAQs</a></li>
-        <li><a href="/shipping">Shipping Info</a></li>
-      </ul>
-    </div>
-    
-    <div className="footer-section">
-      <h3>Legal</h3>
-      <ul>
-        <li><a href="/privacy">Privacy Policy</a></li>
-        <li><a href="/terms">Terms of Service</a></li>
-        <li><a href="/refund">Refund Policy</a></li>
-        <li><a href="/accessibility">Accessibility</a></li>
-      </ul>
-    </div>
-    
-    <div className="footer-section">
-      <h3>Connect With Us</h3>
-      <div className="social-links">
-        <a href="https://facebook.com" className="social-icon">
-          <i className="fab fa-facebook"></i>
-        </a>
-        <a href="https://twitter.com" className="social-icon">
-          <i className="fab fa-twitter"></i>
-        </a>
-        <a href="https://instagram.com" className="social-icon">
-          <i className="fab fa-instagram"></i>
-        </a>
-        <a href="https://linkedin.com" className="social-icon">
-          <i className="fab fa-linkedin"></i>
-        </a>
-      </div>
-      <div className="newsletter">
-        <input type="email" placeholder="Subscribe to our newsletter" />
-        <button>Subscribe</button>
-      </div>
-    </div>
-  </div>
+ 
   
   <div className="footer-bottom">
     <p>&copy; 2025 Restaurant Gift Cards. All rights reserved.</p>
-    <div className="payment-methods">
-      <i className="fab fa-cc-visa"></i>
-      <i className="fab fa-cc-mastercard"></i>
-      <i className="fab fa-cc-amex"></i>
-      <i className="fab fa-cc-paypal"></i>
-    </div>
+ 
   </div>
 </footer>
 </div>

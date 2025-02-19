@@ -7,7 +7,11 @@ import {
   updateGiftCard,
   deleteGiftCard,
 } from "../../services/Actions/giftCardActions";
-import Modal from "../../components/Notification/Modal";
+import {
+  CREATE_GIFTCARD_RESET,
+  UPDATE_GIFTCARD_RESET,
+  DELETE_GIFTCARD_RESET,
+} from "../../services/Constants/giftCardConstants";
 
 const GiftCards = () => {
   const [isMessageModalOpen, setMessageModalOpen] = useState(false);
@@ -18,7 +22,13 @@ const GiftCards = () => {
   const [editingCardId, setEditingCardId] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [isCreateSuccessModalOpen, setCreateSuccessModalOpen] = useState(false);
+  const [isUpdateSuccessModalOpen, setUpdateSuccessModalOpen] = useState(false);
+  const [isDeleteSuccessModalOpen, setDeleteSuccessModalOpen] = useState(false);
+  const [hasShownCreateSuccess, setHasShownCreateSuccess] = useState(false);
+  const [hasShownUpdateSuccess, setHasShownUpdateSuccess] = useState(false);
+  const [hasShownDeleteSuccess, setHasShownDeleteSuccess] = useState(false);
+  
   //Add state to manage the delete confirmation modal.
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [cardToDelete, setCardToDelete] = useState(null);
@@ -38,31 +48,77 @@ const GiftCards = () => {
   );
 
   useEffect(() => {
-    if (giftCardCreate.success || giftCardUpdate.success) {
-      setModalMessage(
-        giftCardCreate.success
-          ? "Gift card created successfully!"
-          : "Gift card updated successfully!"
-      );
-      setMessageModalOpen(true);
-      setModalOpen(false); // Close modal after successful action
-      dispatch(listGiftCards()); // Refresh the list
-    } else if (giftCardCreate.error || giftCardUpdate.error) {
-      setModalMessage(`Error: ${giftCardCreate.error || giftCardUpdate.error}`);
-      setMessageModalOpen(true);
-    }
-  }, [giftCardCreate, giftCardUpdate, dispatch]);
+    // This will run when the component unmounts
+    return () => {
+      dispatch({ type: CREATE_GIFTCARD_RESET });
+      dispatch({ type: UPDATE_GIFTCARD_RESET });
+      dispatch({ type: DELETE_GIFTCARD_RESET });
+    };
+  }, [dispatch]);
 
   useEffect(() => {
-    if (giftCardDelete.success) {
-      setModalMessage("Gift card deleted successfully!");
-      setMessageModalOpen(true);
-      dispatch(listGiftCards()); // Refresh the list
-    } else if (giftCardDelete.error) {
-      setModalMessage(`Error: ${giftCardDelete.error}`);
-      setMessageModalOpen(true);
+    dispatch(listGiftCards(searchTerm));
+    
+    // Reset all success states on initial mount
+    dispatch({ type: CREATE_GIFTCARD_RESET });
+    dispatch({ type: UPDATE_GIFTCARD_RESET });
+    dispatch({ type: DELETE_GIFTCARD_RESET });
+  }, [dispatch, searchTerm]);
+
+ 
+  useEffect(() => {
+    if (giftCardCreate.success && !hasShownCreateSuccess) {
+      setCreateSuccessModalOpen(true);
+      setModalOpen(false);
+      dispatch(listGiftCards());
+      
+      // Mark that we've shown this success modal
+      setHasShownCreateSuccess(true);
+      
+      setTimeout(() => {
+        setCreateSuccessModalOpen(false);
+      }, 3000);
+    } else if (giftCardCreate.error) {
+      // Handle create error
     }
-  }, [giftCardDelete, dispatch]);
+  }, [giftCardCreate, dispatch, hasShownCreateSuccess]);
+
+  // Modified update success handler with flag
+  useEffect(() => {
+    if (giftCardUpdate.success && !hasShownUpdateSuccess) {
+      setUpdateSuccessModalOpen(true);
+      setModalOpen(false);
+      dispatch(listGiftCards());
+      
+      // Mark that we've shown this success modal
+      setHasShownUpdateSuccess(true);
+      
+      setTimeout(() => {
+        setUpdateSuccessModalOpen(false);
+      }, 3000);
+    } else if (giftCardUpdate.error) {
+      // Handle update error
+    }
+  }, [giftCardUpdate, dispatch, hasShownUpdateSuccess]);
+
+  // Modified delete success handler with flag
+  useEffect(() => {
+    if (giftCardDelete.success && !hasShownDeleteSuccess) {
+      setDeleteSuccessModalOpen(true);
+      
+      dispatch(listGiftCards()); // Refresh the list
+      
+      // Mark that we've shown this success modal
+      setHasShownDeleteSuccess(true);
+      
+      setTimeout(() => {
+        setDeleteSuccessModalOpen(false);
+      }, 3000);
+    } else if (giftCardUpdate.error) {
+      // Handle update error
+    }
+  }, [giftCardDelete, dispatch, hasShownDeleteSuccess]);
+
 
   const [formData, setFormData] = useState({
     giftCardName: "",
@@ -84,8 +140,10 @@ const GiftCards = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isEditing) {
+      setHasShownUpdateSuccess(false); // Reset update success flag
       dispatch(updateGiftCard(editingCardId, formData));
     } else {
+      setHasShownCreateSuccess(false); // Reset create success flag
       dispatch(createGiftCard(formData));
     }
   };
@@ -134,6 +192,7 @@ const GiftCards = () => {
 
   const confirmDelete = () => {
     if (cardToDelete) {
+      setHasShownDeleteSuccess(false); // Reset delete success flag
       dispatch(deleteGiftCard(cardToDelete));
       setDeleteModalOpen(false); // Close the modal after confirming
       setCardToDelete(null); // Clear the stored card ID
@@ -269,10 +328,12 @@ const GiftCards = () => {
       {isModalOpen && (
         <div className="modal">
           <div className="creategiftcard-modal-content">
-            <button className="close-btn" onClick={handleCloseModal}>
+            <button className="create-update-modal-close-btn" onClick={handleCloseModal}>
               &times;
             </button>
-            <h2 className="gc-page-modal-heading">{isEditing ? "Edit Gift Card" : "Create a Gift Card"}</h2>
+            <h2 className="gc-page-modal-heading">
+              {isEditing ? "Edit Gift Card" : "Create a Gift Card"}
+            </h2>
             <form className="giftcard-form" onSubmit={handleSubmit}>
               <div className="giftcards-page-form-group">
                 <label htmlFor="giftCardName">Gift Card Name</label>
@@ -294,10 +355,16 @@ const GiftCards = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="🎂 Birthday Special" className="option-birthday">
+                  <option
+                    value="🎂 Birthday Special"
+                    className="option-birthday"
+                  >
                     <i className="react-icons">🎂</i> Birthday Special
                   </option>
-                  <option value="💍 Anniversary Delight" className="option-anniversary">
+                  <option
+                    value="💍 Anniversary Delight"
+                    className="option-anniversary"
+                  >
                     <i className="react-icons">💍</i> Anniversary Delight
                   </option>
                   <option value="🎉 Festive Cheers" className="option-festive">
@@ -306,91 +373,169 @@ const GiftCards = () => {
                   <option value="🙏 Thank You" className="option-thank-you">
                     <i className="react-icons">🙏</i> Thank You
                   </option>
-                  <option value="🎉 Congratulations" className="option-congratulations">
+                  <option
+                    value="🎉 Congratulations"
+                    className="option-congratulations"
+                  >
                     <i className="react-icons">🎉</i> Congratulations
                   </option>
-                  <option value="💐 Get Well Soon" className="option-get-well-soon">
+                  <option
+                    value="💐 Get Well Soon"
+                    className="option-get-well-soon"
+                  >
                     <i className="react-icons">💐</i> Get Well Soon
                   </option>
-                  <option value="🏠 Housewarming Gift" className="option-housewarming">
+                  <option
+                    value="🏠 Housewarming Gift"
+                    className="option-housewarming"
+                  >
                     <i className="react-icons">🏠</i> Housewarming Gift
                   </option>
                   <option value="🍽 Fine Dining" className="option-fine-dining">
                     <i className="react-icons">🍽</i> Fine Dining
                   </option>
-                  <option value="🍷 Romantic Dinner" className="option-romantic-dinner">
+                  <option
+                    value="🍷 Romantic Dinner"
+                    className="option-romantic-dinner"
+                  >
                     <i className="react-icons">🍷</i> Romantic Dinner
                   </option>
-                  <option value="🥞 Weekend Brunch" className="option-weekend-brunch">
+                  <option
+                    value="🥞 Weekend Brunch"
+                    className="option-weekend-brunch"
+                  >
                     <i className="react-icons">🥞</i> Weekend Brunch
                   </option>
-                  <option value="🍗 Family Feast" className="option-family-feast">
+                  <option
+                    value="🍗 Family Feast"
+                    className="option-family-feast"
+                  >
                     <i className="react-icons">🍗</i> Family Feast
                   </option>
-                  <option value="🍳 Chef's Special" className="option-chefs-special">
+                  <option
+                    value="🍳 Chef's Special"
+                    className="option-chefs-special"
+                  >
                     <i className="react-icons">🍳</i> Chef's Special
                   </option>
-                  <option value="🍴 All-You-Can-Eat Buffet" className="option-buffet">
+                  <option
+                    value="🍴 All-You-Can-Eat Buffet"
+                    className="option-buffet"
+                  >
                     <i className="react-icons">🍴</i> All-You-Can-Eat Buffet
                   </option>
-                  <option value="🏖 Relaxing Staycation" className="option-staycation">
+                  <option
+                    value="🏖 Relaxing Staycation"
+                    className="option-staycation"
+                  >
                     <i className="react-icons">🏖</i> Relaxing Staycation
                   </option>
-                  <option value="💆‍♀ Spa & Dine Combo" className="option-spa-combo">
+                  <option
+                    value="💆‍♀ Spa & Dine Combo"
+                    className="option-spa-combo"
+                  >
                     <i className="react-icons">💆‍♀</i> Spa & Dine Combo
                   </option>
-                  <option value="🌴 Luxury Escape" className="option-luxury-escape">
+                  <option
+                    value="🌴 Luxury Escape"
+                    className="option-luxury-escape"
+                  >
                     <i className="react-icons">🌴</i> Luxury Escape
                   </option>
-                  <option value="🍷 Gourmet Experience" className="option-gourmet-experience">
+                  <option
+                    value="🍷 Gourmet Experience"
+                    className="option-gourmet-experience"
+                  >
                     <i className="react-icons">🍷</i> Gourmet Experience
                   </option>
                   <option value="🍇 Wine & Dine" className="option-wine-dine">
                     <i className="react-icons">🍇</i> Wine & Dine
                   </option>
-                  <option value="🏖 Beachside Bliss" className="option-beachside-bliss">
+                  <option
+                    value="🏖 Beachside Bliss"
+                    className="option-beachside-bliss"
+                  >
                     <i className="react-icons">🏖</i> Beachside Bliss
                   </option>
-                  <option value="🏞 Mountain Retreat" className="option-mountain-retreat">
+                  <option
+                    value="🏞 Mountain Retreat"
+                    className="option-mountain-retreat"
+                  >
                     <i className="react-icons">🏞</i> Mountain Retreat
                   </option>
-                  <option value="🌆 City Lights Dining" className="option-city-lights">
+                  <option
+                    value="🌆 City Lights Dining"
+                    className="option-city-lights"
+                  >
                     <i className="react-icons">🌆</i> City Lights Dining
                   </option>
-                  <option value="🍛 Exotic Flavors" className="option-exotic-flavors">
+                  <option
+                    value="🍛 Exotic Flavors"
+                    className="option-exotic-flavors"
+                  >
                     <i className="react-icons">🍛</i> Exotic Flavors
                   </option>
-                  <option value="👔 Employee Appreciation" className="option-employee-appreciation">
+                  <option
+                    value="👔 Employee Appreciation"
+                    className="option-employee-appreciation"
+                  >
                     <i className="react-icons">👔</i> Employee Appreciation
                   </option>
-                  <option value="🎁 Loyalty Rewards" className="option-loyalty-rewards">
+                  <option
+                    value="🎁 Loyalty Rewards"
+                    className="option-loyalty-rewards"
+                  >
                     <i className="react-icons">🎁</i> Loyalty Rewards
                   </option>
-                  <option value="🧳 Client Gifting" className="option-client-gifting">
+                  <option
+                    value="🧳 Client Gifting"
+                    className="option-client-gifting"
+                  >
                     <i className="react-icons">🧳</i> Client Gifting
                   </option>
-                  <option value="🏢 Corporate Thank You" className="option-corporate-thank-you">
+                  <option
+                    value="🏢 Corporate Thank You"
+                    className="option-corporate-thank-you"
+                  >
                     <i className="react-icons">🏢</i> Corporate Thank You
                   </option>
-                  <option value="💖 Just Because" className="option-just-because">
+                  <option
+                    value="💖 Just Because"
+                    className="option-just-because"
+                  >
                     <i className="react-icons">💖</i> Just Because
                   </option>
                   <option value="🍷 Date Night" className="option-date-night">
                     <i className="react-icons">🍷</i> Date Night
                   </option>
-                  <option value="☀ Summer Treats" className="option-summer-treats">
+                  <option
+                    value="☀ Summer Treats"
+                    className="option-summer-treats"
+                  >
                     <i className="react-icons">☀</i> Summer Treats
                   </option>
-                  <option value="❄ Winter Warmth" className="option-winter-warmth">
+                  <option
+                    value="❄ Winter Warmth"
+                    className="option-winter-warmth"
+                  >
                     <i className="react-icons">❄</i> Winter Warmth
                   </option>
-                  <option value="🌷 Spring Refresh" className="option-spring-refresh">
+                  <option
+                    value="🌷 Spring Refresh"
+                    className="option-spring-refresh"
+                  >
                     <i className="react-icons">🌷</i> Spring Refresh
                   </option>
-                  <option value="🍂 Autumn Flavors" className="option-autumn-flavors">
+                  <option
+                    value="🍂 Autumn Flavors"
+                    className="option-autumn-flavors"
+                  >
                     <i className="react-icons">🍂</i> Autumn Flavors
                   </option>
-                  <option value="🍽 For Food Lovers" className="option-for-food-lovers">
+                  <option
+                    value="🍽 For Food Lovers"
+                    className="option-for-food-lovers"
+                  >
                     <i className="react-icons">🍽</i> For Food Lovers
                   </option>
                   <option value="👨 For Him" className="option-for-him">
@@ -399,7 +544,10 @@ const GiftCards = () => {
                   <option value="👩 For Her" className="option-for-her">
                     <i className="react-icons">👩</i> For Her
                   </option>
-                  <option value="👨‍👩‍👧‍👦 For the Family" className="option-for-family">
+                  <option
+                    value="👨‍👩‍👧‍👦 For the Family"
+                    className="option-for-family"
+                  >
                     <i className="react-icons">👨‍👩‍👧‍👦</i> For the Family
                   </option>
                   <option value="👥 For the Team" className="option-for-team">
@@ -491,37 +639,106 @@ const GiftCards = () => {
           </div>
         </div>
       )}
+      {isCreateSuccessModalOpen && (
+        <div className="create-success-modal-overlay">
+          <div className="create-success-modal-container">
+            <div className="create-success-modal-content">
+              <div className="create-success-modal-icon">
+                <svg viewBox="0 0 24 24" className="checkmark-svg">
+                  <path 
+                    className="checkmark-path"
+                    d="M3.7 14.3l5.6 5.6L20.3 4.7"
+                    fill="none"
+                    stroke="#fff" 
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
+              <h2 className="create-success-modal-title">Success!</h2>
+              <p className="create-success-modal-message">
+                Gift Card Created Successfully
+              </p>
+              <div className="create-success-modal-confetti"></div>
+            </div>
+          </div>
+        </div>
+      )}
 
+      {isUpdateSuccessModalOpen && (
+        <div className="update-success-modal-overlay">
+          <div className="update-success-modal-container">
+            <div className="update-success-modal-content">
+              <div className="update-success-modal-icon">
+                <svg viewBox="0 0 24 24" className="update-checkmark-svg">
+                  <path 
+                    className="update-checkmark-path"
+                    d="M3.7 14.3l5.6 5.6L20.3 4.7"
+                    fill="none"
+                    stroke="#fff" 
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
+              <h2 className="update-success-modal-title">Updated!</h2>
+              <p className="update-success-modal-message">
+                Gift Card Updated Successfully
+              </p>
+              <div className="update-success-modal-ripple"></div>
+            </div>
+          </div>
+        </div>
+      )}
 
+      {isDeleteSuccessModalOpen && (
+        <div className="delete-success-modal-overlay">
+          <div className="delete-success-modal-container">
+            <div className="delete-success-modal-content">
+              <div className="delete-success-modal-icon">
+                <svg viewBox="0 0 24 24" className="delete-checkmark-svg">
+                  <path 
+                    className="delete-checkmark-path"
+                    d="M3.7 14.3l5.6 5.6L20.3 4.7"
+                    fill="none"
+                    stroke="#fff" 
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
+              <h2 className="delete-success-modal-title">Deleted!</h2>
+              <p className="delete-success-modal-message">
+                Gift Card Deleted Successfully
+              </p>
+              <div className="delete-success-modal-fade"></div>
+            </div>
+          </div>
+        </div>
+      )}
 
-{isMessageModalOpen && <Modal message={modalMessage} onClose={closeModal} />}
-
-{isDeleteModalOpen && (
-  <div className="delete-confirmation-modal-overlay">
-    <div className="delete-confirmation-modal-container">
-      <p className="delete-confirmation-modal-text">
-        Are you sure you want to delete this gift card?
-      </p>
-      <div className="delete-confirmation-button-group">
-        <button className="delete-confirmation-yes-button" onClick={confirmDelete}>
-          Yes
-        </button>
-        <button className="delete-confirmation-no-button" onClick={() => setDeleteModalOpen(false)}>
-          No
-        </button>
-      </div>
+      {isDeleteModalOpen && (
+        <div className="delete-confirmation-modal-overlay">
+          <div className="delete-confirmation-modal-container">
+            <p className="delete-confirmation-modal-text">
+              Are you sure you want to delete this gift card?
+            </p>
+            <div className="delete-confirmation-button-group">
+              <button
+                className="delete-confirmation-yes-button"
+                onClick={confirmDelete}
+              >
+                Yes
+              </button>
+              <button
+                className="delete-confirmation-no-button"
+                onClick={() => setDeleteModalOpen(false)}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  </div>
-  
-
-)}
-</div>
   );
 };
-
-
-
-
-
 
 export default GiftCards;
