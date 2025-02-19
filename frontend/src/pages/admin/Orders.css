@@ -10,7 +10,9 @@
   background: linear-gradient(135deg, rgba(29, 29, 39, 0.95), rgba(22, 22, 32, 0.95));
   min-height: 100vh;
   color: #f8fafc;
+ 
 }
+
 
 
 
@@ -34,15 +36,24 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   text-transform: uppercase;
-  
+ 
+  top: 0; /* Add this */
+  z-index: 10; /* Add this */
+  background-color: white; /* Add this to prevent content showing through */
+  padding: 20px 0; /* Add this for some spacing */
   animation: gradientFlow 8s linear infinite;
   text-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .view-toggle-buttons {
   text-align: center;
-  margin-bottom: 20px;  /* Reduced from 40px */
+  margin-bottom: 20px;
   animation: fadeIn 1s ease-out;
+ 
+  top: 100px; /* Adjust this value based on your header height */
+  z-index: 10; /* Add this */
+
+  padding: 10px 0; /* Add this for some spacing */
 }
 
 .view-button {
@@ -222,7 +233,7 @@
 
 .buyers-modal-content {
   background: linear-gradient(165deg, #0f172a, #1e293b);
-  padding: 48px 40px;
+  padding: 32px 28px; /* Reduced padding for better space utilization */
   border-radius: 32px;
   width: 92%;
   max-width: 800px;
@@ -236,7 +247,8 @@
   position: relative;
   transform-origin: center;
   animation: modalPopIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .buyers-modal-content::before,
@@ -302,9 +314,9 @@
 }
 
 .buyers-modal-content h3 {
-  font-size: 36px;
+  font-size: 32px; /* Slightly reduced for better proportion */
   font-weight: 700;
-  margin: 0 0 40px;
+  margin: 0 0 24px; /* Reduced bottom margin */
   text-align: center;
   background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%);
   -webkit-background-clip: text;
@@ -331,13 +343,11 @@
 
 .buyer-item {
   background: rgba(59, 130, 246, 0.08);
-  margin-bottom: 24px;
-  padding: 32px;
+  margin-bottom: 16px;
+  padding: 16px 24px;
   border-radius: 20px;
   border: 1px solid rgba(59, 130, 246, 0.15);
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  display: grid;
-  gap: 20px;
   position: relative;
   overflow: hidden;
   animation: itemSlideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -360,6 +370,30 @@
   transition: opacity 0.4s ease;
 }
 
+.buyer-info-compact {
+  display: flex;
+  align-items: center;
+  gap: 24px; /* Increased spacing between name and datetime */
+}
+
+.buyer-datetime {
+  color: #94a3b8;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+.buyer-details {
+  max-height: 0;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  margin-top: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+}
+
 .buyer-item:hover {
   transform: translateY(-4px) scale(1.02);
   background: rgba(59, 130, 246, 0.12);
@@ -368,8 +402,42 @@
     0 20px 40px -20px rgba(0, 0, 0, 0.3),
     0 0 15px rgba(59, 130, 246, 0.15),
     inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    padding: 24px;
 }
 
+.buyer-modal-search-container {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.buyer-modal-search-input {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  background: rgba(15, 23, 42, 0.6);
+  color: #f8fafc;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.buyer-modal-search-input:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.buyer-modal-search-input::placeholder {
+  color: #64748b;
+}
+
+
+.buyer-item:hover .buyer-details {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 16px;
+}
 .buyer-item:hover::before {
   opacity: 1;
 }
@@ -377,14 +445,15 @@
 .view-redemption-history-button {
   background: linear-gradient(135deg, #2563eb, #3b82f6);
   border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
+  padding: 16px 24px;
+  border-radius: 8px; /* More square shape */
   color: white;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  margin-left: auto; /* Pushes button to the right */
 }
 
 .view-redemption-history-button::before {
@@ -451,14 +520,7 @@
   }
 }
 
-@keyframes gradientSpin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
+
 
 @keyframes lineWidth {
   0%, 100% {
@@ -585,10 +647,10 @@
 
 /* Add these new styles for buyer name */
 .buyer-name {
-  font-size: 28px;
+  font-size: 24px; /* Slightly reduced for better proportion */
   font-weight: 700;
   color: #f8fafc;
-  margin: 8px 0;
+  margin: 4px 0; /* Reduced margin */
   position: relative;
   display: inline-block;
   background: linear-gradient(135deg, #f8fafc 0%, #93c5fd 100%);
@@ -596,15 +658,17 @@
   -webkit-text-fill-color: transparent;
   text-shadow: 0 2px 10px rgba(147, 197, 253, 0.2);
   transition: all 0.3s ease;
+  padding-bottom: 8px; /* Increased spacing for underline */
+  margin-bottom: 4px;
 }
 
 .buyer-name::before {
   content: '';
   position: absolute;
-  bottom: -4px;
+  bottom: 0;
   left: 0;
   width: 0;
-  height: 2px;
+  height: 3px; /* Slightly thicker underline */
   background: linear-gradient(90deg, #3b82f6, #60a5fa);
   transition: width 0.4s ease;
   border-radius: 4px;
@@ -1055,17 +1119,18 @@
 
 .redemption-history-modal-content {
   background: linear-gradient(145deg, #1e293b, #334155);
-  padding: 35px;
+  padding: 0;  /* Changed from 35px to 0 */
   border-radius: 24px;
   width: 90%;
   max-width: 600px;
   color: #f8fafc;
   box-shadow: 
-      0 12px 40px rgba(0, 0, 0, 0.3),
-      0 0 0 1px rgba(255, 255, 255, 0.1);
+    0 12px 40px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
   animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   max-height: 85vh;
 }
 
@@ -1073,22 +1138,54 @@
   font-size: 28px;
   font-weight: 700;
   text-align: center;
-  margin-bottom: 30px;
-  background: linear-gradient(135deg, #60a5fa, #3b82f6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: linear-gradient(145deg, #1e293b, #334155);
   letter-spacing: 1px;
   position: sticky;
   top: 0;
-  padding: 15px 0;
-  background-color: #1e293b;
   z-index: 2;
+  padding: 25px 0;
+  margin: 0;
+  background: linear-gradient(145deg, #1e293b, #334155);
+}
+
+.redemption-history-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: linear-gradient(to bottom, rgba(30, 41, 59, 0.2), transparent);
+  pointer-events: none;
 }
 
 .redemption-history-list {
   list-style: none;
-  padding: 0;
+  padding: 35px;
   margin: 0;
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.5) rgba(30, 41, 59, 0.5);
+}
+
+.redemption-history-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.redemption-history-list::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 10px;
+}
+
+.redemption-history-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-radius: 10px;
+  border: 2px solid rgba(30, 41, 59, 0.5);
+}
+
+.redemption-history-list::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
 }
 
 .redemption-history-entry {
@@ -1122,6 +1219,13 @@
   transform: translateY(-5px);
   background: rgba(59, 130, 246, 0.15);
   box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+}
+
+/* Preserve the gradient text effect for the title */
+.redemption-history-title {
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .entry-number {
@@ -1161,7 +1265,8 @@
   font-size: 16px;
   font-weight: 600;
   margin-top: 24px;
-  width: auto;
+  margin-bottom: 20px;
+  width: 190px;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
@@ -1172,31 +1277,6 @@
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
   transform: translateX(-50%) translateY(-2px);
   box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
-}
-
-/* Custom Scrollbar for Modal */
-.redemption-history-modal-content {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(59, 130, 246, 0.5) rgba(30, 41, 59, 0.5);
-}
-
-.redemption-history-modal-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.redemption-history-modal-content::-webkit-scrollbar-track {
-  background: rgba(30, 41, 59, 0.5);
-  border-radius: 10px;
-}
-
-.redemption-history-modal-content::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  border-radius: 10px;
-  border: 2px solid rgba(30, 41, 59, 0.5);
-}
-
-.redemption-history-modal-content::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
 }
 
 /* Animations */

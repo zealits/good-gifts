@@ -7,7 +7,7 @@ import {
   FaHome, FaBriefcase, FaTasks, FaUser, FaCog, 
   FaInfoCircle, FaHeadset, FaSignOutAlt, FaMoneyBill, 
   FaEnvelope, FaAngleRight, FaAngleLeft, FaTachometerAlt, 
-  FaGift, FaShoppingCart, FaUsers, FaChartLine,
+  FaGift, FaShoppingCart, FaUsers, FaChartLine, FaBars
 } from "react-icons/fa";
 
 const Sidebar = () => {
@@ -35,7 +35,7 @@ const Sidebar = () => {
         <i className="bx bxl-codepen"></i>
         <div className="logo_name">A i i</div>
         <i className={`bx bx-menu ${isOpen ? "rotate" : ""}`} id="btn" onClick={toggleSidebar}>
-          {isOpen ? <FaAngleLeft id="btn" className="icon" /> : <FaAngleRight id="btn" className="icon" />}
+          {isOpen ? <FaAngleLeft id="btn" className="icon" /> : <FaBars id="btn" className="icon" />}
         </i>
       </div>
       <ul className="nav-list">
@@ -69,16 +69,6 @@ const Sidebar = () => {
           </Link>
           <span className="tooltip">Orders</span>
         </li>
-        {/* <li>
-          <Link to="/customers" className={`linke ${isActive("/customers") ? "active" : ""}`}>
-            <i className="bx bx-chat">
-              <FaUsers className="icon" />
-            </i>
-            <span className="links_name">Customers</span>
-            {isActive("/customers") && <span className="active-indicator"></span>}
-          </Link>
-          <span className="tooltip">Customers</span>
-        </li> */}
         <li>
           <Link to="/reports" className={`linke ${isActive("/reports") ? "active" : ""}`}>
             <i className="bx bx-pie-chart-alt-2">

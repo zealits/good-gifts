@@ -3,7 +3,7 @@ const { GoogleAuth } = require("google-auth-library");
 const path = require("path");
 const GiftCard = require("../models/giftCardSchema");
 
-// Google Wallet API Credentials
+
 
 const credentials = {
   type: "service_account",
@@ -30,7 +30,7 @@ const httpClient = new GoogleAuth({
   scopes: "https://www.googleapis.com/auth/wallet_object.issuer",
 });
 
-async function createGiftCardClass(giftCardName,description,gifcardImage,expiryDate,aiiLogo) {
+async function createGiftCardClass(giftCardName) {
   console.log("hit hitted");
   const formattedName = giftCardName.replace(/\s+/g, "_").toLowerCase();
   const classId = `${issuerId}.${formattedName}_class`;
@@ -132,13 +132,9 @@ async function generateWalletPass(req, res) {
 
     console.log("Creating gift card...");
     const classId = await createGiftCardClass(
-      hotelLogo,
-      hotelName,
-      walletGiftCardName,
-      giftCardDetails.description,
-      giftCardDetails.giftCardImg,
-      expiryDate,
-      aiiLogo
+      
+      walletGiftCardName
+      
     );
     const objectId = `${issuerId}.${userEmail.replace(/[^\w.-]/g, "_")}`;
 
