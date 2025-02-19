@@ -279,6 +279,64 @@ const getSalesData = async (req, res) => {
 };
 
 // Update a gift card
+
+// const getSalesData = async (req, res) => {
+//   try {
+//     // Get the current date and 30 days ago
+//     const endDate = new Date();
+//     const startDate = new Date();
+//     startDate.setDate(endDate.getDate() - 30); // 30 days range
+
+//     console.log("Start Date (30 days ago):", startDate);
+//     console.log("End Date:", endDate);
+
+//     // Query the database for sales data in the past 30 days based on the 'purchaseDate' of buyers
+//     const salesData = await GiftCard.aggregate([
+//       {
+//         $unwind: "$buyers", // Unwind the 'buyers' array to work with each individual purchase
+//       },
+//       {
+//         $match: {
+//           "buyers.purchaseDate": { $gte: startDate, $lte: endDate },
+//         },
+//       },
+//       {
+//         $group: {
+//           _id: { $dateToString: { format: "%Y-%m-%d", date: "$buyers.purchaseDate" } }, // Group by purchaseDate
+//           sales: { $sum: 1 }, // Sum the sales for each day
+//           totalRevenue: { $sum: "$buyers.paymentDetails.paymentamount" }, // Sum revenue for each day
+//         },
+//       },
+//       {
+//         $sort: { _id: 1 }, // Sort by date (ascending)
+//       },
+//     ]);
+
+//     console.log("Sales Data (raw aggregation):", salesData);
+
+//     // If no sales data is found, send a message indicating that
+//     if (!salesData.length) {
+//       console.log("No sales data found for the given date range.");
+//       return res.status(200).json([]);
+//     }
+
+//     // Format the data to match the expected structure for the frontend
+//     const formattedData = salesData.map((item) => ({
+//       date: item._id,
+//       sales: item.sales,
+//       revenue: item.totalRevenue, // Include total revenue
+//     }));
+
+//     console.log("Formatted Sales Data:", formattedData);
+//     return res.status(200).json(formattedData);
+//   } catch (error) {
+//     console.error("Error fetching sales data:", error);
+//     return res.status(500).json({ message: "Error fetching sales data" });
+//   }
+// };
+
+
+
 const updateGiftCard = async (req, res) => {
   try {
     const { id } = req.params;
@@ -874,6 +932,7 @@ const getGiftCardBuyers = async (req, res) => {
           purchaseDate: buyer.purchaseDate,
           remainingBalance: buyer.remainingBalance || 0,
           redemptionHistory: buyer.redemptionHistory || [],
+          returnTime: buyer.purchaseDate,
         };
       });
 
@@ -902,12 +961,14 @@ const getAllBuyers = async (req, res) => {
           redemptionDate: entry.redemptionDate,
           remainingAmount: entry.remainingAmount,
           originalAmount: entry.originalAmount,
+          
         })),
       }))
     );
 
     // Sort buyers by purchaseDate in ascending order
-    buyers.sort((a, b) => new Date(a.purchaseDate) - new Date(b.purchaseDate));
+    buyers.sort((a, b) => new Date(b.purchaseDate) - new Date(a.purchaseDate));
+
 
     res.status(200).json({
       success: true,
@@ -919,6 +980,70 @@ const getAllBuyers = async (req, res) => {
       success: false,
       message: "Failed to fetch buyers.",
     });
+  }
+};
+
+
+
+
+
+
+
+const totalRedemptionValue = async (req, res) => {
+  try {
+    // Use aggregation to sum up the redeemedAmount for all buyers in all gift cards
+    const totalRedemption = await GiftCard.aggregate([
+      { $unwind: "$buyers" }, // Unwind buyers array
+      { $unwind: "$buyers.redemptionHistory" }, // Unwind redemptionHistory array
+      { $group: {
+        _id: null, // Group all data together
+        totalRedemption: { $sum: "$buyers.redemptionHistory.redeemedAmount" } // Sum the redeemedAmount
+      }},
+    ]);
+
+    if (totalRedemption.length > 0) {
+      res.json({ totalRedemption: totalRedemption[0].totalRedemption });
+    } else {
+      res.json({ totalRedemption: 0 });
+    }
+  } catch (error) {
+    console.error("Error fetching total redemption:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getRevenueForLast30Days = async (req, res) => {
+  try {
+    // Calculate the start and end date for the last 30 days
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(endDate.getDate() - 30);
+
+    // Fetch gift cards sold within the last 30 days
+    const giftCards = await GiftCard.find({
+      "buyers.purchaseDate": { $gte: startDate, $lt: endDate },
+    });
+
+    // Calculate revenue grouped by day
+    const revenueByDate = {};
+
+    giftCards.forEach((card) => {
+      const discount = card.discount ? parseFloat(card.discount) / 100 : 0;
+      const cardRevenue = (card.amount || 0) * (1 - discount);
+
+      card.buyers.forEach((buyer) => {
+        const purchaseDate = new Date(buyer.purchaseDate).toISOString().split("T")[0]; // Extract date only
+
+        if (!revenueByDate[purchaseDate]) {
+          revenueByDate[purchaseDate] = 0;
+        }
+        revenueByDate[purchaseDate] += cardRevenue;
+      });
+    });
+
+    res.json({ revenueByDate });
+  } catch (error) {
+    res.status(500).json({ message: "Error calculating revenue for the last 30 days", error });
   }
 };
 
@@ -986,5 +1111,7 @@ module.exports = {
   getSoldGiftCards,
   getGiftCardBuyers,
   getAllBuyers,
+  totalRedemptionValue,
+  getRevenueForLast30Days,
   addGiftCardToWallet,
 };
