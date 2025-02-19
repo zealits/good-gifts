@@ -1,88 +1,178 @@
-.main-container{
+/* Ultra-Modern QR Scanner Styling */
+.main-container {
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    /* background: radial-gradient(circle at top right, #0F172A, #1E293B); */
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    margin-top: -70px;
 }
 
-/* Scanner Container */
+
+
+
+/* Scanner Container with modern glassmorphism */
 .scanner-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* background: linear-gradient(135deg, #1abc9c, #16a085);  */
-    border-radius: 20px;
-    padding: 40px 40px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Depth effect */
-    width: 1000px; /* Increased width */
-    
-    height: 100%; /* Increased height */
-    animation: fadeIn 0.5s ease-in-out;
-    overflow: hidden;
-    margin-top: 10px; /* Prevent any content from going out of bounds */
-}
+    margin-bottom: 60px;
+   
+    padding: 40px;
+    width: 90%;
+    max-width: 1000px;
+    position: relative;
  
-
-/* Video element for live feed */
-.scanner-container video {
-   width: 660px;
-    height: 500px;
-    border-radius: 15px;
-    border: 4px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px; /* Slightly increased margin */
+    z-index: 1;
 }
 
-/* Button styles */
+
+/* Video Container with modern styling */
+.scanner-container video {
+    width: 100%;
+    max-width: 660px;
+    height: 500px;
+    border-radius: 24px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+    box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        0 20px 40px -12px rgba(0, 0, 0, 0.4);
+    
+    object-fit: cover;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.scanner-container video:hover {
+    transform: scale(1.02) translateY(-4px);
+    box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        0 30px 60px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Modern Scan Button */
 .scanner-container button {
-    background: linear-gradient(135deg, #3498db, #2980b9); /* Stunning blue gradient */
+    background: linear-gradient(135deg, #3B82F6, #8B5CF6);
     color: white;
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-size: 1.1rem;
+    font-weight: 600;
     border: none;
-    border-radius: 10px;
-    padding: 15px 30px; /* Larger padding for the button */
+    border-radius: 16px;
+    padding: 18px 36px;
+    margin-top: 30px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 10px 30px -10px rgba(59, 130, 246, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.scanner-container button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    transition: 0.6s;
 }
 
 .scanner-container button:hover {
-    background: linear-gradient(135deg, #2980b9, #1e6a8d);
     transform: translateY(-2px);
-    box-shadow: 0 7px 20px rgba(41, 128, 185, 0.5);
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    box-shadow: 
+        0 20px 40px -12px rgba(59, 130, 246, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
-/* Scanning text */
+.scanner-container button:hover::before {
+    left: 100%;
+}
+
+/* Scanning Status with modern styling */
 .scanner-container p {
     font-size: 1.1rem;
-    font-weight: bold;
-    color: white;
-    background: rgba(0, 0, 0, 0.5);
-    padding: 12px 18px;
-    border-radius: 10px;
-    margin-top: 15px;
-    animation: blink 1.2s infinite;
+    font-weight: 500;
+    color: #E2E8F0;
+    background: rgba(15, 23, 42, 0.6);
+    padding: 16px 32px;
+    border-radius: 16px;
+    margin-top: 24px;
+    animation: statusPulse 2s infinite;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.3);
 }
 
-/* Keyframes for blink animation */
-@keyframes blink {
+/* Advanced Animations */
+@keyframes containerFloat {
     0%, 100% {
-        opacity: 1;
+        transform: translateY(0);
     }
     50% {
-        opacity: 0.5;
+        transform: translateY(-10px);
     }
 }
 
-/* Fade-in animation */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
+@keyframes borderGlow {
+    0%, 100% {
+        opacity: 0.5;
     }
-    to {
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes backgroundFloat {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(-5%, -5%);
+    }
+}
+
+@keyframes statusPulse {
+    0%, 100% {
         opacity: 1;
         transform: scale(1);
+        box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(0.98);
+        box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .scanner-container {
+        padding: 24px;
+        width: 95%;
+    }
+
+    .scanner-container video {
+        height: 400px;
+    }
+
+    .scanner-container button {
+        padding: 16px 32px;
+        font-size: 1rem;
     }
 }

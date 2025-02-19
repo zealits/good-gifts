@@ -295,7 +295,7 @@ const RedeemGiftCard = () => {
       {isModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <button className="close-btn" onClick={handleCloseModal}>
+            <button className="redeem-form-close-btn" onClick={handleCloseModal}>
               &times;
             </button>
             <h3 className="redeem-form-heading">Gift Card Details</h3>

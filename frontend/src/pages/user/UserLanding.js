@@ -59,7 +59,9 @@ const UserLanding = () => {
   };
 
   return (
+    
     <div className="body">
+   
       <div className="header">
         <h1>🍽️ Restaurant Gift Cards</h1>
         <p>Choose a gift card to share unforgettable dining experiences!</p>
@@ -81,26 +83,26 @@ const UserLanding = () => {
         </select>
       </div>
 
-      <div className="container">
+      <div className="purchase-card-container">
         {giftCards?.map?.((card) => (
-          <div className="card" key={card.id}>
-            <div className="card-image">
+          <div className="purchase-card" key={card.id}>
+            <div className="purchase-card-image">
               {/* <img src={`data:image/jpeg;base64,${card.giftCardImg}`} alt="Gift Card" loading="lazy"/> */}
               <img src={card.giftCardImg} alt="Gift Card" loading="lazy" />
               {/* Display the gift card tag and icon */}
-              <div className="card-tag">
+              <div className="purchase-card-tag">
                 <i className={card.icon}></i> {card.giftCardTag}
               </div>
             </div>
-            <div className="card-content">
-              <h2 className="card-title">{card.giftCardName}</h2>
-              <p className="card-description">{card.description}</p>
-              <div className="card-info">
-                <span className="card-price">$ {card.amount}</span>
-                <span className="card-discount">{card.discount} % Off</span>
+            <div className="purchase-card-content">
+              <h2 className="purchase-card-title">{card.giftCardName}</h2>
+              <p className="purchase-card-description">{card.description}</p>
+              <div className="purchase-card-info">
+                <span className="purchase-card-price">$ {card.amount}</span>
+                <span className="purchase-card-discount">{card.discount} % Off</span>
               </div>
               <button
-                className="card-button"
+                className="purchase-card-button"
                 onClick={() => handleClick(card.giftCardName, card.amount, card.discount, card._id)}
               >
                 Buy Now
@@ -115,7 +117,7 @@ const UserLanding = () => {
       {modalVisible && modalDetails && (
         <div id="modal" className="modal">
           <div className="modal-content">
-            <span className="close" onClick={handleCloseModal}>
+            <span className="purchase-modal-close" onClick={handleCloseModal}>
               &times;
             </span>
             <h2 id="modal-title">{modalDetails.title}</h2>
@@ -143,8 +145,20 @@ const UserLanding = () => {
           </div>
         </div>
       )}
-    </div>
-  );
-};
 
-export default UserLanding;
+{/* Footer section moved outside the modal conditional rendering */}
+<footer className="footer">
+ 
+  
+  <div className="footer-bottom">
+    <p>&copy; 2025 Restaurant Gift Cards. All rights reserved.</p>
+ 
+  </div>
+</footer>
+</div>
+
+
+  )}
+  
+  export default UserLanding;
+  
