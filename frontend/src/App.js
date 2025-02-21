@@ -13,6 +13,7 @@ import Customers from "./pages/admin/Customers.js"; // GiftCards page
 import Reports from "./pages/admin/Reports.js"; // GiftCards page
 import Settings from "./pages/admin/Settings.js"; // GiftCards page
 import RedeemGiftCard from "./pages/admin/RedeemGiftCard.js";
+import { LoadingProvider } from './context/LoadingContext';
 import "./App.css";
 // import 'font-awesome/css/font-awesome.min.css';
 
@@ -27,16 +28,15 @@ function App() {
 
   // const location = useLocation();
 
-  const { loading, user } = useSelector((state) => state.auth);
+  const {user } = useSelector((state) => state.auth);
   const userDetails = user?.user; // Safely access user.user
 
-  // Loading state handling
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  
 
   return (
+    <LoadingProvider>
     <div className="app">
+    
       <Router>
         {/* Conditionally render Sidebar only if the user is an admin */}
         {userDetails?.role === "Admin" && pathname !== "/" && <Sidebar />}
@@ -122,7 +122,9 @@ function App() {
       <Route path="/giftcards" element={<GiftCards />} />
         </Routes>
       </Router>
+     
     </div>
+    </LoadingProvider>
   );
 }
 
