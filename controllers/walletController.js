@@ -76,19 +76,7 @@ async function createGiftCardClass(giftCardName) {
             id: "expiry_date",
           },
         ],
-        imageModulesData: [
-          {
-            mainImage: {
-              sourceUri: {
-                uri: "https://www.concordaerospace.com/cdn/shop/products/GIFTCARD-50.png?v=1639062508",
-              },
-              contentDescription: {
-                defaultValue: { language: "en-US", value: `${giftCardName} Gift Card` },
-              },
-            },
-            id: "giftcard_image",
-          },
-        ],
+        
       };
 
       await httpClient.request({ url: `${baseUrl}/genericClass`, method: "POST", data: giftCardClass });
@@ -109,52 +97,58 @@ async function generateWalletPass(req, res) {
     const giftCardDetails = await GiftCard.findById(id);
     const walletGiftCardName = giftCardDetails.giftCardName;
     const expiryDate = giftCardDetails.expirationDate;
-    console.log("GIFT CARD NAME : ", giftCardDetails.giftCardName);
-    console.log("GIFT CARD TAG : ", giftCardDetails.giftCardTag);
-    console.log("GIFT CARD DESCRIPTION : ", giftCardDetails.description);
-    console.log("GIFT CARD AMOUNT : ", giftCardDetails.amount);
-    console.log("GIFT CARD DISOCOUNT : ", giftCardDetails.discount);
-    console.log("GIFT CARD EXT DATE : ", giftCardDetails.expirationDate); //2025-12-12T00:00:00.000Z
-    console.log("GIFT CARD IMAGE : ", giftCardDetails.giftCardImg); //2025-12-12T00:00:00.000Z
-    // Validate required fields
-    // if (!giftCardName) return res.status(400).json({ error: "Gift card name is required." });
 
     const userEmail = purchaseType === "self" ? selfInfo.email : giftInfo.recipientEmail || "default@example.com";
     const userName = purchaseType === "self" ? selfInfo.name : giftInfo.recipientName || "Gift Card Holder";
-    const transactionId = paymentDetails.transactionId || "UNKNOWN_TXN";
     const amount = giftCardDetails.amount || "0";
     const currency = paymentDetails.currency || "USD";
 
-    const hotelLogo =
-      "https://www.southcharlottefamilycounseling.com/wp-content/uploads/2015/10/cropped-logo-dummy.png";
-    const hotelName = "Hotel Name";
+    // Generate the same unique QR code as used in email
+    const uniqueCode = `${id}-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+
     const aiiLogo = "https://res.cloudinary.com/dzmn9lnk5/image/upload/v1739316421/Aii/Aii_nobackground_ym8wyn.png"
 
     console.log("Creating gift card...");
-    const classId = await createGiftCardClass(
-      
-      walletGiftCardName
-      
-    );
-    const objectId = `${issuerId}.${userEmail.replace(/[^\w.-]/g, "_")}`;
+    const classId = await createGiftCardClass(walletGiftCardName);
+    const objectId = `${issuerId}.${userEmail.replace(/[^\w.-]/g, "_")}.${id}`;
 
-    // in below gifcard object
     let giftCardObject = {
       id: objectId,
       classId: classId,
       genericType: "GENERIC_TYPE_UNSPECIFIED",
-      hexBackgroundColor: "#FFD700",
+      hexBackgroundColor: "#4158D0",
+      hexForegroundColor: "#FFFFFF",
       logo: {
-        sourceUri: { uri: giftCardDetails.giftCardImg },
+        sourceUri: { uri: aiiLogo },
+        contentDescription: {
+          defaultValue: { language: "en-US", value: "Aii Logo" },
+        },
       },
       cardTitle: { defaultValue: { language: "en", value: walletGiftCardName } },
       subheader: { defaultValue: { language: "en", value: `${currency} ${amount}` } },
       header: { defaultValue: { language: "en", value: userName } },
-      barcode: { type: "QR_CODE", value: transactionId },
+      barcode: { 
+        type: "QR_CODE", 
+        value: uniqueCode,  // Using the same unique code format as email QR
+       
+      },
+      heroImage: {
+        sourceUri: { uri: giftCardDetails.giftCardImg },
+        contentDescription: {
+          defaultValue: {
+            language: "en-US",
+            value: `${walletGiftCardName} Gift Card`,
+          },
+        },
+        dimensions: {
+          height: "130px",
+          width: "100%",
+        },
+      },
       textModulesData: [
         {
           header: "Gift Card Details",
-          body: `Value: ${currency} ${amount}\nTransaction ID: ${transactionId}`,
+          body: `Value: ${currency} ${amount}\nScan QR code to redeem`,
           id: "giftcard_info",
         },
         {
@@ -179,6 +173,25 @@ async function generateWalletPass(req, res) {
     const token = jwt.sign(claims, credentials.private_key, { algorithm: "RS256" });
     const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
 
+    // Save the QR code details to the gift card document
+    const buyerDetails = {
+      purchaseType,
+      selfInfo: purchaseType === "self" ? selfInfo : undefined,
+      giftInfo: purchaseType === "gift" ? giftInfo : undefined,
+      paymentDetails,
+      purchaseDate: new Date(),
+      qrCode: {
+        uniqueCode,
+        createdAt: new Date(),
+        isUsed: false,
+      },
+      remainingBalance: amount,
+    };
+
+    // Add buyer to gift card
+    giftCardDetails.buyers.push(buyerDetails);
+    await giftCardDetails.save();
+
     console.log("Generated Save URL:", saveUrl);
     res.json({ saveUrl });
   } catch (error) {
@@ -186,5 +199,4 @@ async function generateWalletPass(req, res) {
     res.status(500).json({ error: "Failed to generate Google Wallet pass." });
   }
 }
-
 module.exports = generateWalletPass;
