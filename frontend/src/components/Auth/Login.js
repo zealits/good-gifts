@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/Actions/authActions";
+import { useLoading } from '../../context/LoadingContext';
 import "./Login.css";
 
 const FallingGifts = () => {
@@ -70,10 +71,11 @@ const GiftCardLogin = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.auth);
+  const {error } = useSelector((state) => state.auth);
   const [showModal, setShowModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isGiftOpen, setIsGiftOpen] = useState(false);
+  const { setIsLoading } = useLoading();
 
   useEffect(() => {
     if (error) {
@@ -83,7 +85,14 @@ const GiftCardLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser(email, password, navigate));
+    setIsLoading(true);
+    try {
+      await dispatch(loginUser(email, password, navigate));
+    } catch (error) {
+      console.error("Login error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const toggleGiftAnimation = () => {
@@ -174,7 +183,7 @@ const GiftCardLogin = () => {
            
 
             <button type="submit" className="submit-button">
-              {loading ? "Signing in..." : "Sign In"}
+              Sign In
             </button>
 
             {/* <div className="register-prompt">
