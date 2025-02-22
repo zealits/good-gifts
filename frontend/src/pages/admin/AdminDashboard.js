@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Line } from "react-chartjs-2";
@@ -45,10 +45,19 @@ const AdminDashboard = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const hasFetched = useRef(false); // ✅ Prevent duplicate API calls
+
   useEffect(() => {
+    if (hasFetched.current) return; // ✅ Stop if already fetched
+    hasFetched.current = true; // ✅ Mark as fetched
+
+    console.log("🔄 useEffect triggered!");
+
     const fetchData = async () => {
       try {
-        setLoading(true); // Set loading to true before fetching data
+        setLoading(true);
+        console.log("📡 Fetching data...");
+
         const [
           giftCardResponse,
           soldResponse,
@@ -64,44 +73,56 @@ const AdminDashboard = () => {
           axios.get("/api/v1/admin/total-redemption"),
           axios.get("/api/v1/admin/last-30-days"),
         ]);
-  
+
+        console.log("✅ API responses received!");
+        console.log("🎟️ Total Gift Cards:", giftCardResponse.data.giftCardCount);
+        console.log("🎫 Total Sold:", soldResponse.data.totalSold);
+        console.log("💰 Total Revenue:", revenueResponse.data.totalRevenue);
+        console.log("📊 Sales Data:", salesResponse.data);
+        console.log("💸 Total Redemption:", redemptionResponse.data.totalRedemption);
+        console.log("📈 Revenue Data:", revenueGraphResponse.data.revenueByDate);
+
         setTotalGiftCards(giftCardResponse.data.giftCardCount);
         setTotalSold(soldResponse.data.totalSold);
         setTotalRevenue(revenueResponse.data.totalRevenue);
-  
-        // Destructure and sort sales data
+
+        // Sort sales data
         const salesDataArray = salesResponse.data.map((item) => ({
           date: item.date,
           sales: item.sales,
         }));
         salesDataArray.sort((a, b) => new Date(a.date) - new Date(b.date));
-        const salesLabels = salesDataArray.map((item) => item.date);
-        const sales = salesDataArray.map((item) => item.sales);
-        setSalesData({ labels: salesLabels, sales });
-  
-        // Destructure and sort revenue data
-        const revenueDataArray = Object.keys(
-          revenueGraphResponse.data.revenueByDate
-        ).map((date) => ({
+        setSalesData({
+          labels: salesDataArray.map((item) => item.date),
+          sales: salesDataArray.map((item) => item.sales),
+        });
+
+        // Sort revenue data
+        const revenueDataArray = Object.entries(revenueGraphResponse.data.revenueByDate).map(([date, revenue]) => ({
           date,
-          revenue: revenueGraphResponse.data.revenueByDate[date],
+          revenue,
         }));
         revenueDataArray.sort((a, b) => new Date(a.date) - new Date(b.date));
-        const revenueLabels = revenueDataArray.map((item) => item.date);
-        const revenue = revenueDataArray.map((item) => item.revenue);
-        setRevenueData({ labels: revenueLabels, revenue });
-  
+        setRevenueData({
+          labels: revenueDataArray.map((item) => item.date),
+          revenue: revenueDataArray.map((item) => item.revenue),
+        });
+
         setTotalRedemption(redemptionResponse.data.totalRedemption);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("❌ Error fetching data:", error);
       } finally {
-        setLoading(false); // Set loading to false when data fetching is done
+        setLoading(false);
+        console.log("✅ Fetching completed.");
       }
     };
-  
+
     fetchData();
+
+    return () => {
+      console.log("🛑 Cleanup function executed (if necessary)");
+    };
   }, []);
-  
 
   // // Line chart data and options for gift card sales
   // const chartData = {
