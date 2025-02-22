@@ -484,4 +484,156 @@ textarea {
 
 
 
+.wallet-button {
+    /* display: flex;
+    align-items: center; */
+    background-color: #000; /* Google Wallet Blue */
+    color: white;
+    padding: 30px 15px 10px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    /* margin-top: 15px; */
+    transition: 0.3s ease;
+    width: 250px;
+    /* height: 150px; */
+  }
+  
+  .wallet-button:hover {
+    background-color: #000000b3;
+  }
+  
+  .wallet-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
 
+  }
+
+
+  /* Modal Overlay */
+.purchase-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Modal Content */
+.purchase-modal-content {
+    background: #fff;
+    border-radius: var(--border-radius);
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    position: relative;
+    transform: scale(0.9);
+    animation: modalPop 0.3s ease-out forwards;
+    overflow: hidden;
+}
+
+/* Modal Title */
+.purchase-modal-content h2 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* Modal Paragraph */
+.purchase-modal-content p {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+/* Button Container */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+
+
+/* Wallet Button Styles */
+.wallet-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000000;
+    color: white;
+    padding: 8px 17px;
+    border-radius: 50px;
+    text-decoration: none;
+    flex: 1;
+    /* max-width: 200px; */
+    transition: all 0.3s ease;
+}
+
+.wallet-button:hover {
+    background: #0000009e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.2);
+}
+
+.wallet-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+}
+
+.wallet-button span {
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalPop {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Responsive Adjustments */
+/* @media (max-width: 480px) {
+    .purchase-modal-content {
+        padding: 20px;
+    }
+    
+    .purchase-modal-content h2 {
+        font-size: 1.5rem;
+    }
+    
+    .button-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .wallet-button,
+    .purchase-modal-close-btn {
+        width: 100%;
+        max-width: 100%;
+    }
+} */
