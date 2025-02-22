@@ -113,7 +113,6 @@ const getAllGiftCards = async (req, res) => {
   }
 };
 
-// Get total gift cards sold
 const getTotalGiftCardsSold = async (req, res) => {
   try {
     const allGiftCards = await GiftCard.find();
@@ -125,6 +124,7 @@ const getTotalGiftCardsSold = async (req, res) => {
     res.status(500).json({ error: "Failed to calculate total gift cards sold" });
   }
 };
+
 
 const getSoldGiftCards = async (req, res) => {
   try {

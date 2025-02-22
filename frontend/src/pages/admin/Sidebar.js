@@ -47,7 +47,7 @@ const Sidebar = () => {
             <span className="links_name">Dashboard</span>
             {isActive("/dashboard") && <span className="active-indicator"></span>}
           </Link>
-          <span className="tooltip">Dashboard</span>
+          
         </li>
         <li>
           <Link to="/giftcards" className={`linke ${isActive("/giftcards") ? "active" : ""}`}>
@@ -57,7 +57,7 @@ const Sidebar = () => {
             <span className="links_name">GiftCards</span>
             {isActive("/giftcards") && <span className="active-indicator"></span>}
           </Link>
-          <span className="tooltip">GiftCards</span>
+         
         </li>
         <li>
           <Link to="/orders" className={`linke ${isActive("/orders") ? "active" : ""}`}>
@@ -67,7 +67,7 @@ const Sidebar = () => {
             <span className="links_name">Orders</span>
             {isActive("/orders") && <span className="active-indicator"></span>}
           </Link>
-          <span className="tooltip">Orders</span>
+          
         </li>
         <li>
           <Link to="/reports" className={`linke ${isActive("/reports") ? "active" : ""}`}>
@@ -77,7 +77,7 @@ const Sidebar = () => {
             <span className="links_name">Reports</span>
             {isActive("/reports") && <span className="active-indicator"></span>}
           </Link>
-          <span className="tooltip">Reports</span>
+         
         </li>
         <li>
           <Link to="/settings" className={`linke ${isActive("/settings") ? "active" : ""}`}>
@@ -87,7 +87,7 @@ const Sidebar = () => {
             <span className="links_name">Settings</span>
             {isActive("/settings") && <span className="active-indicator"></span>}
           </Link>
-          <span className="tooltip">Settings</span>
+         
         </li>
         <li>
           <Link to="/redeem" className={`linke ${isActive("/redeem") ? "active" : ""}`}>
@@ -97,7 +97,7 @@ const Sidebar = () => {
             <span className="links_name">Redeem</span>
             {isActive("/redeem") && <span className="active-indicator"></span>}
           </Link>
-          <span className="tooltip">Redeem</span>
+        
         </li>
 
         <li className="profile">
