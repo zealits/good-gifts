@@ -359,19 +359,21 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
     console.log(updatedFormData);
 
     // Step 2: Proceed with gift card purchase, even if wallet API fails
-    try {
-      console.log("Updated formData: ", updatedFormData);
-      dispatch(purchaseGiftCard(updatedFormData));
+    // try {
+    //   console.log("Updated formData: ", updatedFormData);
+    //   dispatch(purchaseGiftCard(updatedFormData));
 
-      if (updatedFormData.walletUrl) {
-        setWalletUrl(updatedFormData.walletUrl);
-      }
+    //   if (updatedFormData.walletUrl) {
+    //     setWalletUrl(updatedFormData.walletUrl);
+    //   }
 
-      setShowModal(true);
-      setShowForm(false);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
+    //   setShowModal(true);
+    //   setShowForm(false);
+    // } catch (error) {
+    //   console.error("Error submitting form:", error);
+    // }
+
+    
   };
 
   const handlePurchaseModal = () => {
