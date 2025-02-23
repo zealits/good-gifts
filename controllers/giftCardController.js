@@ -96,7 +96,7 @@ const getAllGiftCards = async (req, res) => {
   try {
     const giftCardCount = await GiftCard.countDocuments();
     console.log("GiftCard Count:", giftCardCount); // Debugging
-    const resultPerPage = 30;
+    const resultPerPage = 100;
 
     const apiFeatures = new ApiFeatures(GiftCard.find(), req.query).search().pagination(resultPerPage);
 
