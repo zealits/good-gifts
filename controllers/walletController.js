@@ -3,8 +3,6 @@ const { GoogleAuth } = require("google-auth-library");
 const path = require("path");
 const GiftCard = require("../models/giftCardSchema");
 
-
-
 const credentials = {
   type: "service_account",
   project_id: "turing-reach-420001",
@@ -76,7 +74,6 @@ async function createGiftCardClass(giftCardName) {
             id: "expiry_date",
           },
         ],
-        
       };
 
       await httpClient.request({ url: `${baseUrl}/genericClass`, method: "POST", data: giftCardClass });
@@ -106,7 +103,7 @@ async function generateWalletPass(req, res) {
     // Generate the same unique QR code as used in email
     const uniqueCode = `${id}-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
 
-    const aiiLogo = "https://res.cloudinary.com/dzmn9lnk5/image/upload/v1739316421/Aii/Aii_nobackground_ym8wyn.png"
+    const aiiLogo = "https://res.cloudinary.com/dzmn9lnk5/image/upload/v1739316421/Aii/Aii_nobackground_ym8wyn.png";
 
     console.log("Creating gift card...");
     const classId = await createGiftCardClass(walletGiftCardName);
@@ -127,10 +124,9 @@ async function generateWalletPass(req, res) {
       cardTitle: { defaultValue: { language: "en", value: walletGiftCardName } },
       subheader: { defaultValue: { language: "en", value: `${currency} ${amount}` } },
       header: { defaultValue: { language: "en", value: userName } },
-      barcode: { 
-        type: "QR_CODE", 
-        value: uniqueCode,  // Using the same unique code format as email QR
-       
+      barcode: {
+        type: "QR_CODE",
+        value: uniqueCode, // Using the same unique code format as email QR
       },
       heroImage: {
         sourceUri: { uri: giftCardDetails.giftCardImg },
@@ -190,10 +186,11 @@ async function generateWalletPass(req, res) {
 
     // Add buyer to gift card
     giftCardDetails.buyers.push(buyerDetails);
-    await giftCardDetails.save();
+    // await giftCardDetails.save();
 
-    console.log("Generated Save URL:", saveUrl);
-    res.json({ saveUrl });
+    // console.log("Generated Save URL:", saveUrl);
+    console.log("unicode generated:", uniqueCode);
+    res.json({ saveUrl, uniqueCode });
   } catch (error) {
     console.error("Error generating wallet pass:", error);
     res.status(500).json({ error: "Failed to generate Google Wallet pass." });
