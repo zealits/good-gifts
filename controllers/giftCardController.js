@@ -96,7 +96,7 @@ const getAllGiftCards = async (req, res) => {
   try {
     const giftCardCount = await GiftCard.countDocuments();
     console.log("GiftCard Count:", giftCardCount); // Debugging
-    const resultPerPage = 30;
+    const resultPerPage = 100;
 
     const apiFeatures = new ApiFeatures(GiftCard.find(), req.query).search().pagination(resultPerPage);
 
@@ -335,8 +335,6 @@ const getSalesData = async (req, res) => {
 //   }
 // };
 
-
-
 const updateGiftCard = async (req, res) => {
   try {
     const { id } = req.params;
@@ -369,9 +367,10 @@ const deleteGiftCard = async (req, res) => {
 // In your controller where you generate and send the email
 const addBuyer = async (req, res) => {
   try {
-    const { id, purchaseType, selfInfo, giftInfo, paymentDetails } = req.body;
+    const { id, purchaseType, selfInfo, giftInfo, paymentDetails, barcodeUnicode, walletUrl } = req.body;
 
-    console.log(paymentDetails);
+    console.log("bacode : ", barcodeUnicode);
+    console.log("wallet url : ", walletUrl);
     // Validate required fields
     if (!id || !purchaseType || !paymentDetails) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -397,7 +396,12 @@ const addBuyer = async (req, res) => {
     }
 
     // Generate unique code for QR
-    const uniqueCode = `${id}-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+    let uniqueCode;
+    if (barcodeUnicode) {
+      uniqueCode = barcodeUnicode;
+    } else {
+      uniqueCode = `${id}-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+    }
 
     // Generate QR code as Buffer
     const qrCodeBuffer = await QRCode.toBuffer(uniqueCode, {
@@ -560,6 +564,43 @@ const addBuyer = async (req, res) => {
             border-radius: 8px;
         }
 
+
+        /* Google Wallet Button Styling */
+        .wallet-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffff;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            padding: 12px 24px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin: 15px 0;
+            cursor: pointer;
+        }
+
+        .wallet-button:hover {
+            background-color: #f8f9fa;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+
+        .wallet-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            vertical-align: middle;
+        }
+
+        .wallet-text {
+            color: #3c4043;
+            font-family: 'Google Sans', Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.25px;
+            vertical-align: middle;
+        }
+
         /* Instructions section */
         .instructions {
             margin-top: 25px;
@@ -653,6 +694,17 @@ const addBuyer = async (req, res) => {
             <div class="qr-section">
                 <p>Scan to Redeem</p>
                 <img src="cid:${qrCodeCid}" alt="QR Code" class="qr-code"/>
+            </div>
+          
+            
+            <!-- Google Wallet Section -->
+            <div class="qr-section">
+                <a href="${walletUrl}" target="_blank" rel="noopener noreferrer" class="wallet-button">
+                    <img src="https://res.cloudinary.com/dzmn9lnk5/image/upload/v1740297009/gift_cards/google-wallet_wfh992.png" 
+                         alt="Google Wallet" 
+                         class="wallet-icon" />
+                    <span class="wallet-text">Add to Google Wallet</span>
+                </a>
             </div>
         </div>
 
@@ -961,14 +1013,12 @@ const getAllBuyers = async (req, res) => {
           redemptionDate: entry.redemptionDate,
           remainingAmount: entry.remainingAmount,
           originalAmount: entry.originalAmount,
-          
         })),
       }))
     );
 
     // Sort buyers by purchaseDate in ascending order
     buyers.sort((a, b) => new Date(b.purchaseDate) - new Date(a.purchaseDate));
-
 
     res.status(200).json({
       success: true,
@@ -983,22 +1033,18 @@ const getAllBuyers = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
 const totalRedemptionValue = async (req, res) => {
   try {
     // Use aggregation to sum up the redeemedAmount for all buyers in all gift cards
     const totalRedemption = await GiftCard.aggregate([
       { $unwind: "$buyers" }, // Unwind buyers array
       { $unwind: "$buyers.redemptionHistory" }, // Unwind redemptionHistory array
-      { $group: {
-        _id: null, // Group all data together
-        totalRedemption: { $sum: "$buyers.redemptionHistory.redeemedAmount" } // Sum the redeemedAmount
-      }},
+      {
+        $group: {
+          _id: null, // Group all data together
+          totalRedemption: { $sum: "$buyers.redemptionHistory.redeemedAmount" }, // Sum the redeemedAmount
+        },
+      },
     ]);
 
     if (totalRedemption.length > 0) {
