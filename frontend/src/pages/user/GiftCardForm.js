@@ -328,46 +328,44 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
+    e.preventDefault();
+
+    let updatedFormData = { ...formData }; // Start with existing formData
 
     try {
-      console.log("formdata : ", formData);
-      // Step 1: Handle payment (assuming already implemented)
-      dispatch(purchaseGiftCard(formData));
+      console.log("Started wallet pass generation...");
 
-      // Step 2: Add gift card to Google Wallet
-      // const response = await fetch("/api/v1/admin/add-to-wallet", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({
-      //     userId: formData.id,
-      //     cardNumber: 456,
-      //     balance: 500,
-      //   }),
-      // });
+      // Step 1: Try to generate wallet pass
+      const response = await fetch("api/wallet/generate-wallet-pass", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-      try {
-        console.log("started ..");
-        const response = await fetch("api/wallet/generate-wallet-pass", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
-        console.log("response :", response);
+      if (response.ok) {
         const data = await response.json();
-        setWalletUrl(data.saveUrl);
-        console.log(data.saveUrl);
-      } catch (error) {
-        console.error("Error generating wallet pass:", error);
+        console.log("Wallet pass generated:", data);
+
+        // Update formData only if API is successful
+        updatedFormData.walletUrl = data.saveUrl;
+        updatedFormData.barcodeUnicode = data.uniqueCode;
+      } else {
+        console.error("Wallet pass generation failed, proceeding without it.");
       }
+    } catch (error) {
+      console.error("Error generating wallet pass, proceeding anyway:", error);
+    }
 
-      // const data = await response.json();
+    console.log(updatedFormData);
 
-      // if (data.saveUrl) {
-      //   window.location.href = data.saveUrl; // Redirect to Google Wallet
-      // } else {
-      //   alert("Failed to add to Google Wallet");
-      // }
+    // Step 2: Proceed with gift card purchase, even if wallet API fails
+    try {
+      console.log("Updated formData: ", updatedFormData);
+      dispatch(purchaseGiftCard(updatedFormData));
+
+      if (updatedFormData.walletUrl) {
+        setWalletUrl(updatedFormData.walletUrl);
+      }
 
       setShowModal(true);
       setShowForm(false);
@@ -643,13 +641,13 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
                 <h2>Purchase Completed Successfully!</h2>
                 <p>Thank you for your purchase. A confirmation email has been sent to your inbox.</p>
                 {/* <div className="button-container"> */}
-                  <a href={walletUrl} target="_blank" rel="noopener noreferrer" className="wallet-button">
-                    <img src={GoogleWalletIcon} alt="Google Wallet" className="wallet-icon" />
-                    <span>Add to Google Wallet</span>
-                  </a>
-                  <button className="purchase-modal-close-btn" onClick={handlePurchaseModal}>
-                    Close
-                  </button>
+                <a href={walletUrl} target="_blank" rel="noopener noreferrer" className="wallet-button">
+                  <img src={GoogleWalletIcon} alt="Google Wallet" className="wallet-icon" />
+                  <span>Add to Google Wallet</span>
+                </a>
+                <button className="purchase-modal-close-btn" onClick={handlePurchaseModal}>
+                  Close
+                </button>
                 {/* </div> */}
               </div>
             </div>
