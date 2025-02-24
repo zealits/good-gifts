@@ -75,10 +75,10 @@ export const updateGiftCard = (id, updatedData) => async (dispatch) => {
   try {
     dispatch({ type: UPDATE_GIFTCARD_REQUEST });
 
-    // Make a PUT request to your backend
+    // Make a PUT request with proper headers for multipart form data
     const { data } = await axios.put(`/api/v1/admin/update/${id}`, updatedData, {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'multipart/form-data', // Changed to handle file upload
       },
     });
 
@@ -89,7 +89,9 @@ export const updateGiftCard = (id, updatedData) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: UPDATE_GIFTCARD_FAIL,
-      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+      payload: error.response && error.response.data.message 
+        ? error.response.data.message 
+        : error.message,
     });
   }
 };

@@ -1313,6 +1313,54 @@
   }
 }
 
+.no-redemption-history {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 35px;
+  margin: 0;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 16px;
+  background: rgba(59, 130, 246, 0.05);
+  border-radius: 16px;
+  margin: 35px;
+  border: 1px dashed rgba(59, 130, 246, 0.2);
+  animation: fadeIn 0.5s ease forwards;
+  position: relative;
+}
+
+.no-redemption-history::before {
+  content: '📋';  /* You can replace this with an actual icon if preferred */
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+
+.no-redemption-history::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at top right,
+    rgba(59, 130, 246, 0.05),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+/* Add hover effect */
+.no-redemption-history:hover {
+  background: rgba(59, 130, 246, 0.08);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
 
 
 /* Search container styles */

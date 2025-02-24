@@ -8,7 +8,9 @@ const Orders = () => {
   const [view, setView] = useState("giftCards"); // Default view to 'giftCards'
   const [modalName, setModalName] = useState("");
   const [selectedBuyer, setSelectedBuyer] = useState(null);
+  const [giftCardSelectedBuyer, setGiftCardSelectedBuyer] = useState(null);
   const [redemptionHistory, setRedemptionHistory] = useState([]);
+  const [giftCardRedemptionHistory, setGiftCardRedemptionHistory] = useState([]);
   const [giftCardSearch, setGiftCardSearch] = useState(""); // Search state for gift cards
   const [buyerSearch, setBuyerSearch] = useState(""); // Search state for buyers
   const [originalBuyers, setOriginalBuyers] = useState([]); // Initialize as empty array instead of string
@@ -54,16 +56,16 @@ const Orders = () => {
   };
 
   const closeModal = () => {
-    if (modalName === "redemptionHistoryModal") {
-      if (view === "users") {
-        setModalName(""); // Directly close the Redemption History Modal if in User View
-      } else {
-        setModalName("buyersModal"); // Close the Redemption History Modal and show the Buyers Modal in Gift Card View
-      }
-      setSelectedBuyer(null); // Clear selected buyer
-      setRedemptionHistory([]); // Clear redemption history
+    if (modalName === "userRedemptionHistoryModal") {
+      setModalName("");
+      setSelectedBuyer(null);
+      setRedemptionHistory([]);
+    } else if (modalName === "giftCardRedemptionHistoryModal") {
+      setModalName("buyersModal");
+      setGiftCardSelectedBuyer(null);
+      setGiftCardRedemptionHistory([]);
     } else {
-      setModalName(""); // Close any modal
+      setModalName("");
     }
   };
 
@@ -88,12 +90,21 @@ const Orders = () => {
     setModalName("buyersModal"); // Fetch buyers when clicking on the "View Buyers" button
   };
   const handleViewRedemptionHistory = (buyer) => {
-    setSelectedBuyer({}); // Temporary empty state to force re-render
-    setTimeout(() => {
-      setSelectedBuyer(buyer); // Set the selected buyer
-      setRedemptionHistory(buyer.redemptionHistory || []); // Set the redemption history
-      setModalName("redemptionHistoryModal"); // Open the modal
-    }, 0);
+    if (view === "users") {
+      setSelectedBuyer({});
+      setTimeout(() => {
+        setSelectedBuyer(buyer);
+        setRedemptionHistory(buyer.redemptionHistory || []);
+        setModalName("userRedemptionHistoryModal");
+      }, 0);
+    } else {
+      setGiftCardSelectedBuyer({});
+      setTimeout(() => {
+        setGiftCardSelectedBuyer(buyer);
+        setGiftCardRedemptionHistory(buyer.redemptionHistory || []);
+        setModalName("giftCardRedemptionHistoryModal");
+      }, 0);
+    }
   };
 
   return (
@@ -298,44 +309,83 @@ const Orders = () => {
           </div>
         )}
 
-        {/* Redemption History Modal */}
-        {modalName === "redemptionHistoryModal" && selectedBuyer && (
-          <div className="redemption-history-modal">
-            <div className="redemption-history-modal-content">
-              <h3 className="redemption-history-title">
-                Redemption History for {selectedBuyer.name || "Unknown Buyer"}
-              </h3>
-              {selectedBuyer.redemptionHistory?.length > 0 ? (
-                <ul className="redemption-history-list">
-                  {selectedBuyer.redemptionHistory.map((entry, index) => (
-                    <li key={index} className="redemption-history-entry">
-                      <strong className="entry-number">#{index + 1}</strong>
-                      <p className="redeemed-amount">
-                        <strong>Redeemed Amount:</strong> ₹
-                        {entry.redeemedAmount}
-                      </p>
-                      <p className="remaining-amount">
-                        <strong>Remaining Amount:</strong> ₹
-                        {entry.remainingAmount}
-                      </p>
-                      <p className="redemption-date">
-                        <strong>Date:</strong>{" "}
-                        {new Date(entry.redemptionDate).toLocaleDateString()}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="no-redemption-history">
-                  No redemption history available.
-                </p>
-              )}
-              <button className="close-modal-button" onClick={closeModal}>
-                Close
-              </button>
-            </div>
+        {modalName === "userRedemptionHistoryModal" && selectedBuyer && (
+        <div className="redemption-history-modal">
+          <div className="redemption-history-modal-content">
+            <h3 className="redemption-history-title">
+              Redemption History for {selectedBuyer.buyerName || "Unknown Buyer"}
+            </h3>
+            {selectedBuyer.redemptionHistory?.length > 0 ? (
+              <ul className="redemption-history-list">
+                {selectedBuyer.redemptionHistory.map((entry, index) => (
+                  <li key={index} className="redemption-history-entry">
+                    <strong className="entry-number">#{index + 1}</strong>
+                    <p className="redeemed-amount">
+                      <strong>Redeemed Amount:</strong> ₹
+                      {entry.redeemedAmount}
+                    </p>
+                    <p className="remaining-amount">
+                      <strong>Remaining Amount:</strong> ₹
+                      {entry.remainingAmount}
+                    </p>
+                    <p className="redemption-date">
+                      <strong>Date:</strong>{" "}
+                      {new Date(entry.redemptionDate).toLocaleDateString()}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="no-redemption-history">
+                No redemption history available.
+              </p>
+            )}
+            <button className="close-modal-button" onClick={closeModal}>
+              Close
+            </button>
           </div>
-        )}
+        </div>
+      )}
+
+      {/* Gift Cards View Redemption History Modal */}
+      {modalName === "giftCardRedemptionHistoryModal" && giftCardSelectedBuyer && (
+        <div className="redemption-history-modal">
+          <div className="redemption-history-modal-content">
+            <h3 className="redemption-history-title">
+              Redemption History for {giftCardSelectedBuyer.name || "Unknown Buyer"}
+            </h3>
+            {giftCardSelectedBuyer.redemptionHistory?.length > 0 ? (
+              <ul className="redemption-history-list">
+                {giftCardSelectedBuyer.redemptionHistory.map((entry, index) => (
+                  <li key={index} className="redemption-history-entry">
+                    <strong className="entry-number">#{index + 1}</strong>
+                    <p className="redeemed-amount">
+                      <strong>Redeemed Amount:</strong> ₹
+                      {entry.redeemedAmount}
+                    </p>
+                    <p className="remaining-amount">
+                      <strong>Remaining Amount:</strong> ₹
+                      {entry.remainingAmount}
+                    </p>
+                    <p className="redemption-date">
+                      <strong>Date:</strong>{" "}
+                      {new Date(entry.redemptionDate).toLocaleDateString()}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="no-redemption-history">
+                No redemption history available.
+              </p>
+            )}
+            <button className="close-modal-button" onClick={closeModal}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
       </div>
     </div>
   );

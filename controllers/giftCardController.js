@@ -338,15 +338,59 @@ const getSalesData = async (req, res) => {
 const updateGiftCard = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedGiftCard = await GiftCard.findByIdAndUpdate(id, req.body, { new: true });
-    if (!updatedGiftCard) {
+
+    // Find the existing gift card
+    const existingGiftCard = await GiftCard.findById(id);
+    if (!existingGiftCard) {
       return res.status(404).json({ message: "Gift card not found" });
     }
+
+    let giftCardImgUrl = existingGiftCard.giftCardImg; // Keep existing image by default
+
+    if (req.file) {
+      // Generate a unique filename
+      const uniqueFilename = `${Date.now()}-${req.file.originalname}`;
+
+      // Upload the new image to Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        public_id: `gift_cards/${uniqueFilename}`,
+        resource_type: "auto",
+      });
+      console.log("Cloudinary Upload Result:", result);
+      giftCardImgUrl = result.secure_url;
+
+      // Delete the old image from Cloudinary (optional)
+      if (existingGiftCard.giftCardImg) {
+        const oldImagePublicId = existingGiftCard.giftCardImg
+          .split("/")
+          .pop()
+          .split(".")[0]; // Extract public ID from URL
+        await cloudinary.uploader.destroy(`gift_cards/${oldImagePublicId}`);
+      }
+
+      // Remove the temporary file from local storage
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.error("Error deleting file:", err);
+        }
+      });
+    }
+
+    // Update the gift card fields
+    const updatedGiftCard = await GiftCard.findByIdAndUpdate(
+      id,
+      { ...req.body, giftCardImg: giftCardImgUrl },
+      { new: true }
+    );
+    console.log("Updated Gift Card:", updatedGiftCard);
+
     res.status(200).json(updatedGiftCard);
   } catch (error) {
+    console.error("Error updating gift card:", error);
     res.status(400).json({ error: error.message });
   }
 };
+
 
 // Delete a gift card
 const deleteGiftCard = async (req, res) => {
