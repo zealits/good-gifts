@@ -33,7 +33,7 @@ const upload = multer({ dest: "uploads/" });
 router.post("/create-giftcard", upload.single("image"), createGiftCard); // Handle file uploads
 router.get("/details/:id", getGiftCardById);
 router.get("/list", getAllGiftCards);
-router.put("/update/:id", updateGiftCard);
+router.put('/update/:id', upload.single('image'), updateGiftCard);
 router.delete("/remove/:id", deleteGiftCard);
 router.get("/total-sold", getTotalGiftCardsSold);
 router.get("/total-revenue", getTotalRevenue);

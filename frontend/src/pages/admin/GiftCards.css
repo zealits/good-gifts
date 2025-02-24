@@ -72,18 +72,17 @@
   outline: none;
 }
 
-/* Table Styling */
 .giftcards-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 8px;
   margin-top: 20px;
+  /* Add this to ensure consistent column widths */
 }
 
 .giftcards-table th {
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
   color: #fff;
-  padding: 16px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -96,16 +95,45 @@
 
 .giftcards-table td {
   background: rgba(255, 255, 255, 0.03);
-  padding: 16px;
   color: #fff;
   transition: all 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* Maintain other hover effects */
 .giftcards-table tr:hover td {
   background: rgba(255, 255, 255, 0.06);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
+.giftcards-table th,
+.giftcards-table td {
+  padding: 16px;
+  text-align: left; /* Ensure consistent text alignment */
+}
+
+.giftcards-table th:nth-child(1),
+.giftcards-table td:nth-child(1) { /* Name column */
+  width: 25%;
+}
+
+
+
+.giftcards-table th:nth-child(5),
+.giftcards-table td:nth-child(5) { /* Deadline column */
+  width: 15%;
+  text-align: center;
+}
+
+.giftcards-table th:nth-child(6),
+.giftcards-table td:nth-child(6) { /* Actions column */
+  width: 15%;
+  text-align: center;
+}
+
 
 /* Button Styles */
 .cbtn {
@@ -998,4 +1026,240 @@
       padding: 0.6rem 1.5rem;
       font-size: 0.9rem;
   }
+}
+
+.file-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.current-file-name {
+  color: #0066cc;
+  text-decoration: underline;
+  cursor: pointer;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.file-input-container {
+  position: relative;
+  display: inline-block;
+}
+
+.actual-file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.file-choose-btn {
+  padding: 8px 16px;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.file-name-display {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+  background: #fff;
+}
+
+.actual-file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.file-choose-btn {
+  padding: 8px 16px;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.file-name-display {
+  /* Your existing styles */
+  text-decoration: underline;
+  color: #0066cc;
+}
+
+.image-preview-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-out forwards;
+  backdrop-filter: blur(8px);
+}
+
+.image-preview-content {
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 16px;
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  transform: scale(0.95);
+  opacity: 0;
+  animation: scaleIn 0.4s ease-out 0.1s forwards;
+}
+
+.image-preview-content img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.image-preview-content img:hover {
+  transform: scale(1.02);
+}
+
+.close-preview-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 28px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  cursor: pointer;
+  color: #333;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.close-preview-btn:hover {
+  background: #fff;
+  color: #000;
+  transform: rotate(90deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Exit Animations */
+.image-preview-modal.closing {
+  animation: fadeOut 0.3s ease-in forwards;
+}
+
+.image-preview-modal.closing .image-preview-content {
+  animation: scaleOut 0.3s ease-in forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+/* Add smooth scrollbar for overflow content */
+.image-preview-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+}
+
+.image-preview-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.image-preview-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.image-preview-content::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.current-file-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f5f5f5;
+  padding: 6px 12px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  max-width: fit-content;
+  border: 1px solid #e0e0e0;
+}
+
+.current-file-preview .file-icon {
+  color: #666;
+}
+
+.current-file-name {
+  color: #2196f3;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.current-file-name:hover {
+  color: #1976d2;
+  text-decoration: underline;
 }

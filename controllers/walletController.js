@@ -92,7 +92,9 @@ async function generateWalletPass(req, res) {
 
     console.log("Creating gift card...");
     const classId = await createGiftCardClass(walletGiftCardName);
-    const objectId = `${issuerId}.${userEmail.replace(/[^\w.-]/g, "_")}.${id}`;
+    const uniqueSuffix = `${giftCardDetails._id}-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+    const objectId = `${issuerId}.${userEmail.replace(/[^\w.-]/g, "_")}_${uniqueSuffix}`;
+    
 
     let giftCardObject = {
       id: objectId,
