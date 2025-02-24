@@ -14,6 +14,8 @@ const RedeemGiftCard = () => {
   const [isOtpVerified, setIsOtpVerified] = useState(false);
   const [selectedBuyer, setSelectedBuyer] = useState(null);
   const [qrUniqueCode, setqrUniqueCode] = useState(null);
+  const [isOtpSuccessModalOpen, setOtpSuccessModalOpen] = useState(false);
+const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
 
   // Handle QR scan
   const handleQRScan = (code) => {
@@ -123,11 +125,12 @@ const RedeemGiftCard = () => {
 
       if (response.data.success) {
         setIsOtpSent(true);
-        alert(response.data.message);
-      } else {
-        alert(response.data.message);
+        setOtpSuccessModalOpen(true);
+        setTimeout(() => {
+          setOtpSuccessModalOpen(false);
+        }, 3000);
       }
-    } catch (error) {
+    }  catch (error) {
       console.error("Error sending OTP:", error);
       const errorMessage =
         error.response?.data?.message || "Failed to send OTP.";
@@ -135,45 +138,7 @@ const RedeemGiftCard = () => {
     }
   };
 
-  // const handleVerifyOTP = async () => {
-  //   try {
-  //     if (!otp) {
-  //       alert("OTP is missing.");
-  //       return;
-  //     }
-
-  //     const buyerEmail = selectedBuyer?.selfInfo?.email;
-  //     const recipientEmail = selectedBuyer?.giftInfo?.recipientEmail;
-  //     // Add the giftCardId
-
-  //     const emailToVerifyOtp = recipientEmail || buyerEmail;
-
-  //     if (!emailToVerifyOtp) {
-  //       alert("Email is missing. Cannot verify OTP.");
-  //       return;
-  //     }
-
-  //     const response = await axios.post("/api/v1/admin/verify-otp-redeem", {
-  //       email: emailToVerifyOtp,
-  //       qrUniqueCode,
-  //       // Include giftCardId in the request
-  //       otp,
-  //     });
-
-  //     console.log(response);
-  //     if (response.data.success) {
-  //       console.log(response.data.success);
-  //       setIsOtpVerified(true);
-  //       console.log("asdfadsf : ", isOtpVerified);
-  //       alert(response.data.message);
-  //     } else {
-  //       alert(response.data.message);
-  //     }
-  //   } catch (error) {
-  //     const errorMessage = error.response?.data?.message || "Failed to verify OTP.";
-  //     alert(errorMessage);
-  //   }
-  // };
+  
 
   const handleRedeemGiftCard = async (qrCode, amount) => {
     try {
@@ -270,9 +235,14 @@ const RedeemGiftCard = () => {
 
         setRedeemAmount(""); // Clear redeem amount field
         console.log("Redeem process completed successfully.");
-        alert("Redeem successful!");
 
-        handleCloseModal(); // Close the modal after successful redemption
+        // Show success modal and auto-close after 3 seconds
+        setRedeemSuccessModalOpen(true);
+        setTimeout(() => {
+          setRedeemSuccessModalOpen(false);
+          handleCloseModal(); // Close the main modal after success modal
+        }, 3000);
+
       } else {
         alert(otpResponse.data.message);
         console.error("OTP verification failed:", otpResponse.data.message);
@@ -287,7 +257,7 @@ const RedeemGiftCard = () => {
       alert(errorMessage);
     }
   };
-
+  
   return (
     <div>
       <h1 className="heading">Redeem GiftCard</h1>
@@ -315,8 +285,7 @@ const RedeemGiftCard = () => {
                 </label>
                 <label>
                   Amount:
-                  <input type="number" value={giftCard.amount} readOnly />{" "}
-                  {/* Keep the original amount */}
+                  <input type="number" value={giftCard.amount} readOnly />
                 </label>
                 <label>
                   Remaining Balance:
@@ -325,7 +294,6 @@ const RedeemGiftCard = () => {
                     value={selectedBuyer.remainingBalance || giftCard.amount}
                     readOnly
                   />
-                  {/* Update balance */}
                 </label>
                 <label>
                   Status:
@@ -335,9 +303,7 @@ const RedeemGiftCard = () => {
                   Expiration Date:
                   <input
                     type="text"
-                    value={new Date(
-                      giftCard.expirationDate
-                    ).toLocaleDateString()}
+                    value={new Date(giftCard.expirationDate).toLocaleDateString()}
                     readOnly
                   />
                 </label>
@@ -346,13 +312,11 @@ const RedeemGiftCard = () => {
                     ? "Recipient Details"
                     : "Buyer Details"}
                 </h4>
-
-                {/* Display buyer or recipient details */}
+  
                 <label>
                   {selectedBuyer?.giftInfo?.recipientEmail
                     ? "Recipient Name"
-                    : "Buyer Name"}
-                  :
+                    : "Buyer Name"}:
                   <input
                     type="text"
                     value={
@@ -363,12 +327,11 @@ const RedeemGiftCard = () => {
                     readOnly
                   />
                 </label>
-
+  
                 <label>
                   {selectedBuyer?.giftInfo?.recipientEmail
                     ? "Recipient Email"
-                    : "Buyer Email"}
-                  :
+                    : "Buyer Email"}:
                   <input
                     type="text"
                     value={
@@ -379,8 +342,7 @@ const RedeemGiftCard = () => {
                     readOnly
                   />
                 </label>
-
-                {/* Redeem Amount Section */}
+  
                 <label>
                   Enter Amount to Redeem:
                   <input
@@ -389,23 +351,19 @@ const RedeemGiftCard = () => {
                     onChange={(e) => {
                       const enteredAmount = Number(e.target.value);
                       const availableBalance =
-                        selectedBuyer?.remainingBalance ?? giftCard.amount; // Fallback to original amount if remainingBalance is undefined
-
-                      if (
-                        enteredAmount > 0 &&
-                        enteredAmount <= availableBalance
-                      ) {
+                        selectedBuyer?.remainingBalance ?? giftCard.amount;
+  
+                      if (enteredAmount > 0 && enteredAmount <= availableBalance) {
                         setRedeemAmount(enteredAmount);
                       } else if (enteredAmount > availableBalance) {
                         alert("Redeem amount exceeds the available balance.");
                       } else {
-                        setRedeemAmount(""); // Clear invalid input
+                        setRedeemAmount("");
                       }
                     }}
                   />
                 </label>
-
-                {/* Send OTP */}
+  
                 <button
                   type="button"
                   className="send-otp-btn"
@@ -413,7 +371,7 @@ const RedeemGiftCard = () => {
                 >
                   Send OTP
                 </button>
-
+  
                 {isOtpSent && (
                   <div>
                     <label>
@@ -426,10 +384,9 @@ const RedeemGiftCard = () => {
                     </label>
                   </div>
                 )}
-
+  
                 {isOtpVerified && <p>OTP verified successfully!</p>}
-
-                {/* Redeem Button: Verifies OTP and Redeems Gift Card */}
+  
                 {isOtpSent && !isOtpVerified && otp && (
                   <button
                     type="button"
@@ -449,9 +406,60 @@ const RedeemGiftCard = () => {
           </div>
         </div>
       )}
+  
+     
+      {isOtpSuccessModalOpen && (
+        <div className="otp-success-modal-overlay">
+          <div className="otp-success-modal-container">
+            <div className="otp-success-modal-content">
+              <div className="otp-success-modal-icon">
+                <svg viewBox="0 0 24 24" className="otp-checkmark-svg">
+                  <path
+                    className="otp-checkmark-path"
+                    d="M3.7 14.3l5.6 5.6L20.3 4.7"
+                    fill="none"
+                    stroke="#fff"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
+              <h2 className="otp-success-modal-title">OTP Sent!</h2>
+              <p className="otp-success-modal-message">
+                OTP has been sent successfully
+              </p>
+              <div className="otp-success-modal-ripple"></div>
+            </div>
+          </div>
+        </div>
+      )}
+  
+      {isRedeemSuccessModalOpen && (
+        <div className="redeem-success-modal-overlay">
+          <div className="redeem-success-modal-container">
+            <div className="redeem-success-modal-content">
+              <div className="redeem-success-modal-icon">
+                <svg viewBox="0 0 24 24" className="redeem-checkmark-svg">
+                  <path
+                    className="redeem-checkmark-path"
+                    d="M3.7 14.3l5.6 5.6L20.3 4.7"
+                    fill="none"
+                    stroke="#fff"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
+              <h2 className="redeem-success-modal-title">Success!</h2>
+              <p className="redeem-success-modal-message">
+                Gift Card Redeemed Successfully
+              </p>
+              <div className="redeem-success-modal-confetti"></div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
+}
 
 export default RedeemGiftCard;
 

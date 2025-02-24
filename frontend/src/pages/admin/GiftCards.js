@@ -12,6 +12,7 @@ import {
   UPDATE_GIFTCARD_RESET,
   DELETE_GIFTCARD_RESET,
 } from "../../services/Constants/giftCardConstants";
+import { Link2 } from "lucide-react";
 
 const GiftCards = () => {
   const [isMessageModalOpen, setMessageModalOpen] = useState(false);
@@ -28,7 +29,12 @@ const GiftCards = () => {
   const [hasShownCreateSuccess, setHasShownCreateSuccess] = useState(false);
   const [hasShownUpdateSuccess, setHasShownUpdateSuccess] = useState(false);
   const [hasShownDeleteSuccess, setHasShownDeleteSuccess] = useState(false);
-  
+  const [selectedFile, setSelectedFile] = useState({
+    file: null,
+    name: "",
+  });
+  const [showImagePreview, setShowImagePreview] = useState(false);
+
   //Add state to manage the delete confirmation modal.
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [cardToDelete, setCardToDelete] = useState(null);
@@ -58,23 +64,22 @@ const GiftCards = () => {
 
   useEffect(() => {
     dispatch(listGiftCards(searchTerm));
-    
+
     // Reset all success states on initial mount
     dispatch({ type: CREATE_GIFTCARD_RESET });
     dispatch({ type: UPDATE_GIFTCARD_RESET });
     dispatch({ type: DELETE_GIFTCARD_RESET });
   }, [dispatch, searchTerm]);
 
- 
   useEffect(() => {
     if (giftCardCreate.success && !hasShownCreateSuccess) {
       setCreateSuccessModalOpen(true);
       setModalOpen(false);
       dispatch(listGiftCards());
-      
+
       // Mark that we've shown this success modal
       setHasShownCreateSuccess(true);
-      
+
       setTimeout(() => {
         setCreateSuccessModalOpen(false);
       }, 3000);
@@ -89,10 +94,10 @@ const GiftCards = () => {
       setUpdateSuccessModalOpen(true);
       setModalOpen(false);
       dispatch(listGiftCards());
-      
+
       // Mark that we've shown this success modal
       setHasShownUpdateSuccess(true);
-      
+
       setTimeout(() => {
         setUpdateSuccessModalOpen(false);
       }, 3000);
@@ -105,12 +110,12 @@ const GiftCards = () => {
   useEffect(() => {
     if (giftCardDelete.success && !hasShownDeleteSuccess) {
       setDeleteSuccessModalOpen(true);
-      
+
       dispatch(listGiftCards()); // Refresh the list
-      
+
       // Mark that we've shown this success modal
       setHasShownDeleteSuccess(true);
-      
+
       setTimeout(() => {
         setDeleteSuccessModalOpen(false);
       }, 3000);
@@ -119,7 +124,6 @@ const GiftCards = () => {
     }
   }, [giftCardDelete, dispatch, hasShownDeleteSuccess]);
 
-
   const [formData, setFormData] = useState({
     giftCardName: "",
     giftCardTag: "birthday", // Default value matches the first option
@@ -127,6 +131,7 @@ const GiftCards = () => {
     amount: "",
     discount: "",
     expirationDate: "",
+    giftCardImg: "",
   });
 
   const handleChange = (e) => {
@@ -139,12 +144,26 @@ const GiftCards = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const formDataToSubmit = new FormData();
+
+    // Append all non-file fields
+    Object.keys(formData).forEach((key) => {
+      if (key !== "image" && key !== "giftCardImg") {
+        formDataToSubmit.append(key, formData[key]);
+      }
+    });
+
+    // Append new image file if selected
+    if (selectedFile.file) {
+      formDataToSubmit.append("image", selectedFile.file);
+    }
+
     if (isEditing) {
-      setHasShownUpdateSuccess(false); // Reset update success flag
-      dispatch(updateGiftCard(editingCardId, formData));
+      setHasShownUpdateSuccess(false);
+      dispatch(updateGiftCard(editingCardId, formDataToSubmit));
     } else {
-      setHasShownCreateSuccess(false); // Reset create success flag
-      dispatch(createGiftCard(formData));
+      setHasShownCreateSuccess(false);
+      dispatch(createGiftCard(formDataToSubmit));
     }
   };
 
@@ -166,12 +185,18 @@ const GiftCards = () => {
     setFormData({
       giftCardName: card.giftCardName,
       giftCardTag: card.giftCardTag,
-      giftCardIcon: card.icon,
       description: card.description,
       amount: card.amount,
       discount: card.discount,
       expirationDate: card.expirationDate.split("T")[0],
+      giftCardImg: card.giftCardImg,
     });
+
+    setSelectedFile({
+      file: null,
+      name: card.giftCardImg,
+    });
+
     setIsEditing(true);
     setEditingCardId(card._id);
     setModalOpen(true);
@@ -210,7 +235,30 @@ const GiftCards = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setFormData({ ...formData, image: file });
+    if (file) {
+      setSelectedFile({
+        file: file,
+        name: file.name,
+      });
+
+      // Create a preview URL for the new image
+      const previewUrl = URL.createObjectURL(file);
+      setFormData((prev) => ({
+        ...prev,
+        giftCardImg: previewUrl, // Update the preview
+      }));
+    }
+  };
+
+  const handleImagePreviewClick = () => {
+    if (formData.giftCardImg) {
+      setShowImagePreview(true);
+    }
+  };
+
+  // Add this function to close image preview
+  const handleCloseImagePreview = () => {
+    setShowImagePreview(false);
   };
 
   const viewImage = (imageData) => {
@@ -232,6 +280,17 @@ const GiftCards = () => {
     const value = event.target.value;
     setSearchTerm(value); // Update the state
     console.log(value); // Log the user's input
+  };
+
+  const formatFileName = (fileName) => {
+    if (!fileName) return "";
+    const maxLength = 20;
+    if (fileName.length <= maxLength) return fileName;
+
+    const extension = fileName.split(".").pop();
+    const nameWithoutExt = fileName.substring(0, fileName.lastIndexOf("."));
+
+    return `${nameWithoutExt.substring(0, maxLength - 3)}...${extension}`;
   };
 
   return (
@@ -263,7 +322,7 @@ const GiftCards = () => {
                 <th>Discount</th>
                 <th>Sale Price</th>
                 <th>Deadline</th>
-                <th>Image</th>
+
                 <th>Actions</th>
               </tr>
             </thead>
@@ -291,14 +350,7 @@ const GiftCards = () => {
                         "en-GB"
                       )}
                     </td>
-                    <td>
-                      <button
-                        className="cbtn view"
-                        onClick={() => viewImage(card.giftCardImg)}
-                      >
-                        View Image
-                      </button>
-                    </td>
+
                     <td>
                       <button
                         className="cbtn edit"
@@ -328,7 +380,10 @@ const GiftCards = () => {
       {isModalOpen && (
         <div className="modal">
           <div className="creategiftcard-modal-content">
-            <button className="create-update-modal-close-btn" onClick={handleCloseModal}>
+            <button
+              className="create-update-modal-close-btn"
+              onClick={handleCloseModal}
+            >
               &times;
             </button>
             <h2 className="gc-page-modal-heading">
@@ -606,16 +661,60 @@ const GiftCards = () => {
               </div>
 
               <div className="giftcards-page-form-group">
-                <label htmlFor="image">Upload Image</label>
-                <input
-                  type="file"
-                  id="image"
-                  name="image"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  required
-                />
+                <label htmlFor="image">
+                  {isEditing ? "Edit Image" : "Upload Image"}
+                </label>
+                <div className="file-input-wrapper">
+                  {isEditing && (formData.giftCardImg || selectedFile.name) && (
+                    <div className="current-file-preview">
+                      <Link2 size={16} className="file-icon" />
+                      <span
+                        className="current-file-name"
+                        onClick={handleImagePreviewClick}
+                        title={selectedFile.name}
+                      >
+                        {formatFileName(selectedFile.name)}
+                      </span>
+                    </div>
+                  )}
+                  <div className="file-input-container">
+                    <input
+                      type="file"
+                      id="image"
+                      name="image"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="actual-file-input"
+                      required={!isEditing}
+                    />
+                    <button type="button" className="file-choose-btn">
+                      Choose File
+                    </button>
+                  </div>
+                </div>
               </div>
+
+              {showImagePreview && (
+                <div className="image-preview-modal">
+                  <div className="image-preview-content">
+                    <button
+                      className="close-preview-btn"
+                      onClick={() => setShowImagePreview(false)}
+                    >
+                      &times;
+                    </button>
+                    {formData.giftCardImg ? (
+                      <img
+                        src={formData.giftCardImg}
+                        alt="Gift Card Preview"
+                        className="preview-image"
+                      />
+                    ) : (
+                      <p>No image available</p>
+                    )}
+                  </div>
+                </div>
+              )}
               <button type="submit" className="sub-updt-btn">
                 {isEditing ? "Update" : "Submit"}
               </button>
@@ -645,11 +744,11 @@ const GiftCards = () => {
             <div className="create-success-modal-content">
               <div className="create-success-modal-icon">
                 <svg viewBox="0 0 24 24" className="checkmark-svg">
-                  <path 
+                  <path
                     className="checkmark-path"
                     d="M3.7 14.3l5.6 5.6L20.3 4.7"
                     fill="none"
-                    stroke="#fff" 
+                    stroke="#fff"
                     strokeWidth="2"
                   />
                 </svg>
@@ -670,11 +769,11 @@ const GiftCards = () => {
             <div className="update-success-modal-content">
               <div className="update-success-modal-icon">
                 <svg viewBox="0 0 24 24" className="update-checkmark-svg">
-                  <path 
+                  <path
                     className="update-checkmark-path"
                     d="M3.7 14.3l5.6 5.6L20.3 4.7"
                     fill="none"
-                    stroke="#fff" 
+                    stroke="#fff"
                     strokeWidth="2"
                   />
                 </svg>
@@ -695,11 +794,11 @@ const GiftCards = () => {
             <div className="delete-success-modal-content">
               <div className="delete-success-modal-icon">
                 <svg viewBox="0 0 24 24" className="delete-checkmark-svg">
-                  <path 
+                  <path
                     className="delete-checkmark-path"
                     d="M3.7 14.3l5.6 5.6L20.3 4.7"
                     fill="none"
-                    stroke="#fff" 
+                    stroke="#fff"
                     strokeWidth="2"
                   />
                 </svg>
