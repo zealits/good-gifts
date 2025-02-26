@@ -15,13 +15,29 @@ const RedeemGiftCard = () => {
   const [selectedBuyer, setSelectedBuyer] = useState(null);
   const [qrUniqueCode, setqrUniqueCode] = useState(null);
   const [isOtpSuccessModalOpen, setOtpSuccessModalOpen] = useState(false);
-const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
+  const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
+  
+  // New state for alert modals
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState(""); // "error" or "warning"
+
+  // Function to show alert modal instead of using alert()
+  const showAlert = (message, type = "error") => {
+    setAlertMessage(message);
+    setAlertType(type);
+    setIsAlertModalOpen(true);
+    // Auto close after 3 seconds
+    setTimeout(() => {
+      setIsAlertModalOpen(false);
+    }, 3000);
+  };
 
   // Handle QR scan
   const handleQRScan = (code) => {
     if (!code || code.trim() === "") {
       console.error("Invalid QR Code detected");
-      alert("Invalid QR Code. Please scan again.");
+      showAlert("Invalid QR Code. Please scan again.");
       return;
     }
     console.log("QR Code Scanned:", code);
@@ -43,7 +59,7 @@ const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
       }
 
       if (!cardId) {
-        alert("Invalid QR code data.");
+        showAlert("Invalid QR code data.");
         return;
       }
 
@@ -67,14 +83,14 @@ const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
         setSelectedBuyer(scannedBuyer);
         setUpdatedBalance(scannedBuyer.remainingBalance || giftCard.amount); // Set balance to remaining balance
       } else {
-        alert("No buyer found for the scanned QR code.");
+        showAlert("No buyer found for the scanned QR code.");
       }
 
       console.log("Gift Card Details:", giftCard);
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Gift card not found.";
-      alert(`Error: ${errorMessage}`);
+      showAlert(`Error: ${errorMessage}`);
     }
   };
 
@@ -95,14 +111,14 @@ const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
       const recipientEmail = selectedBuyer?.giftInfo?.recipientEmail;
 
       if (!buyerEmail && !recipientEmail) {
-        alert("Buyer or recipient email is missing. Cannot send OTP.");
+        showAlert("Buyer or recipient email is missing. Cannot send OTP.");
         return;
       }
 
       const emailToSendOtp = recipientEmail || buyerEmail;
 
       if (!redeemAmount || redeemAmount <= 0) {
-        alert("Enter a valid redeem amount before sending OTP.");
+        showAlert("Enter a valid redeem amount before sending OTP.", "warning");
         return;
       }
 
@@ -134,11 +150,9 @@ const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
       console.error("Error sending OTP:", error);
       const errorMessage =
         error.response?.data?.message || "Failed to send OTP.";
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
-
-  
 
   const handleRedeemGiftCard = async (qrCode, amount) => {
     try {
@@ -146,7 +160,7 @@ const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
 
       // Debug 1: Check if OTP is provided
       if (!otp) {
-        alert("OTP is missing.");
+        showAlert("OTP is missing.");
         console.error("Error: OTP is missing.");
         return;
       }
@@ -160,7 +174,7 @@ const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
       console.log("Email used for OTP verification:", emailToVerifyOtp);
 
       if (!emailToVerifyOtp) {
-        alert("Email is missing. Cannot verify OTP.");
+        showAlert("Email is missing. Cannot verify OTP.");
         console.error("Error: Email is missing.");
         return;
       }
@@ -190,7 +204,7 @@ const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
         console.log("Redeem payload:", { qrCode, amount });
 
         if (!qrCode || !amount || amount <= 0) {
-          alert("Invalid QR code or redeem amount.");
+          showAlert("Invalid QR code or redeem amount.", "warning");
           console.error("Error: Invalid QR code or redeem amount.");
           return;
         }
@@ -244,7 +258,7 @@ const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
         }, 3000);
 
       } else {
-        alert(otpResponse.data.message);
+        showAlert(otpResponse.data.message);
         console.error("OTP verification failed:", otpResponse.data.message);
       }
     } catch (error) {
@@ -254,7 +268,7 @@ const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
 
       const errorMessage =
         error.response?.data?.message || "Failed to process redemption.";
-      alert(errorMessage);
+      showAlert(errorMessage);
     }
   };
   
@@ -356,7 +370,7 @@ const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
                       if (enteredAmount > 0 && enteredAmount <= availableBalance) {
                         setRedeemAmount(enteredAmount);
                       } else if (enteredAmount > availableBalance) {
-                        alert("Redeem amount exceeds the available balance.");
+                        showAlert("Redeem amount exceeds the available balance.", "error");
                       } else {
                         setRedeemAmount("");
                       }
@@ -407,7 +421,7 @@ const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
         </div>
       )}
   
-     
+      {/* OTP Success Modal */}
       {isOtpSuccessModalOpen && (
         <div className="otp-success-modal-overlay">
           <div className="otp-success-modal-container">
@@ -433,6 +447,7 @@ const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
         </div>
       )}
   
+      {/* Redeem Success Modal */}
       {isRedeemSuccessModalOpen && (
         <div className="redeem-success-modal-overlay">
           <div className="redeem-success-modal-container">
@@ -457,196 +472,46 @@ const [isRedeemSuccessModalOpen, setRedeemSuccessModalOpen] = useState(false);
           </div>
         </div>
       )}
+      
+      {/* New Alert Modal */}
+      {isAlertModalOpen && (
+        <div className="alert-modal-overlay">
+          <div className="alert-modal-container">
+            <div className={`alert-modal-content ${alertType}`}>
+              <div className="alert-modal-icon">
+                {alertType === "error" ? (
+                  <svg viewBox="0 0 24 24" className="alert-icon-svg">
+                    <path
+                      className="alert-icon-path"
+                      d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                      fill="none"
+                      stroke="#fff"
+                      strokeWidth="1.5"
+                    />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" className="alert-icon-svg">
+                    <path
+                      className="alert-icon-path"
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
+                      fill="none"
+                      stroke="#fff"
+                      strokeWidth="1.5"
+                    />
+                  </svg>
+                )}
+              </div>
+              <h2 className="alert-modal-title">
+                {alertType === "error" ? "Error" : "Warning"}
+              </h2>
+              <p className="alert-modal-message">{alertMessage}</p>
+              <div className="alert-modal-pulse"></div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 export default RedeemGiftCard;
-
-// const handleRedeemGiftCard = async (qrCode, amount) => {
-//   try {
-//     if (!qrCode || !amount || amount <= 0) {
-//       throw new Error("Invalid QR code or redeem amount.");
-//     }
-
-//     const response = await axios.post("/api/v1/admin/redeem", {
-//       qrCode,
-//       amount,
-//     });
-
-//     console.log("Redemption successful:", response.data);
-
-//     // Update local gift card data, only update the balance, not the amount
-//     setGiftCard((prevCard) => ({
-//       ...prevCard,
-//       redemptionHistory: response.data.redemptionHistory,
-//     }));
-
-//     setUpdatedBalance((prev) => prev - amount); // Update only the balance
-//     setRedeemAmount(""); // Clear redeem amount field
-//     alert("Redeem successful!");
-
-//     handleCloseModal();
-//   } catch (error) {
-//     const errorMessage =
-//       error.response?.data?.message || "Redemption failed.";
-//     alert(errorMessage);
-//   }
-// };
-
-// const handleRedeemGiftCard = async (qrCode, amount) => {
-//   try {
-//     if (!qrCode || !amount || amount <= 0) {
-//       throw new Error("Invalid QR code or redeem amount.");
-//     }
-
-//     const response = await axios.post("/api/v1/admin/redeem", {
-//       qrCode,
-//       amount,
-//     });
-
-//     console.log("Redemption successful:", response.data);
-
-//     // Assuming the backend returns the updated balance and redemption history
-//     const { updatedBalance, redemptionHistory } = response.data;
-
-//     // Update local state to reflect the new balance and redemption history
-//     setGiftCard((prevCard) => ({
-//       ...prevCard,
-//       redemptionHistory, // Update redemption history
-//       balance: updatedBalance, // Update the balance, not the original amount
-//     }));
-
-//     setUpdatedBalance(updatedBalance); // Update balance for UI
-//     setRedeemAmount(""); // Clear redeem amount field
-//     alert("Redeem successful!");
-
-//     handleCloseModal();
-//   } catch (error) {
-//     console.error("Error during redemption:", error);
-//     const errorMessage =
-//       error.response?.data?.message || "Redemption failed.";
-//     alert(errorMessage);
-//   }
-// };
-// const handleRedeemGiftCard = async (qrCode, amount) => {
-//   try {
-//     if (!qrCode || !amount || amount <= 0) {
-//       throw new Error("Invalid QR code or redeem amount.");
-//     }
-
-//     // Send the QR code and amount to the backend for redemption
-//     const response = await axios.post("/api/v1/admin/redeem", {
-//       qrCode,
-//       amount,
-//     });
-
-//     console.log("Redemption successful:", response.data);
-
-//     // Assuming the backend returns updated buyer data and redemption history
-//     const { buyer, redemptionHistory } = response.data;
-
-//     // Update local state to reflect the new buyer data and redemption history
-//     setGiftCard((prevCard) => {
-//       const updatedBuyers = prevCard.buyers.map((b) =>
-//         b.qrCode.uniqueCode === qrCode ? { ...b, ...buyer } : b
-//       );
-
-//       return {
-//         ...prevCard,
-//         buyers: updatedBuyers, // Update the specific buyer's data
-//         redemptionHistory, // Update redemption history
-//       };
-//     });
-
-//     setRedeemAmount(""); // Clear redeem amount field
-//     alert("Redeem successful!");
-
-//     handleCloseModal();
-//   } catch (error) {
-//     console.error("Error during redemption:", error);
-//     const errorMessage =
-//       error.response?.data?.message || "Redemption failed.";
-//     alert(errorMessage);
-//   }
-// };
-
-// const handleRedeemGiftCard = async (qrCode, userAmount) => {
-//   try {
-//     if (!qrCode || !userAmount || userAmount <= 0) {
-//       throw new Error("Invalid QR code or redeem amount.");
-//     }
-
-//     const response = await axios.post("/api/v1/admin/redeem", {
-//       qrCode,
-//       redeemAmount, // Rename the argument to redeemAmount
-//     });
-
-//     console.log("Redemption successful:", response.data);
-
-//     // Assuming the backend returns the updated balance and redemption history
-//     const { updatedBalance, redemptionHistory } = response.data;
-
-//     // Update local state to reflect the new balance and redemption history
-//     setGiftCard((prevCard) => ({
-//       ...prevCard,
-//       redemptionHistory, // Update redemption history
-//       balance: updatedBalance, // Update the balance with the updated value
-//     }));
-
-//     setUpdatedBalance(updatedBalance); // Update balance for UI
-//     setRedeemAmount(""); // Clear redeem amount field
-//     alert("Redeem successful!");
-
-//     handleCloseModal();
-//   } catch (error) {
-//     console.error("Error during redemption:", error);
-//     const errorMessage =
-//       error.response?.data?.message || "Redemption failed.";
-//     alert(errorMessage);
-//   }
-// };
-
-// Fetch the gift card by scanning the QR code
-// const fetchGiftCard = async (data) => {
-//   try {
-//     let cardId;
-
-//     // Check if data is a URL or plain text
-//     if (data.startsWith("http")) {
-//       const url = new URL(data);
-//       cardId = url.pathname.split("/").pop();
-//     } else {
-//       cardId = data.trim();
-//     }
-
-//     if (!cardId) {
-//       alert("Invalid QR code data.");
-//       return;
-//     }
-
-//     console.log("Fetching Gift Card for ID:", cardId);
-
-//     const { data: giftCard } = await axios.get(`/api/v1/admin/scan-giftcard/${cardId}`);
-//     setGiftCard(giftCard);
-
-//      // Set the balance to the original amount
-//     setIsModalOpen(true);
-
-//     // Search for the buyer matching the scanned QR code
-//     const scannedBuyer = giftCard.buyers.find(buyer => buyer.qrCode.uniqueCode === data);
-
-//     if (scannedBuyer) {
-//       setSelectedBuyer(scannedBuyer);
-//       setUpdatedBalance(scannedBuyer.usedAmount || 0);
-//     } else {
-//       alert("No buyer found for the scanned QR code.");
-//     }
-
-//     console.log("Gift Card Details:", giftCard);
-//   } catch (error) {
-//     const errorMessage =
-//       error.response?.data?.message || "Gift card not found.";
-//     alert(`Error: ${errorMessage}`);
-//   }
-// };
