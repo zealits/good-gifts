@@ -1,44 +1,70 @@
-- name: Deploy to server
-  if: github.ref == 'refs/heads/main'
-  run: |
-    ssh admin@dev.zealits.com << 'EOF'
-      # Backup the config.env file if it exists
-      if [ -f ~/good-gifts/config/config.env ]; then
-        cp ~/good-gifts/config/config.env ~/config.env.bak
-      fi
+name: Node.js CI/CD Pipeline
 
-      # If the repository exists, pull the latest changes; otherwise, clone it
-      if [ -d ~/good-gifts ]; then
-        cd ~/good-gifts
-        git pull origin main
-      else
-        git clone https://github.com/zealits/good-gifts.git ~/good-gifts
-        cd ~/good-gifts
-      fi
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
-      # Restore the config.env file if backup exists
-      if [ -f ~/config.env.bak ]; then
-        mv ~/config.env.bak ~/good-gifts/config/config.env
-      fi
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-      # Install backend dependencies
-      npm install
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      # Install frontend dependencies and build the frontend
-      cd frontend
-      npm install --force
-      npm run build
-      cd ..
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20.x"
 
-      # Restart the application using PM2
-      if pm2 list | grep -q "good-gifts"; then
-        echo "Restarting good-gifts"
-        pm2 restart good-gifts
-      else
-        echo "Starting good-gifts"
-        pm2 start npm --name "good-gifts" -- run dev
-      fi
+      # Step 3: Deploy to server
+      - name: Deploy to server
+        if: github.ref == 'refs/heads/main'
+        run: |
+          ssh admin@dev.zealits.com << 'EOF'
+            # Backup the config.env file if it exists
+            if [ -f ~/good-gifts/config/config.env ]; then
+              cp ~/good-gifts/config/config.env ~/config.env.bak
+            fi
 
-      # Check the status of PM2 processes
-      pm2 list
-    EOF
+            # If the repository exists, pull the latest changes; otherwise, clone it
+            if [ -d ~/good-gifts ]; then
+              cd ~/good-gifts
+              git pull origin main
+            else
+              git clone https://github.com/zealits/good-gifts.git ~/good-gifts
+              cd ~/good-gifts
+            fi
+
+            # Restore the config.env file if backup exists
+            if [ -f ~/config.env.bak ]; then
+              mv ~/config.env.bak ~/good-gifts/config/config.env
+            fi
+
+            # Install backend dependencies
+            npm install
+
+            # Install frontend dependencies and build the frontend
+            cd frontend
+            npm install --force
+            npm run build
+            cd ..
+
+            # Restart the application using PM2
+            if pm2 list | grep -q "good-gifts"; then
+              echo "Restarting good-gifts"
+              pm2 restart good-gifts
+            else
+              echo "Starting good-gifts"
+              pm2 start npm --name "good-gifts" -- run dev
+            fi
+
+            # Check the status of PM2 processes
+            pm2 list
+          EOF
