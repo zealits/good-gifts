@@ -4,11 +4,11 @@ import {
   giftCardListReducer,
   giftCardUpdateReducer,
   giftCardDeleteReducer,
+  giftCardDetailsReducer, // Added giftCardDetailsReducer here
 } from "./services/Reducers/giftCardsReducer";
 import authReducer from "./services/Reducers/authReducer.js";
 import locationReducer from "./services/Reducers/locationSlice";
 import { paymentReducer } from "./services/Reducers/paymentReducer.js";
-
 
 // Configure the store
 const store = configureStore({
@@ -17,10 +17,10 @@ const store = configureStore({
     giftCardList: giftCardListReducer,
     giftCardUpdate: giftCardUpdateReducer,
     giftCardDelete: giftCardDeleteReducer,
+    giftCardDetails: giftCardDetailsReducer, // Added this line
     auth: authReducer,
     location: locationReducer,
-    payment: paymentReducer
-    
+    payment: paymentReducer,
   },
 });
 

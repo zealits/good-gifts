@@ -413,3 +413,274 @@ textarea::-webkit-scrollbar-thumb:hover {
   from { stroke-dashoffset: 100; }
   to { stroke-dashoffset: 0; }
 }
+
+/* Add these styles to your existing RedeemGiftCard.css file */
+
+/* Alert Modal Styles */
+.alert-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.alert-modal-container {
+  max-width: 400px;
+  width: 90%;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.alert-modal-content {
+  padding: 20px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.alert-modal-content.error {
+  background: linear-gradient(135deg, #ff5252, #b33939);
+}
+
+.alert-modal-content.warning {
+  background: linear-gradient(135deg, #ffb142, #cc8e35);
+}
+
+.alert-modal-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.alert-icon-svg {
+  width: 40px;
+  height: 40px;
+}
+
+.alert-icon-path {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: drawPath 1s forwards;
+}
+
+.alert-modal-title {
+  margin: 0 0 10px 0;
+  color: white;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.alert-modal-message {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.alert-modal-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  z-index: -1;
+  animation: pulse 2s infinite;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes drawPath {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+}
+
+/* Existing OTP and Redeem Success Modal styles */
+.otp-success-modal-overlay,
+.redeem-success-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.otp-success-modal-container,
+.redeem-success-modal-container {
+  max-width: 400px;
+  width: 90%;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.otp-success-modal-content,
+.redeem-success-modal-content {
+  padding: 25px;
+  background: linear-gradient(135deg, #4CAF50, #2E7D32);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.otp-success-modal-icon,
+.redeem-success-modal-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.otp-checkmark-svg,
+.redeem-checkmark-svg {
+  width: 40px;
+  height: 40px;
+}
+
+.otp-checkmark-path,
+.redeem-checkmark-path {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: drawPath 1s forwards;
+}
+
+.otp-success-modal-title,
+.redeem-success-modal-title {
+  margin: 0 0 10px 0;
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.otp-success-modal-message,
+.redeem-success-modal-message {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  font-size: 16px;
+}
+
+.otp-success-modal-ripple,
+.redeem-success-modal-confetti {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.otp-success-modal-ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  animation: ripple 1.5s ease-out infinite;
+}
+
+.redeem-success-modal-confetti::before,
+.redeem-success-modal-confetti::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: confetti 1.5s ease-out infinite;
+}
+
+.redeem-success-modal-confetti::before {
+  background-color: #FFC107;
+  top: 20%;
+  left: 20%;
+}
+
+.redeem-success-modal-confetti::after {
+  background-color: #03A9F4;
+  bottom: 20%;
+  right: 20%;
+}
+
+@keyframes ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+@keyframes confetti {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(50px, 50px) rotate(360deg) scale(2);
+    opacity: 0;
+  }
+}

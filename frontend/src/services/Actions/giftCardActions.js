@@ -15,7 +15,9 @@ import {
   PURCHASE_GIFTCARD_REQUEST,
   PURCHASE_GIFTCARD_SUCCESS,
   PURCHASE_GIFTCARD_FAIL,
-
+  GET_GIFT_CARD_DETAILS_REQUEST,
+  GET_GIFT_CARD_DETAILS_SUCCESS,
+  GET_GIFT_CARD_DETAILS_FAIL,
 } from "../Constants/giftCardConstants";
 
 // Create Gift Card Action
@@ -136,5 +138,24 @@ export const purchaseGiftCard = (buyerData) => async (dispatch) => {
     });
   }
 };
+
+export const getGiftCardDetails = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: GET_GIFT_CARD_DETAILS_REQUEST });
+
+    const { data } = await axios.get(`/api/v1/admin/details/${id}`); // Fixed route
+
+    dispatch({
+      type: GET_GIFT_CARD_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: GET_GIFT_CARD_DETAILS_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
+
 
 

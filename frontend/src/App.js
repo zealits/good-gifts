@@ -14,6 +14,7 @@ import Reports from "./pages/admin/Reports.js"; // GiftCards page
 import Settings from "./pages/admin/Settings.js"; // GiftCards page
 import RedeemGiftCard from "./pages/admin/RedeemGiftCard.js";
 import { LoadingProvider } from './context/LoadingContext';
+import GiftCardDetails from "./pages/user/GiftCardDetails.js";
 import "./App.css";
 // import 'font-awesome/css/font-awesome.min.css';
 
@@ -114,7 +115,7 @@ function App() {
 
           {/* User landing page */}
           <Route path="/" element={<UserLanding />} />
-
+          <Route path="/gift-card/:id" element={<GiftCardDetails />} />
           {/* Fallback route */}
           <Route path="*" element={<Navigate to="/" />} />
 
