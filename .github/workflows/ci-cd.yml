@@ -41,10 +41,13 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           ssh admin@dev.zealits.com << 'EOF'
-            # If repository exists, back up config and pull latest changes; otherwise, clone the repo
+            # If repository exists, back up config and wallet-api-key.json and pull latest changes; otherwise, clone the repo
             if [ -d ~/good-gifts ]; then
               if [ -f ~/good-gifts/config/config.env ]; then
                 cp ~/good-gifts/config/config.env ~/config.env.bak
+              fi
+              if [ -f ~/good-gifts/wallet-api-key.json ]; then
+                cp ~/good-gifts/wallet-api-key.json ~/wallet-api-key.json.bak
               fi
               cd ~/good-gifts
               git pull origin main
@@ -53,9 +56,13 @@ jobs:
               cd ~/good-gifts
             fi
 
-            # Restore the config.env file if backup exists
+            # Restore backup files if they exist
             if [ -f ~/config.env.bak ]; then
               mv ~/config.env.bak config/config.env
+            fi
+
+            if [ -f ~/wallet-api-key.json.bak ]; then
+              mv ~/wallet-api-key.json.bak wallet-api-key.json
             fi
 
             # Install backend dependencies
