@@ -336,7 +336,7 @@ const GiftCardForm = ({ giftCardName, amount, discount, id, onClose }) => {
       console.log("Started wallet pass generation...");
 
       // Step 1: Try to generate wallet pass
-      const response = await fetch("api/wallet/generate-wallet-pass", {
+      const response = await fetch("/api/wallet/generate-wallet-pass", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
