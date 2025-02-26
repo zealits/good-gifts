@@ -5,3 +5,4 @@
 # Ignore node_modules in the frontend directory
 /frontend/node_modules
 
+/config/wallet-api-key.json
