@@ -28,17 +28,7 @@ jobs:
         run: npm install
         working-directory: .
 
-      # # Step 4: Install frontend dependencies
-      # - name: Install frontend dependencies
-      #   run: npm install --force
-      #   working-directory: ./frontend
-
-      # # Step 5: Build the frontend application
-      # - name: Build frontend application
-      #   run: npm run build
-      #   working-directory: ./frontend
-
-      # Step 6: Setup SSH for Deployment
+      # Step 4: Setup SSH for Deployment
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -46,29 +36,27 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H dev.zealits.com >> ~/.ssh/known_hosts
 
-      # Step 7: Deploy to the server
+      # Step 5: Deploy to server
       - name: Deploy to server
         if: github.ref == 'refs/heads/main'
         run: |
           ssh admin@dev.zealits.com << 'EOF'
-            # Backup the config.env file if it exists
-            if [ -f ~/good-gifts/config/config.env ]; then
-              cp ~/good-gifts/config/config.env ~/config.env.bak
+            # If repository exists, back up config and pull latest changes; otherwise, clone the repo
+            if [ -d ~/good-gifts ]; then
+              if [ -f ~/good-gifts/config/config.env ]; then
+                cp ~/good-gifts/config/config.env ~/config.env.bak
+              fi
+              cd ~/good-gifts
+              git pull origin main
+            else
+              git clone https://github.com/zealits/good-gifts.git ~/good-gifts
+              cd ~/good-gifts
             fi
 
-            # Remove the ~/good-gifts folder if it exists
-            rm -rf ~/good-gifts || true
-
-            # Clone the repository
-            git clone https://github.com/zealits/good-gifts.git
-
-            # Restore the config.env file
+            # Restore the config.env file if backup exists
             if [ -f ~/config.env.bak ]; then
-              mv ~/config.env.bak ~/good-gifts/config/config.env
+              mv ~/config.env.bak config/config.env
             fi
-
-            # Navigate to the directory
-            cd ~/good-gifts
 
             # Install backend dependencies
             npm install
@@ -84,7 +72,7 @@ jobs:
               echo "Restarting good-gifts"
               pm2 restart good-gifts
             else
-              echo "Starting concentrix-app"
+              echo "Starting good-gifts"
               pm2 start npm --name "good-gifts" -- run dev
             fi
 
