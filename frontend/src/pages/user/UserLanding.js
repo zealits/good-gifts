@@ -158,7 +158,7 @@ const UserLanding = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <select 
+        {/* <select 
           className="filter-dropdown-user"
           value={filterCategory}
           onChange={handleFilterChange}
@@ -167,7 +167,7 @@ const UserLanding = () => {
           <option value="Fine Dining">Fine Dining</option>
           <option value="Casual Dining">Casual Dining</option>
           <option value="Gourmet">Gourmet</option>
-        </select>
+        </select> */}
       </div>
 
       <div className="purchase-card-container">
